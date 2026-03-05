@@ -5,6 +5,7 @@ class RouteSearchRequest(BaseModel):
     to_stop: str = Field(min_length=1,max_length=200)
 
 class RouteSearchResult(BaseModel):
+    route_id: int
     route_number: str
     direction: str #UP or DOWN 
     from_sequence: int 
@@ -16,6 +17,7 @@ class RouteStop(BaseModel):
     name: str 
 
 class RouteDetailResponse(BaseModel):
+    route_id: int
     route_number: str
     direction: str
     stops: list[RouteStop]

@@ -66,6 +66,7 @@ def get_route_detail(db: Session, route_number: str, direction: str) -> dict | N
     """)
     stops = db.execute(stops_sql, {"route_id": route["id"]}).mappings().all()
     return {
+        "route_id": route["id"],
         "route_number": route["route_number"],
         "direction": route["direction"],
         "stops": [{"sequence_no": x["sequence_no"], "name": x["name"]} for x in stops],

@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouteDetail } from "@/hooks/useRouteDetail";
+import { useFavorites, useAddFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 
 export default function RouteDetailPage({
@@ -24,6 +25,12 @@ export default function RouteDetailPage({
     const decodedDir = decodeURIComponent(direction);
 
     const { data, isLoading, isError } = useRouteDetail(decodedRoute, decodedDir);
+    const { data: favorites } = useFavorites();
+    const addFavorite = useAddFavorite();
+
+    const isFavorited = data
+        ? (favorites?.some((f) => f.route_id === data.route_id) ?? false)
+        : false;
 
     const handleFavorite = () => {
         if (!isAuthenticated) {
@@ -31,7 +38,20 @@ export default function RouteDetailPage({
             router.push("/login");
             return;
         }
-        toast.success(`Route ${decodedRoute} added to favorites!`);
+        if (!data) return;
+
+        if (isFavorited) {
+            toast.info("Already in favorites!");
+            return;
+        }
+
+        addFavorite.mutate(
+            { route_id: data.route_id },
+            {
+                onSuccess: () => toast.success(`Route ${decodedRoute} added to favorites!`),
+                onError: () => toast.error("Failed to add favorite"),
+            }
+        );
     };
 
     return (
@@ -105,9 +125,14 @@ export default function RouteDetailPage({
                                 </div>
                             </div>
 
-                            <Button variant="outline" size="sm" onClick={handleFavorite} className="gap-2">
-                                <Heart className="h-4 w-4" />
-                                Favorite
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleFavorite}
+                                className={`gap-2 ${isFavorited ? "text-red-500 border-red-500/30" : ""}`}
+                            >
+                                <Heart className="h-4 w-4" fill={isFavorited ? "currentColor" : "none"} />
+                                {isFavorited ? "Favorited" : "Favorite"}
                             </Button>
                         </div>
 

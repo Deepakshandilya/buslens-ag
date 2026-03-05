@@ -18,6 +18,7 @@ export interface RouteSearchRequest {
 }
 
 export interface RouteSearchResult {
+    route_id: number;
     route_number: string;
     direction: string;
     from_sequence: number;
@@ -31,6 +32,7 @@ export interface RouteStop {
 }
 
 export interface RouteDetailResponse {
+    route_id: number;
     route_number: string;
     direction: string;
     stops: RouteStop[];

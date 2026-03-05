@@ -28,6 +28,7 @@ def route_search(
     for m in matches:
         between = get_stops_between(db, m["route_id"], m["from_sequence"], m["to_sequence"])
         results.append(RouteSearchResult(
+            route_id=m["route_id"],
             route_number=m["route_number"],
             direction=m["direction"],
             from_sequence=int(m["from_sequence"]),

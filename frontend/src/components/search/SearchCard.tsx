@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ArrowRightLeft, Hash } from "lucide-react";
+import { Search, ArrowRightLeft, Hash, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StopAutocomplete } from "@/components/search/StopAutocomplete";
+import { useAuthStore } from "@/stores/authStore";
+import { useAddHistory } from "@/hooks/useHistory";
 import type { StopOut } from "@/types/api";
 
 export function SearchCard() {
     const router = useRouter();
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+    const addHistory = useAddHistory();
 
     // Stop-to-Stop state
     const [fromStop, setFromStop] = useState("");
@@ -22,6 +26,10 @@ export function SearchCard() {
     // Bus number state
     const [busNumber, setBusNumber] = useState("");
 
+    // Stop search state
+    const [searchStop, setSearchStop] = useState("");
+    const [selectedSearchStop, setSelectedSearchStop] = useState<StopOut | null>(null);
+
     const handleSwap = () => {
         setFromStop(toStop);
         setToStop(fromStop);
@@ -31,13 +39,26 @@ export function SearchCard() {
 
     const handleStopSearch = () => {
         if (!fromStop.trim() || !toStop.trim()) return;
+
+        // Record search history if authenticated and we have stop IDs
+        if (isAuthenticated && selectedFrom && selectedTo) {
+            addHistory.mutate({
+                from_stop_id: selectedFrom.id,
+                to_stop_id: selectedTo.id,
+            });
+        }
+
         router.push(`/search?from=${encodeURIComponent(fromStop)}&to=${encodeURIComponent(toStop)}`);
     };
 
     const handleBusSearch = () => {
         if (!busNumber.trim()) return;
-        // Navigate to route detail — default to DOWN direction
-        router.push(`/route/${encodeURIComponent(busNumber.trim())}/DOWN`);
+        router.push(`/bus/${encodeURIComponent(busNumber.trim())}`);
+    };
+
+    const handleStopLookup = () => {
+        if (!selectedSearchStop) return;
+        router.push(`/stop/${selectedSearchStop.id}`);
     };
 
     return (
@@ -54,7 +75,7 @@ export function SearchCard() {
                 </div>
 
                 <Tabs defaultValue="stops" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-4">
+                    <TabsList className="grid w-full grid-cols-3 mb-4">
                         <TabsTrigger value="stops" className="text-xs sm:text-sm">
                             <Search className="h-3.5 w-3.5 mr-1.5" />
                             Stop to Stop
@@ -62,6 +83,10 @@ export function SearchCard() {
                         <TabsTrigger value="bus" className="text-xs sm:text-sm">
                             <Hash className="h-3.5 w-3.5 mr-1.5" />
                             Bus Number
+                        </TabsTrigger>
+                        <TabsTrigger value="stop" className="text-xs sm:text-sm">
+                            <MapPin className="h-3.5 w-3.5 mr-1.5" />
+                            Search Stop
                         </TabsTrigger>
                     </TabsList>
 
@@ -131,6 +156,27 @@ export function SearchCard() {
                         >
                             <Search className="h-4 w-4 mr-2" />
                             View Route
+                        </Button>
+                    </TabsContent>
+
+                    {/* Search Stop Tab */}
+                    <TabsContent value="stop" className="space-y-3 mt-0">
+                        <StopAutocomplete
+                            label="Stop name"
+                            placeholder="Search for a stop..."
+                            value={searchStop}
+                            onValueChange={setSearchStop}
+                            onStopSelect={setSelectedSearchStop}
+                        />
+
+                        <Button
+                            onClick={handleStopLookup}
+                            className="w-full font-semibold"
+                            size="lg"
+                            disabled={!selectedSearchStop}
+                        >
+                            <MapPin className="h-4 w-4 mr-2" />
+                            View All Buses
                         </Button>
                     </TabsContent>
                 </Tabs>

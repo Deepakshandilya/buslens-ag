@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouteSearch } from "@/hooks/useRouteSearch";
+import { useFavorites, useAddFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 
 function SearchResultsContent() {
@@ -21,30 +22,49 @@ function SearchResultsContent() {
     const to = searchParams.get("to") || "";
 
     const { data: results, isLoading, isError } = useRouteSearch(from, to);
+    const { data: favorites } = useFavorites();
+    const addFavorite = useAddFavorite();
 
-    // Track favorited routes locally (filled heart)
-    const [favoritedRoutes, setFavoritedRoutes] = useState<Set<string>>(new Set());
+    // Track which routes are being added (for loading state)
+    const [addingRoutes, setAddingRoutes] = useState<Set<number>>(new Set());
 
-    const handleFavorite = (routeKey: string, routeNumber: string) => {
+    const isFavorited = (routeId: number) =>
+        favorites?.some((f) => f.route_id === routeId) ?? false;
+
+    const handleFavorite = (routeId: number, routeNumber: string) => {
         if (!isAuthenticated) {
             toast.error("Please login to save favorites");
             router.push("/login");
             return;
         }
 
-        if (favoritedRoutes.has(routeKey)) {
-            // Remove from local set
-            setFavoritedRoutes((prev) => {
-                const next = new Set(prev);
-                next.delete(routeKey);
-                return next;
-            });
-            toast.success(`Route ${routeNumber} removed from favorites`);
-        } else {
-            // Add to local set
-            setFavoritedRoutes((prev) => new Set(prev).add(routeKey));
-            toast.success(`Route ${routeNumber} added to favorites!`);
+        if (isFavorited(routeId)) {
+            toast.info(`Route ${routeNumber} is already in favorites`);
+            return;
         }
+
+        setAddingRoutes((prev) => new Set(prev).add(routeId));
+        addFavorite.mutate(
+            { route_id: routeId },
+            {
+                onSuccess: () => {
+                    toast.success(`Route ${routeNumber} added to favorites!`);
+                    setAddingRoutes((prev) => {
+                        const next = new Set(prev);
+                        next.delete(routeId);
+                        return next;
+                    });
+                },
+                onError: () => {
+                    toast.error("Failed to add favorite");
+                    setAddingRoutes((prev) => {
+                        const next = new Set(prev);
+                        next.delete(routeId);
+                        return next;
+                    });
+                },
+            }
+        );
     };
 
     return (
@@ -126,12 +146,12 @@ function SearchResultsContent() {
                 {results && results.length > 0 && (
                     <div className="space-y-4">
                         {results.map((route, i) => {
-                            const routeKey = `${route.route_number}-${route.direction}`;
-                            const isFavorited = favoritedRoutes.has(routeKey);
+                            const fav = isFavorited(route.route_id);
+                            const adding = addingRoutes.has(route.route_id);
 
                             return (
                                 <Card
-                                    key={`${routeKey}-${i}`}
+                                    key={`${route.route_id}-${i}`}
                                     className="group border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer"
                                 >
                                     <CardContent className="p-5">
@@ -184,18 +204,19 @@ function SearchResultsContent() {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className={`h-8 w-8 transition-colors ${isFavorited
+                                                    disabled={adding}
+                                                    className={`h-8 w-8 transition-colors ${fav
                                                             ? "text-red-500 hover:text-red-400"
                                                             : "text-muted-foreground hover:text-red-400"
                                                         }`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handleFavorite(routeKey, route.route_number);
+                                                        handleFavorite(route.route_id, route.route_number);
                                                     }}
                                                 >
                                                     <Heart
                                                         className="h-4 w-4"
-                                                        fill={isFavorited ? "currentColor" : "none"}
+                                                        fill={fav ? "currentColor" : "none"}
                                                     />
                                                 </Button>
                                                 <Button

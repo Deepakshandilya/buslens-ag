@@ -1,0 +1,180 @@
+"use client";
+
+import { use } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Bus, MapPin, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouteDetail } from "@/hooks/useRouteDetail";
+import { useAuthStore } from "@/stores/authStore";
+import { useAddFavorite, useFavorites } from "@/hooks/useFavorites";
+import { toast } from "sonner";
+
+export default function BusNumberPage({
+    params,
+}: {
+    params: Promise<{ number: string }>;
+}) {
+    const { number } = use(params);
+    const router = useRouter();
+    const decoded = decodeURIComponent(number);
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+    const upQuery = useRouteDetail(decoded, "UP");
+    const downQuery = useRouteDetail(decoded, "DOWN");
+
+    const { data: favorites } = useFavorites();
+    const addFavorite = useAddFavorite();
+
+    const isLoading = upQuery.isLoading || downQuery.isLoading;
+    const hasUp = !!upQuery.data;
+    const hasDown = !!downQuery.data;
+    const defaultTab = hasUp ? "up" : "down";
+
+    const isFavorited = (routeId: number) =>
+        favorites?.some((f) => f.route_id === routeId) ?? false;
+
+    const handleFavorite = (routeId: number) => {
+        if (!isAuthenticated) {
+            toast.error("Please login to save favorites");
+            router.push("/login");
+            return;
+        }
+        addFavorite.mutate(
+            { route_id: routeId },
+            {
+                onSuccess: () => toast.success("Added to favorites!"),
+                onError: () => toast.error("Failed to add favorite"),
+            }
+        );
+    };
+
+    const renderTimeline = (data: { route_id: number; route_number: string; direction: string; stops: { sequence_no: number; name: string }[] }) => (
+        <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">{data.stops.length} stops</p>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className={`gap-2 ${isFavorited(data.route_id) ? "text-red-500 border-red-500/30" : ""}`}
+                    onClick={() => handleFavorite(data.route_id)}
+                >
+                    <Heart className="h-4 w-4" fill={isFavorited(data.route_id) ? "currentColor" : "none"} />
+                    {isFavorited(data.route_id) ? "Favorited" : "Favorite"}
+                </Button>
+            </div>
+
+            <Card className="border-border/40 bg-card/80 backdrop-blur-sm">
+                <CardContent className="p-6">
+                    <div className="relative">
+                        {data.stops.map((stop, i) => {
+                            const isFirst = i === 0;
+                            const isLast = i === data.stops.length - 1;
+                            return (
+                                <div key={stop.sequence_no} className="flex gap-4 relative">
+                                    <div className="flex flex-col items-center">
+                                        <div
+                                            className={`flex h-8 w-8 items-center justify-center rounded-full border-2 z-10 ${isFirst || isLast
+                                                    ? "border-primary bg-primary text-primary-foreground"
+                                                    : "border-border bg-background"
+                                                }`}
+                                        >
+                                            {isFirst || isLast ? (
+                                                <MapPin className="h-4 w-4" />
+                                            ) : (
+                                                <span className="text-xs font-medium text-muted-foreground">
+                                                    {stop.sequence_no}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {!isLast && <div className="w-0.5 flex-1 bg-border min-h-[2rem]" />}
+                                    </div>
+                                    <div className={`pb-6 pt-1 ${isLast ? "pb-0" : ""}`}>
+                                        <p className={`text-sm font-medium ${isFirst || isLast ? "text-foreground" : "text-muted-foreground"}`}>
+                                            {stop.name}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground/60">Stop #{stop.sequence_no}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+
+    return (
+        <div className="min-h-screen bg-background pt-20 pb-12">
+            <div className="max-w-2xl mx-auto px-4 sm:px-6">
+                <Button variant="ghost" size="sm" onClick={() => router.back()} className="mb-4 -ml-2">
+                    <ArrowLeft className="h-4 w-4 mr-1" />
+                    Back
+                </Button>
+
+                <div className="flex items-center gap-3 mb-8">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <Bus className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-bold">Route {decoded}</h1>
+                        <p className="text-sm text-muted-foreground">
+                            {hasUp && hasDown ? "Both directions available" : hasUp ? "UP direction only" : hasDown ? "DOWN direction only" : "Loading..."}
+                        </p>
+                    </div>
+                </div>
+
+                {isLoading && (
+                    <div className="space-y-4">
+                        <Skeleton className="h-10 w-full rounded-lg" />
+                        <Card className="border-border/40">
+                            <CardContent className="p-6 space-y-4">
+                                {[1, 2, 3, 4, 5].map((i) => (
+                                    <div key={i} className="flex gap-4">
+                                        <Skeleton className="h-8 w-8 rounded-full" />
+                                        <Skeleton className="h-5 w-32" />
+                                    </div>
+                                ))}
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
+
+                {!isLoading && !hasUp && !hasDown && (
+                    <Card className="border-destructive/30">
+                        <CardContent className="p-6 text-center">
+                            <p className="text-destructive font-medium">Route {decoded} not found.</p>
+                            <p className="text-sm text-muted-foreground mt-1">Check the bus number and try again.</p>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {!isLoading && (hasUp || hasDown) && (
+                    <Tabs defaultValue={defaultTab} className="w-full">
+                        <TabsList className={`grid w-full mb-6 ${hasUp && hasDown ? "grid-cols-2" : "grid-cols-1"}`}>
+                            {hasUp && (
+                                <TabsTrigger value="up" className="gap-2">
+                                    ↑ UP Direction
+                                </TabsTrigger>
+                            )}
+                            {hasDown && (
+                                <TabsTrigger value="down" className="gap-2">
+                                    ↓ DOWN Direction
+                                </TabsTrigger>
+                            )}
+                        </TabsList>
+                        {hasUp && upQuery.data && (
+                            <TabsContent value="up">{renderTimeline(upQuery.data)}</TabsContent>
+                        )}
+                        {hasDown && downQuery.data && (
+                            <TabsContent value="down">{renderTimeline(downQuery.data)}</TabsContent>
+                        )}
+                    </Tabs>
+                )}
+            </div>
+        </div>
+    );
+}
