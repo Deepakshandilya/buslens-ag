@@ -1,0 +1,87 @@
+# =========================
+# PYTHON
+# =========================
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Mypy / type checkers
+.mypy_cache/
+
+# Logs
+*.log
+
+# =========================
+# ENV FILES (IMPORTANT)
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+# DATABASE
+# =========================
+
+*.sqlite3
+*.db
+dump.sql
+
+# =========================
+# IDEs / EDITORS
+# =========================
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Mac
+.DS_Store
+
+# =========================
+# FRONTEND (React/Vite)
+# =========================
+
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# If frontend at root instead
+node_modules/
+dist/
+
+# =========================
+# AWS / Deployment
+# =========================
+
+.zappa/
+.aws/
+serverless-state.json
+.serverless/
+
+# =========================
+# SYSTEM
+# =========================
+
+*.swp
+*.swo
