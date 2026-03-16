@@ -92,20 +92,20 @@ export default function StopRoutesPage({
                                     >
                                         <CardContent className="p-4 flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                                    <Bus className="h-4 w-4" />
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                                    <Bus className="h-4.5 w-4.5" />
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="font-bold">Route {route.route_number}</span>
+                                                        <span className="text-base font-bold">Route {route.route_number}</span>
                                                         <Badge
                                                             variant={route.direction === "UP" ? "default" : "secondary"}
-                                                            className="text-xs"
+                                                            className="text-[11px] px-2 py-0"
                                                         >
                                                             {route.direction === "UP" ? "↑ UP" : "↓ DOWN"}
                                                         </Badge>
                                                     </div>
-                                                    <p className="text-xs text-muted-foreground">
+                                                    <p className="text-sm text-muted-foreground mt-0.5">
                                                         Stop #{route.sequence_no} in sequence
                                                     </p>
                                                 </div>

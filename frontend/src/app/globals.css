@@ -124,3 +124,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Route highlight colors */
+:root {
+  --route-start: oklch(0.65 0.2 145);
+  --route-start-bg: oklch(0.65 0.2 145 / 12%);
+  --route-end: oklch(0.6 0.2 260);
+  --route-end-bg: oklch(0.6 0.2 260 / 12%);
+  --route-active: oklch(0.6 0.18 260);
+  --route-active-line: oklch(0.6 0.18 260 / 40%);
+}
+
+.dark {
+  --route-start: oklch(0.75 0.22 150);
+  --route-start-bg: oklch(0.75 0.22 150 / 15%);
+  --route-end: oklch(0.72 0.2 265);
+  --route-end-bg: oklch(0.72 0.2 265 / 15%);
+  --route-active: oklch(0.72 0.2 265);
+  --route-active-line: oklch(0.72 0.2 265 / 35%);
+}
+
+@keyframes slide-up-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

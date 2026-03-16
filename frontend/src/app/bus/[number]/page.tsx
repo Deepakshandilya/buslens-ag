@@ -73,30 +73,35 @@ export default function BusNumberPage({
                         {data.stops.map((stop, i) => {
                             const isFirst = i === 0;
                             const isLast = i === data.stops.length - 1;
+                            
+                            // Determine circle styling
+                            const circleClass = (isFirst || isLast) 
+                                ? "border-primary bg-primary text-primary-foreground" 
+                                : "border-border bg-background";
+                                
                             return (
                                 <div key={stop.sequence_no} className="flex gap-4 relative">
                                     <div className="flex flex-col items-center">
                                         <div
-                                            className={`flex h-8 w-8 items-center justify-center rounded-full border-2 z-10 ${isFirst || isLast
-                                                    ? "border-primary bg-primary text-primary-foreground"
-                                                    : "border-border bg-background"
-                                                }`}
+                                            className={`flex h-10 w-10 items-center justify-center rounded-full border-2 z-10 transition-all ${circleClass}`}
                                         >
                                             {isFirst || isLast ? (
                                                 <MapPin className="h-4 w-4" />
                                             ) : (
-                                                <span className="text-xs font-medium text-muted-foreground">
+                                                <span className="text-sm font-semibold text-muted-foreground">
                                                     {stop.sequence_no}
                                                 </span>
                                             )}
                                         </div>
-                                        {!isLast && <div className="w-0.5 flex-1 bg-border min-h-[2rem]" />}
+                                        {!isLast && (
+                                            <div className="w-0.5 flex-1 bg-border min-h-[2.25rem] transition-colors" />
+                                        )}
                                     </div>
-                                    <div className={`pb-6 pt-1 ${isLast ? "pb-0" : ""}`}>
-                                        <p className={`text-sm font-medium ${isFirst || isLast ? "text-foreground" : "text-muted-foreground"}`}>
+                                    <div className={`pb-7 pt-1.5 ${isLast ? "pb-0" : ""}`}>
+                                        <p className={`font-medium transition-colors ${isFirst || isLast ? "text-base text-foreground font-semibold" : "text-[15px] text-muted-foreground"}`}>
                                             {stop.name}
                                         </p>
-                                        <p className="text-xs text-muted-foreground/60">Stop #{stop.sequence_no}</p>
+                                        <p className="text-xs text-muted-foreground/60 mt-0.5">Stop #{stop.sequence_no}</p>
                                     </div>
                                 </div>
                             );
