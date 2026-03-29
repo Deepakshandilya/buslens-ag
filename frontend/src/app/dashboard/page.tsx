@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
     Clock,
     Heart,
@@ -33,8 +33,10 @@ import { useFavorites, useDeleteFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 import api from "@/lib/api";
 
-export default function DashboardPage() {
+function DashboardContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const tabParam = searchParams.get("tab");
     const { isAuthenticated, isHydrated, user } = useAuthStore();
 
     useEffect(() => {
@@ -61,7 +63,7 @@ export default function DashboardPage() {
     // Show loading while hydrating
     if (!isHydrated) {
         return (
-            <div className="min-h-screen bg-background pt-20 pb-12">
+            <div className="min-h-screen bg-background pt-24 pb-12">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-4 w-64" />
@@ -107,17 +109,17 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="min-h-screen bg-background pt-24 pb-12">
             <div className="max-w-3xl mx-auto px-4 sm:px-6">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+                    <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-heading), sans-serif" }}>Dashboard</h1>
                     <p className="text-sm text-muted-foreground mt-1">
                         Welcome, <span className="text-foreground">{user?.email}</span>
                     </p>
                 </div>
 
-                <Tabs defaultValue="history" className="w-full">
+                <Tabs defaultValue={tabParam === "favorites" ? "favorites" : "history"} className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mb-6">
                         <TabsTrigger value="history" className="gap-2">
                             <Clock className="h-4 w-4" />
@@ -306,5 +308,21 @@ export default function DashboardPage() {
                 </Tabs>
             </div>
         </div>
+    );
+}
+
+export default function DashboardPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-background pt-24 pb-12">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4">
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-4 w-64" />
+                    <Skeleton className="h-32 w-full rounded-lg" />
+                </div>
+            </div>
+        }>
+            <DashboardContent />
+        </Suspense>
     );
 }

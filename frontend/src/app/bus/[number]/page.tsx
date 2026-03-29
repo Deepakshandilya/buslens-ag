@@ -55,30 +55,35 @@ export default function BusNumberPage({
     const renderTimeline = (data: { route_id: number; route_number: string; direction: string; stops: { sequence_no: number; name: string }[] }) => (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">{data.stops.length} stops</p>
+                <p className="text-base text-muted-foreground">{data.stops.length} stops</p>
                 <Button
                     variant="outline"
                     size="sm"
-                    className={`gap-2 ${isFavorited(data.route_id) ? "text-red-500 border-red-500/30" : ""}`}
+                    className={`gap-2 rounded-xl ${isFavorited(data.route_id) ? "text-red-500 border-red-500/30" : ""}`}
                     onClick={() => handleFavorite(data.route_id)}
                 >
                     <Heart className="h-4 w-4" fill={isFavorited(data.route_id) ? "currentColor" : "none"} />
-                    {isFavorited(data.route_id) ? "Favorited" : "Favorite"}
+                    {isFavorited(data.route_id) ? "Favourited" : "Favourite"}
                 </Button>
             </div>
 
-            <Card className="border-border/40 bg-card/80 backdrop-blur-sm">
+            <Card
+                className="backdrop-blur-sm"
+                style={{
+                    background: "oklch(0.195 0.02 285 / 90%)",
+                    border: "1px solid oklch(1 0.02 285 / 8%)",
+                }}
+            >
                 <CardContent className="p-6">
                     <div className="relative">
                         {data.stops.map((stop, i) => {
                             const isFirst = i === 0;
                             const isLast = i === data.stops.length - 1;
-                            
-                            // Determine circle styling
-                            const circleClass = (isFirst || isLast) 
-                                ? "border-primary bg-primary text-primary-foreground" 
+
+                            const circleClass = (isFirst || isLast)
+                                ? "border-primary bg-primary text-primary-foreground"
                                 : "border-border bg-background";
-                                
+
                             return (
                                 <div key={stop.sequence_no} className="flex gap-4 relative">
                                     <div className="flex flex-col items-center">
@@ -113,20 +118,37 @@ export default function BusNumberPage({
     );
 
     return (
-        <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="min-h-screen bg-background pt-24 pb-12">
             <div className="max-w-2xl mx-auto px-4 sm:px-6">
                 <Button variant="ghost" size="sm" onClick={() => router.back()} className="mb-4 -ml-2">
                     <ArrowLeft className="h-4 w-4 mr-1" />
                     Back
                 </Button>
 
-                <div className="flex items-center gap-3 mb-8">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                        <Bus className="h-6 w-6" />
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-8">
+                    <div
+                        className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg"
+                        style={{
+                            background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                            boxShadow: "0 4px 16px oklch(0.72 0.12 290 / 25%)",
+                        }}
+                    >
+                        <span
+                            className="text-xl font-extrabold text-white"
+                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                        >
+                            {decoded}
+                        </span>
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold">Route {decoded}</h1>
-                        <p className="text-sm text-muted-foreground">
+                        <h1
+                            className="text-2xl font-bold"
+                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                        >
+                            Route {decoded}
+                        </h1>
+                        <p className="text-base text-muted-foreground">
                             {hasUp && hasDown ? "Both directions available" : hasUp ? "UP direction only" : hasDown ? "DOWN direction only" : "Loading..."}
                         </p>
                     </div>
@@ -159,14 +181,14 @@ export default function BusNumberPage({
 
                 {!isLoading && (hasUp || hasDown) && (
                     <Tabs defaultValue={defaultTab} className="w-full">
-                        <TabsList className={`grid w-full mb-6 ${hasUp && hasDown ? "grid-cols-2" : "grid-cols-1"}`}>
+                        <TabsList className={`grid w-full mb-6 h-11 ${hasUp && hasDown ? "grid-cols-2" : "grid-cols-1"}`}>
                             {hasUp && (
-                                <TabsTrigger value="up" className="gap-2">
+                                <TabsTrigger value="up" className="gap-2 text-sm">
                                     ↑ UP Direction
                                 </TabsTrigger>
                             )}
                             {hasDown && (
-                                <TabsTrigger value="down" className="gap-2">
+                                <TabsTrigger value="down" className="gap-2 text-sm">
                                     ↓ DOWN Direction
                                 </TabsTrigger>
                             )}

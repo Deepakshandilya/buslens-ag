@@ -8,7 +8,7 @@ export default function HomePage() {
         <SearchCard />
 
         {/* Subtle tagline below */}
-        <p className="mt-8 text-sm text-muted-foreground/60 text-center max-w-md">
+        <p className="mt-8 text-base text-muted-foreground/50 text-center max-w-md">
           Move your cursor to reveal the grid. Search any bus route across
           Chandigarh, Mohali, Panchkula &amp; Zirakpur.
         </p>

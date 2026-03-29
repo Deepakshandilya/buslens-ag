@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bus, User, LogOut, LayoutDashboard } from "lucide-react";
+import { LogOut, LayoutDashboard, Search, Heart, Clock, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -12,38 +12,111 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/stores/authStore";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export function Navbar() {
     const { isAuthenticated, user, logout } = useAuthStore();
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleLogout = () => {
         logout();
         router.push("/");
     };
 
+    const isActive = (path: string) => pathname === path;
+
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
-            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl">
+            <div
+                className="flex h-14 items-center justify-between px-2 sm:px-3 rounded-2xl shadow-xl shadow-black/20 backdrop-blur-xl"
+                style={{
+                    background: "oklch(0.17 0.02 285 / 85%)",
+                    border: "1px solid oklch(1 0.02 285 / 10%)",
+                }}
+            >
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-105">
-                        <Bus className="h-5 w-5" />
-                    </div>
-                    <span className="text-xl font-bold tracking-tight">
-                        Bus<span className="text-primary">Lens</span>
+                <Link href="/" className="flex items-center gap-2 group pl-1 shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src="/logo.png"
+                        alt="BusLens"
+                        className="h-8 w-8 rounded-lg object-cover transition-transform group-hover:scale-105"
+                    />
+                    <span
+                        className="text-lg font-bold tracking-tight text-white hidden md:inline"
+                        style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                    >
+                        Bus<span style={{ color: "oklch(0.78 0.12 290)" }}>Lens</span>
                     </span>
                 </Link>
 
+                {/* Center nav links */}
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                    <Link
+                        href="/"
+                        className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                            isActive("/")
+                                ? "text-white bg-white/10"
+                                : "text-white/60 hover:text-white hover:bg-white/5"
+                        }`}
+                    >
+                        <Search className="h-4 w-4" />
+                        <span className="hidden sm:inline">Search</span>
+                    </Link>
+                    {isAuthenticated && (
+                        <>
+                            <Link
+                                href="/dashboard?tab=history"
+                                className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                                    pathname === "/dashboard" && (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("tab") === "history")
+                                        ? "text-white bg-white/10"
+                                        : "text-white/60 hover:text-white hover:bg-white/5"
+                                }`}
+                            >
+                                <Clock className="h-4 w-4" />
+                                <span className="hidden sm:inline">History</span>
+                            </Link>
+                            <Link
+                                href="/dashboard?tab=favorites"
+                                className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                                    pathname === "/dashboard" && (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("tab") === "favorites")
+                                        ? "text-white bg-white/10"
+                                        : "text-white/60 hover:text-white hover:bg-white/5"
+                                }`}
+                            >
+                                <Heart className="h-4 w-4" />
+                                <span className="hidden sm:inline">Favourites</span>
+                            </Link>
+                        </>
+                    )}
+                    <Link
+                        href="/about"
+                        className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                            isActive("/about")
+                                ? "text-white bg-white/10"
+                                : "text-white/60 hover:text-white hover:bg-white/5"
+                        }`}
+                    >
+                        <Info className="h-4 w-4" />
+                        <span className="hidden sm:inline">About</span>
+                    </Link>
+                </div>
+
                 {/* Right side */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 pr-1 shrink-0">
                     {isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                                <Button variant="ghost" className="relative h-9 w-9 rounded-full hover:bg-white/10">
                                     <Avatar className="h-9 w-9">
-                                        <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                                        <AvatarFallback
+                                            className="font-bold text-sm"
+                                            style={{
+                                                background: "oklch(0.72 0.12 290 / 20%)",
+                                                color: "oklch(0.82 0.12 290)",
+                                            }}
+                                        >
                                             {user?.email?.charAt(0).toUpperCase() || "U"}
                                         </AvatarFallback>
                                     </Avatar>
@@ -68,10 +141,23 @@ export function Navbar() {
                         </DropdownMenu>
                     ) : (
                         <>
-                            <Button variant="ghost" size="sm" asChild>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
+                                className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl text-sm"
+                            >
                                 <Link href="/login">Log in</Link>
                             </Button>
-                            <Button size="sm" asChild>
+                            <Button
+                                size="sm"
+                                asChild
+                                className="rounded-xl text-sm font-semibold"
+                                style={{
+                                    background: "oklch(0.72 0.12 290)",
+                                    color: "white",
+                                }}
+                            >
                                 <Link href="/register">Sign up</Link>
                             </Button>
                         </>

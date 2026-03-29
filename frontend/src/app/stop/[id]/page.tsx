@@ -20,7 +20,7 @@ export default function StopRoutesPage({
     const { data, isLoading, isError } = useStopRoutes(isNaN(stopId) ? null : stopId);
 
     return (
-        <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="min-h-screen bg-background pt-24 pb-12">
             <div className="max-w-3xl mx-auto px-4 sm:px-6">
                 <Button variant="ghost" size="sm" onClick={() => router.back()} className="mb-4 -ml-2">
                     <ArrowLeft className="h-4 w-4 mr-1" />
@@ -31,7 +31,7 @@ export default function StopRoutesPage({
                 {isLoading && (
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Skeleton className="h-12 w-12 rounded-xl" />
+                            <Skeleton className="h-14 w-14 rounded-2xl" />
                             <div className="space-y-2">
                                 <Skeleton className="h-6 w-48" />
                                 <Skeleton className="h-4 w-24" />
@@ -40,7 +40,7 @@ export default function StopRoutesPage({
                         {[1, 2, 3, 4].map((i) => (
                             <Card key={i} className="border-border/40">
                                 <CardContent className="p-4 flex items-center gap-3">
-                                    <Skeleton className="h-9 w-9 rounded-lg" />
+                                    <Skeleton className="h-12 w-12 rounded-xl" />
                                     <Skeleton className="h-5 w-32" />
                                 </CardContent>
                             </Card>
@@ -63,13 +63,24 @@ export default function StopRoutesPage({
                 {/* Data */}
                 {data && (
                     <>
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                                <MapPin className="h-6 w-6" />
+                        {/* Header */}
+                        <div className="flex items-center gap-4 mb-8">
+                            <div
+                                className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                                style={{
+                                    background: "oklch(0.72 0.12 290 / 15%)",
+                                }}
+                            >
+                                <MapPin className="h-7 w-7 text-primary" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold">{data.stop_name}</h1>
-                                <p className="text-sm text-muted-foreground">
+                                <h1
+                                    className="text-2xl font-bold"
+                                    style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                                >
+                                    {data.stop_name}
+                                </h1>
+                                <p className="text-base text-muted-foreground">
                                     {data.routes.length} route{data.routes.length !== 1 ? "s" : ""} through this stop
                                 </p>
                             </div>
@@ -87,17 +98,32 @@ export default function StopRoutesPage({
                                 {data.routes.map((route, i) => (
                                     <Card
                                         key={`${route.route_number}-${route.direction}-${i}`}
-                                        className="group border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer"
+                                        className="group overflow-hidden transition-all duration-200 cursor-pointer hover:scale-[1.01]"
+                                        style={{
+                                            background: "oklch(0.195 0.02 285 / 90%)",
+                                            border: "1px solid oklch(1 0.02 285 / 8%)",
+                                        }}
                                         onClick={() => router.push(`/route/${route.route_number}/${route.direction}`)}
                                     >
-                                        <CardContent className="p-4 flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                                                    <Bus className="h-4.5 w-4.5" />
+                                        <CardContent className="p-4 sm:p-5 flex items-center justify-between">
+                                            <div className="flex items-center gap-3.5">
+                                                <div
+                                                    className="flex h-12 w-12 items-center justify-center rounded-xl shadow-md"
+                                                    style={{
+                                                        background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                                                        boxShadow: "0 2px 8px oklch(0.72 0.12 290 / 20%)",
+                                                    }}
+                                                >
+                                                    <Bus className="h-5 w-5 text-white" />
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-base font-bold">Route {route.route_number}</span>
+                                                        <span
+                                                            className="text-lg font-bold"
+                                                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                                                        >
+                                                            Route {route.route_number}
+                                                        </span>
                                                         <Badge
                                                             variant={route.direction === "UP" ? "default" : "secondary"}
                                                             className="text-[11px] px-2 py-0"

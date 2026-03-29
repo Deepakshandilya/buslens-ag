@@ -11,6 +11,9 @@ import {
     ArrowLeft,
     MapPin,
     Circle,
+    Route,
+    Clock,
+    ChevronRight,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,7 +79,7 @@ function SearchResultsContent() {
     };
 
     return (
-        <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="min-h-screen bg-background pt-24 pb-12">
             <div className="max-w-3xl mx-auto px-4 sm:px-6">
                 {/* Header */}
                 <div className="mb-8">
@@ -90,23 +93,54 @@ function SearchResultsContent() {
                         Back to search
                     </Button>
 
-                    <h1 className="text-2xl font-bold tracking-tight">Routes found</h1>
+                    <h1
+                        className="text-3xl font-bold tracking-tight"
+                        style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                    >
+                        Routes found
+                    </h1>
 
-                    {/* Journey summary */}
-                    <div className="flex items-center gap-2 mt-2 flex-wrap">
-                        <div className="flex items-center gap-1.5 bg-[var(--route-start-bg)] text-[var(--route-start)] rounded-lg px-3 py-1.5">
-                            <MapPin className="h-3.5 w-3.5" />
-                            <span className="text-sm font-semibold">{from}</span>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <div className="flex items-center gap-1.5 bg-[var(--route-end-bg)] text-[var(--route-end)] rounded-lg px-3 py-1.5">
-                            <MapPin className="h-3.5 w-3.5" />
-                            <span className="text-sm font-semibold">{to}</span>
-                        </div>
-                    </div>
+                    {/* Journey summary — premium card */}
+                    <Card
+                        className="mt-4 overflow-hidden"
+                        style={{
+                            background: "linear-gradient(135deg, oklch(0.22 0.03 285 / 90%), oklch(0.18 0.02 285 / 80%))",
+                            border: "1px solid oklch(0.72 0.12 290 / 12%)",
+                        }}
+                    >
+                        <CardContent className="p-4 sm:p-5">
+                            <div className="flex items-center gap-3 flex-wrap">
+                                <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                                    <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 150 / 15%)" }}>
+                                        <MapPin className="h-5 w-5" style={{ color: "oklch(0.75 0.22 150)" }} />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium">From</p>
+                                        <p className="text-base font-bold truncate">{from}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 px-2 shrink-0">
+                                    <div className="w-6 h-px" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
+                                    <Route className="h-5 w-5 text-primary" />
+                                    <div className="w-6 h-px" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
+                                </div>
+
+                                <div className="flex items-center gap-2.5 flex-1 min-w-0 justify-end text-right">
+                                    <div className="min-w-0">
+                                        <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium">To</p>
+                                        <p className="text-base font-bold truncate">{to}</p>
+                                    </div>
+                                    <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 265 / 15%)" }}>
+                                        <MapPin className="h-5 w-5" style={{ color: "oklch(0.72 0.2 265)" }} />
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
 
                     {results && (
-                        <p className="text-sm text-muted-foreground mt-2">
+                        <p className="text-base text-muted-foreground mt-3">
                             {results.length} route{results.length !== 1 ? "s" : ""} available
                         </p>
                     )}
@@ -117,15 +151,15 @@ function SearchResultsContent() {
                     <div className="space-y-4">
                         {[1, 2, 3].map((i) => (
                             <Card key={i} className="border-border/40">
-                                <CardContent className="p-6">
-                                    <div className="flex items-start gap-4">
-                                        <Skeleton className="h-14 w-14 rounded-xl" />
-                                        <div className="flex-1 space-y-3">
-                                            <Skeleton className="h-5 w-40" />
-                                            <Skeleton className="h-4 w-64" />
-                                            <Skeleton className="h-8 w-full rounded-lg" />
+                                <CardContent className="p-6 space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <Skeleton className="h-14 w-14 rounded-2xl" />
+                                        <div className="space-y-2">
+                                            <Skeleton className="h-6 w-32" />
+                                            <Skeleton className="h-4 w-20" />
                                         </div>
                                     </div>
+                                    <Skeleton className="h-20 w-full rounded-xl" />
                                 </CardContent>
                             </Card>
                         ))}
@@ -137,7 +171,7 @@ function SearchResultsContent() {
                     <Card className="border-destructive/30">
                         <CardContent className="p-6 text-center">
                             <p className="text-destructive font-medium">
-                                Failed to fetch routes. Is the backend running?
+                                Could not fetch routes. Is the backend online?
                             </p>
                             <p className="text-sm text-muted-foreground mt-1">
                                 Make sure FastAPI is running at localhost:8000
@@ -149,11 +183,14 @@ function SearchResultsContent() {
                 {/* No results */}
                 {results && results.length === 0 && (
                     <Card className="border-border/40">
-                        <CardContent className="p-8 text-center">
-                            <Bus className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                            <p className="font-medium">No routes found</p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                Try searching with different stop names
+                        <CardContent className="p-12 text-center">
+                            <Bus className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
+                            <h3 className="text-xl font-bold mb-2" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                No direct routes found
+                            </h3>
+                            <p className="text-muted-foreground max-w-sm mx-auto">
+                                There are no direct bus routes between these two stops.
+                                Try searching for nearby stops.
                             </p>
                         </CardContent>
                     </Card>
@@ -179,42 +216,66 @@ function SearchResultsContent() {
                                     }}
                                 >
                                     <Card
-                                        className="group border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all duration-200 cursor-pointer overflow-hidden"
+                                        className="group overflow-hidden transition-all duration-300 cursor-pointer hover:scale-[1.01]"
+                                        style={{
+                                            background: "oklch(0.195 0.02 285 / 90%)",
+                                            border: "1px solid oklch(1 0.02 285 / 8%)",
+                                        }}
+                                        onClick={() =>
+                                            router.push(
+                                                `/route/${route.route_number}/${route.direction}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
+                                            )
+                                        }
                                     >
                                         <CardContent className="p-0">
-                                            {/* Accent top bar */}
-                                            <div className="h-1 bg-gradient-to-r from-[var(--route-start)] to-[var(--route-end)] opacity-60 group-hover:opacity-100 transition-opacity" />
-
-                                            <div className="p-5 sm:p-6">
-                                                {/* Top row: Bus badge + direction + actions */}
-                                                <div className="flex items-start justify-between mb-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-                                                            <span className="text-base font-extrabold tracking-tight">
+                                            {/* Top section — Bus number + actions */}
+                                            <div className="p-5 sm:p-6 pb-4">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3.5">
+                                                        {/* Bus badge — large and prominent */}
+                                                        <div
+                                                            className="flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg"
+                                                            style={{
+                                                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                                                                boxShadow: "0 4px 16px oklch(0.72 0.12 290 / 25%)",
+                                                            }}
+                                                        >
+                                                            <span
+                                                                className="text-lg font-extrabold tracking-tight text-white"
+                                                                style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                                                            >
                                                                 {route.route_number}
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <span className="text-lg font-bold tracking-tight">
+                                                            <h3
+                                                                className="text-xl font-bold tracking-tight"
+                                                                style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                                                            >
                                                                 Route {route.route_number}
-                                                            </span>
-                                                            <div className="flex items-center gap-2 mt-0.5">
+                                                            </h3>
+                                                            <div className="flex items-center gap-2 mt-1">
                                                                 <Badge
                                                                     variant={route.direction === "UP" ? "default" : "secondary"}
-                                                                    className="text-[11px] font-semibold px-2 py-0"
+                                                                    className="text-xs font-bold px-2.5 py-0.5"
                                                                 >
                                                                     {route.direction === "UP" ? "↑ UP" : "↓ DOWN"}
                                                                 </Badge>
+                                                                <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                                    <Clock className="h-3.5 w-3.5" />
+                                                                    {stopCount} stops
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
 
+                                                    {/* Actions */}
                                                     <div className="flex items-center gap-1">
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
                                                             disabled={adding}
-                                                            className={`h-9 w-9 rounded-full transition-colors ${fav
+                                                            className={`h-10 w-10 rounded-full transition-colors ${fav
                                                                 ? "text-red-500 hover:text-red-400"
                                                                 : "text-muted-foreground hover:text-red-400"
                                                                 }`}
@@ -224,98 +285,120 @@ function SearchResultsContent() {
                                                             }}
                                                         >
                                                             <Heart
-                                                                className="h-4 w-4"
+                                                                className="h-5 w-5"
                                                                 fill={fav ? "currentColor" : "none"}
                                                             />
                                                         </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="h-9 w-9 rounded-full"
-                                                            onClick={() =>
-                                                                router.push(
-                                                                    `/route/${route.route_number}/${route.direction}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
-                                                                )
-                                                            }
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Journey visualization — horizontal timeline */}
+                                            <div
+                                                className="mx-5 sm:mx-6 mb-4 p-4 rounded-xl"
+                                                style={{
+                                                    background: "oklch(0.15 0.015 285 / 80%)",
+                                                    border: "1px solid oklch(1 0.02 285 / 5%)",
+                                                }}
+                                            >
+                                                <div className="flex items-center">
+                                                    {/* From */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2">
+                                                            <div
+                                                                className="h-4 w-4 rounded-full shrink-0 ring-[3px]"
+                                                                style={{
+                                                                    background: "oklch(0.75 0.22 150)",
+                                                                    boxShadow: "0 0 0 3px oklch(0.75 0.22 150 / 20%)",
+                                                                }}
+                                                            />
+                                                            <div className="min-w-0">
+                                                                <p className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold">Board at</p>
+                                                                <p className="text-sm font-bold truncate">{from}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Connecting line with stop count */}
+                                                    <div className="flex items-center mx-3 shrink-0">
+                                                        <div className="w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
+                                                        <div
+                                                            className="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                                                            style={{
+                                                                background: "oklch(0.72 0.12 290 / 12%)",
+                                                                color: "oklch(0.82 0.12 290)",
+                                                                border: "1px solid oklch(0.72 0.12 290 / 15%)",
+                                                            }}
                                                         >
-                                                            <Eye className="h-4 w-4" />
-                                                        </Button>
+                                                            {stopCount} {stopCount === 1 ? "stop" : "stops"}
+                                                        </div>
+                                                        <div className="w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
+                                                    </div>
+
+                                                    {/* To */}
+                                                    <div className="flex-1 min-w-0 text-right">
+                                                        <div className="flex items-center gap-2 justify-end">
+                                                            <div className="min-w-0">
+                                                                <p className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold">Alight at</p>
+                                                                <p className="text-sm font-bold truncate">{to}</p>
+                                                            </div>
+                                                            <div
+                                                                className="h-4 w-4 rounded-full shrink-0 ring-[3px]"
+                                                                style={{
+                                                                    background: "oklch(0.72 0.2 265)",
+                                                                    boxShadow: "0 0 0 3px oklch(0.72 0.2 265 / 20%)",
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                {/* Journey visualization */}
-                                                <div className="bg-muted/30 rounded-xl p-4">
-                                                    <div className="flex items-center gap-3">
-                                                        {/* From stop */}
-                                                        <div className="flex items-center gap-2 flex-1 min-w-0">
-                                                            <div className="h-3 w-3 rounded-full bg-[var(--route-start)] shrink-0 ring-2 ring-[var(--route-start-bg)]" />
-                                                            <div className="min-w-0">
-                                                                <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">From</p>
-                                                                <p className="text-sm font-semibold truncate">{from}</p>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Stop count pill */}
-                                                        <div className="flex flex-col items-center shrink-0 px-2">
-                                                            <div className="flex items-center gap-1">
-                                                                <div className="h-px w-4 bg-border" />
-                                                                <Badge
-                                                                    variant="outline"
-                                                                    className="text-xs font-bold px-2.5 py-0.5 whitespace-nowrap border-primary/30 text-primary"
+                                            {/* Intermediate stops — collapsible preview */}
+                                            {route.stops_between && route.stops_between.length > 0 && (
+                                                <div className="px-5 sm:px-6 mb-4">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <Circle className="h-3 w-3 text-muted-foreground/30 shrink-0" />
+                                                        {route.stops_between.slice(0, 5).map((stop, j) => (
+                                                            <span key={j} className="flex items-center">
+                                                                <span
+                                                                    className="text-xs font-medium px-2.5 py-1 rounded-lg inline-block"
+                                                                    style={{
+                                                                        background: "oklch(1 0 0 / 4%)",
+                                                                        color: "oklch(0.65 0.02 285)",
+                                                                    }}
                                                                 >
-                                                                    {stopCount} {stopCount === 1 ? "stop" : "stops"}
-                                                                </Badge>
-                                                                <div className="h-px w-4 bg-border" />
-                                                            </div>
-                                                        </div>
-
-                                                        {/* To stop */}
-                                                        <div className="flex items-center gap-2 flex-1 min-w-0 justify-end text-right">
-                                                            <div className="min-w-0">
-                                                                <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">To</p>
-                                                                <p className="text-sm font-semibold truncate">{to}</p>
-                                                            </div>
-                                                            <div className="h-3 w-3 rounded-full bg-[var(--route-end)] shrink-0 ring-2 ring-[var(--route-end-bg)]" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Intermediate stops */}
-                                                {route.stops_between && route.stops_between.length > 0 && (
-                                                    <div className="mt-3 flex items-center gap-1.5 flex-wrap">
-                                                        <Circle className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                                                        {route.stops_between.slice(0, 6).map((stop, j) => (
-                                                            <span key={j}>
-                                                                <span className="text-xs text-muted-foreground bg-muted/50 rounded-full px-2.5 py-0.5 inline-block">
                                                                     {stop}
                                                                 </span>
-                                                                {j < Math.min(5, route.stops_between!.length - 1) && (
-                                                                    <span className="text-muted-foreground/30 mx-0.5">›</span>
+                                                                {j < Math.min(4, route.stops_between!.length - 1) && (
+                                                                    <ChevronRight className="h-3 w-3 text-muted-foreground/20 mx-0.5" />
                                                                 )}
                                                             </span>
                                                         ))}
-                                                        {route.stops_between.length > 6 && (
-                                                            <span className="text-xs text-muted-foreground/60 font-medium">
-                                                                +{route.stops_between.length - 6} more
+                                                        {route.stops_between.length > 5 && (
+                                                            <span
+                                                                className="text-xs font-bold px-2 py-1 rounded-lg"
+                                                                style={{
+                                                                    color: "oklch(0.72 0.12 290)",
+                                                                }}
+                                                            >
+                                                                +{route.stops_between.length - 5} more
                                                             </span>
                                                         )}
                                                     </div>
-                                                )}
+                                                </div>
+                                            )}
 
-                                                {/* View full route button */}
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="w-full mt-4 text-primary hover:text-primary hover:bg-primary/5 font-medium gap-2"
-                                                    onClick={() =>
-                                                        router.push(
-                                                            `/route/${route.route_number}/${route.direction}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
-                                                        )
-                                                    }
-                                                >
+                                            {/* Footer — View full route */}
+                                            <div
+                                                className="px-5 sm:px-6 py-3.5 flex items-center justify-between transition-colors group-hover:bg-white/[0.02]"
+                                                style={{ borderTop: "1px solid oklch(1 0.02 285 / 5%)" }}
+                                            >
+                                                <span className="text-sm font-semibold text-primary flex items-center gap-1.5">
+                                                    <Eye className="h-4 w-4" />
                                                     View full route
-                                                    <ArrowRight className="h-4 w-4" />
-                                                </Button>
+                                                </span>
+                                                <ArrowRight className="h-4 w-4 text-primary transition-transform group-hover:translate-x-1" />
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -329,16 +412,19 @@ function SearchResultsContent() {
     );
 }
 
-export default function SearchPage() {
+export default function SearchPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
     return (
         <Suspense
             fallback={
-                <div className="min-h-screen bg-background pt-20 pb-12">
+                <div className="min-h-screen bg-background pt-24 pb-12">
                     <div className="max-w-3xl mx-auto px-4 space-y-4">
                         <Skeleton className="h-8 w-48" />
                         <Skeleton className="h-4 w-64" />
-                        <Skeleton className="h-40 w-full rounded-lg" />
-                        <Skeleton className="h-40 w-full rounded-lg" />
+                        <Skeleton className="h-32 w-full rounded-lg" />
                     </div>
                 </div>
             }

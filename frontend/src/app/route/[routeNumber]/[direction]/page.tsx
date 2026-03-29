@@ -107,7 +107,7 @@ function RouteDetailContent({
         : 0;
 
     return (
-        <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="min-h-screen bg-background pt-24 pb-12">
             <div className="max-w-2xl mx-auto px-4 sm:px-6">
                 <Button
                     variant="ghost"
@@ -169,7 +169,7 @@ function RouteDetailContent({
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <h1 className="text-2xl font-bold">Route {data.route_number}</h1>
+                                        <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-heading), sans-serif" }}>Route {data.route_number}</h1>
                                         <Badge variant={data.direction === "UP" ? "default" : "secondary"}>
                                             {data.direction === "UP" ? "↑ UP" : "↓ DOWN"}
                                         </Badge>
@@ -348,7 +348,7 @@ export default function RouteDetailPage({
     return (
         <Suspense
             fallback={
-                <div className="min-h-screen bg-background pt-20 pb-12">
+                <div className="min-h-screen bg-background pt-24 pb-12">
                     <div className="max-w-2xl mx-auto px-4 space-y-4">
                         <Skeleton className="h-8 w-48" />
                         <Skeleton className="h-32 w-full rounded-lg" />

@@ -40,7 +40,6 @@ export function SearchCard() {
     const handleStopSearch = () => {
         if (!fromStop.trim() || !toStop.trim()) return;
 
-        // Record search history if authenticated and we have stop IDs
         if (isAuthenticated && selectedFrom && selectedTo) {
             addHistory.mutate({
                 from_stop_id: selectedFrom.id,
@@ -62,31 +61,44 @@ export function SearchCard() {
     };
 
     return (
-        <Card className="w-full max-w-lg mx-auto bg-card/60 backdrop-blur-xl border-border/30 shadow-2xl shadow-black/20">
-            <CardContent className="p-6">
+        <Card
+            className="w-full max-w-xl mx-auto backdrop-blur-xl shadow-2xl ring-1 ring-white/[0.03]"
+            style={{
+                background: "linear-gradient(135deg, oklch(0.195 0.02 285 / 85%), oklch(0.17 0.015 285 / 80%), oklch(0.195 0.025 290 / 75%))",
+                border: "1px solid oklch(0.72 0.12 290 / 12%)",
+                boxShadow: "0 20px 60px oklch(0.72 0.12 290 / 10%), 0 4px 20px oklch(0 0 0 / 30%)",
+            }}
+        >
+            <CardContent className="p-7 sm:p-8">
                 {/* Header */}
-                <div className="text-center mb-6">
-                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                <div className="text-center mb-7">
+                    <h1
+                        className="text-3xl sm:text-4xl font-bold tracking-tight"
+                        style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                    >
                         Find Your <span className="text-primary">Bus Route</span>
                     </h1>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-base text-muted-foreground mt-2.5 tracking-wide">
                         Search routes across Chandigarh Tricity
                     </p>
                 </div>
 
                 <Tabs defaultValue="stops" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 mb-4">
-                        <TabsTrigger value="stops" className="text-xs sm:text-sm">
-                            <Search className="h-3.5 w-3.5 mr-1.5" />
-                            Stop to Stop
+                    <TabsList className="grid w-full grid-cols-3 mb-5 h-11">
+                        <TabsTrigger value="stops" className="text-sm gap-1.5 py-2">
+                            <Search className="h-4 w-4" />
+                            <span className="hidden sm:inline">Stop to Stop</span>
+                            <span className="sm:hidden">Stops</span>
                         </TabsTrigger>
-                        <TabsTrigger value="bus" className="text-xs sm:text-sm">
-                            <Hash className="h-3.5 w-3.5 mr-1.5" />
-                            Bus Number
+                        <TabsTrigger value="bus" className="text-sm gap-1.5 py-2">
+                            <Hash className="h-4 w-4" />
+                            <span className="hidden sm:inline">Bus Number</span>
+                            <span className="sm:hidden">Bus #</span>
                         </TabsTrigger>
-                        <TabsTrigger value="stop" className="text-xs sm:text-sm">
-                            <MapPin className="h-3.5 w-3.5 mr-1.5" />
-                            Search Stop
+                        <TabsTrigger value="stop" className="text-sm gap-1.5 py-2">
+                            <MapPin className="h-4 w-4" />
+                            <span className="hidden sm:inline">Search Stop</span>
+                            <span className="sm:hidden">Stop</span>
                         </TabsTrigger>
                     </TabsList>
 
@@ -94,18 +106,18 @@ export function SearchCard() {
                     <TabsContent value="stops" className="space-y-3 mt-0">
                         <StopAutocomplete
                             label="From"
-                            placeholder="Departure stop..."
+                            placeholder="Where are you boarding?"
                             value={fromStop}
                             onValueChange={setFromStop}
                             onStopSelect={setSelectedFrom}
                         />
 
-                        <div className="flex justify-center">
+                        <div className="flex justify-center -my-1">
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 rounded-full hover:bg-primary/10"
+                                className="h-9 w-9 rounded-full hover:bg-primary/10 border border-border/30"
                                 onClick={handleSwap}
                             >
                                 <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
@@ -114,7 +126,7 @@ export function SearchCard() {
 
                         <StopAutocomplete
                             label="To"
-                            placeholder="Destination stop..."
+                            placeholder="Where do you want to go?"
                             value={toStop}
                             onValueChange={setToStop}
                             onStopSelect={setSelectedTo}
@@ -122,9 +134,13 @@ export function SearchCard() {
 
                         <Button
                             onClick={handleStopSearch}
-                            className="w-full mt-2 font-semibold"
+                            className="w-full mt-3 font-bold text-[15px] h-12 rounded-xl cursor-pointer"
                             size="lg"
                             disabled={!fromStop.trim() || !toStop.trim()}
+                            style={{
+                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                                boxShadow: "0 4px 20px oklch(0.72 0.12 290 / 25%)",
+                            }}
                         >
                             <Search className="h-4 w-4 mr-2" />
                             Find Routes
@@ -132,27 +148,35 @@ export function SearchCard() {
                     </TabsContent>
 
                     {/* Bus Number Tab */}
-                    <TabsContent value="bus" className="space-y-3 mt-0">
+                    <TabsContent value="bus" className="space-y-4 mt-0">
                         <div>
-                            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                            <label
+                                className="text-sm font-medium mb-2 block"
+                                style={{ color: "oklch(0.70 0.03 285)" }}
+                            >
                                 Route / Bus Number
                             </label>
                             <div className="relative">
-                                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-muted-foreground" />
                                 <Input
                                     value={busNumber}
                                     onChange={(e) => setBusNumber(e.target.value)}
                                     placeholder="e.g. 20, 35A, 12..."
-                                    className="pl-9 bg-background/50 backdrop-blur-sm border-border/50"
+                                    className="pl-10 h-12 text-base bg-background/50 backdrop-blur-sm border-border/50 rounded-xl"
+                                    style={{ fontFamily: "var(--font-heading), sans-serif" }}
                                 />
                             </div>
                         </div>
 
                         <Button
                             onClick={handleBusSearch}
-                            className="w-full font-semibold"
+                            className="w-full font-bold text-[15px] h-12 rounded-xl cursor-pointer"
                             size="lg"
                             disabled={!busNumber.trim()}
+                            style={{
+                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                                boxShadow: "0 4px 20px oklch(0.72 0.12 290 / 25%)",
+                            }}
                         >
                             <Search className="h-4 w-4 mr-2" />
                             View Route
@@ -160,7 +184,7 @@ export function SearchCard() {
                     </TabsContent>
 
                     {/* Search Stop Tab */}
-                    <TabsContent value="stop" className="space-y-3 mt-0">
+                    <TabsContent value="stop" className="space-y-4 mt-0">
                         <StopAutocomplete
                             label="Stop name"
                             placeholder="Search for a stop..."
@@ -171,9 +195,13 @@ export function SearchCard() {
 
                         <Button
                             onClick={handleStopLookup}
-                            className="w-full font-semibold"
+                            className="w-full font-bold text-[15px] h-12 rounded-xl cursor-pointer"
                             size="lg"
                             disabled={!selectedSearchStop}
+                            style={{
+                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                                boxShadow: "0 4px 20px oklch(0.72 0.12 290 / 25%)",
+                            }}
                         >
                             <MapPin className="h-4 w-4 mr-2" />
                             View All Buses
