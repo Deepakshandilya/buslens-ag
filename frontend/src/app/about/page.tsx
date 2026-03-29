@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-background pt-24 pb-16">
+        <div className="min-h-screen pt-24 pb-16" style={{ background: "linear-gradient(180deg, oklch(0.14 0.025 285) 0%, oklch(0.12 0.015 280) 50%, oklch(0.14 0.02 290) 100%)" }}>
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
                 {/* Hero Section */}
                 <div className="text-center mb-12">
