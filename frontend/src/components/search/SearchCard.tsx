@@ -62,9 +62,9 @@ export function SearchCard() {
                 boxShadow: "0 20px 60px oklch(0.72 0.12 290 / 10%), 0 4px 20px oklch(0 0 0 / 30%)",
             }}
         >
-            <CardContent className="p-8 sm:p-10">
+            <CardContent className="p-6 sm:p-8">
                 {/* Header */}
-                <div className="text-center mb-8">
+                <div className="text-center mb-6">
                     <h1
                         className="text-4xl sm:text-5xl font-bold tracking-tight"
                         style={{ fontFamily: "var(--font-heading), sans-serif" }}
@@ -78,17 +78,17 @@ export function SearchCard() {
 
                 <Tabs defaultValue="stops" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mb-6 h-12">
-                        <TabsTrigger value="stops" className="text-[15px] gap-2 py-2.5 font-semibold">
+                        <TabsTrigger value="stops" className="text-[15px] gap-2 font-semibold">
                             <Search className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">Stop to Stop</span>
                             <span className="sm:hidden">Stops</span>
                         </TabsTrigger>
-                        <TabsTrigger value="bus" className="text-[15px] gap-2 py-2.5 font-semibold">
+                        <TabsTrigger value="bus" className="text-[15px] gap-2 font-semibold">
                             <Hash className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">Bus Number</span>
                             <span className="sm:hidden">Bus #</span>
                         </TabsTrigger>
-                        <TabsTrigger value="stop" className="text-[15px] gap-2 py-2.5 font-semibold">
+                        <TabsTrigger value="stop" className="text-[15px] gap-2 font-semibold">
                             <MapPin className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">Search Stop</span>
                             <span className="sm:hidden">Stop</span>
@@ -105,7 +105,7 @@ export function SearchCard() {
                             onStopSelect={setSelectedFrom}
                         />
 
-                        <div className="flex justify-center -my-1">
+                        <div className="flex justify-center -my-2.5 relative z-10">
                             <Button
                                 type="button"
                                 variant="ghost"

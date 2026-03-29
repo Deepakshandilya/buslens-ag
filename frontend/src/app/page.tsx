@@ -4,7 +4,7 @@ import { SearchCard } from "@/components/search/SearchCard";
 export default function HomePage() {
   return (
     <InfiniteGridHero>
-      <div className="flex flex-col items-center justify-center px-4 pt-16">
+      <div className="flex flex-col items-center w-full px-4 relative z-10 max-w-7xl mx-auto">
         <SearchCard />
 
         {/* Subtle tagline below */}

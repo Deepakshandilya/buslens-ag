@@ -46,7 +46,7 @@ export function InfiniteGridHero({
             ref={containerRef}
             onMouseMove={handleMouseMove}
             className={cn(
-                "relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-background",
+                "relative w-full min-h-[100dvh] flex flex-col items-center overflow-hidden bg-background pt-[15vh] sm:pt-[20vh] pb-12",
                 className
             )}
         >
