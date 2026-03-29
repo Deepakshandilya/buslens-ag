@@ -43,4 +43,6 @@ class HistoryResponse(BaseModel):
     user_id: int
     from_stop_id: int
     to_stop_id: int
+    from_stop_name: Optional[str] = None
+    to_stop_name: Optional[str] = None
     searched_at: datetime

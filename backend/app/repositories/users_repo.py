@@ -38,9 +38,14 @@ def delete_user_favorite(db: Session, user_id: int, favorite_id: int):
 
 def get_user_search_history(db: Session, user_id: int) -> list[dict]:
     sql = text("""
-        SELECT * FROM search_history 
-        WHERE user_id = :user_id 
-        ORDER BY searched_at DESC 
+        SELECT sh.*, 
+               fs.name as from_stop_name, 
+               ts.name as to_stop_name
+        FROM search_history sh
+        LEFT JOIN stops fs ON fs.id = sh.from_stop_id
+        LEFT JOIN stops ts ON ts.id = sh.to_stop_id
+        WHERE sh.user_id = :user_id 
+        ORDER BY sh.searched_at DESC 
         LIMIT 50
     """)
     rows = db.execute(sql, {"user_id": user_id}).mappings().all()
@@ -52,4 +57,14 @@ def add_user_search_history(db: Session, user_id: int, from_stop_id: int, to_sto
         VALUES (:user_id, :from_stop_id, :to_stop_id)
     """)
     db.execute(sql, {"user_id": user_id, "from_stop_id": from_stop_id, "to_stop_id": to_stop_id})
+    db.commit()
+
+def clear_user_search_history(db: Session, user_id: int):
+    sql = text("DELETE FROM search_history WHERE user_id = :user_id")
+    db.execute(sql, {"user_id": user_id})
+    db.commit()
+
+def clear_user_favorites(db: Session, user_id: int):
+    sql = text("DELETE FROM favorites WHERE user_id = :user_id")
+    db.execute(sql, {"user_id": user_id})
     db.commit()

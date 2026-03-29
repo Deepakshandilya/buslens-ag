@@ -70,15 +70,15 @@ export function StopAutocomplete({
     return (
         <div ref={containerRef} className="relative w-full">
             <label
-                className="text-sm font-medium mb-2 block"
-                style={{ color: "oklch(0.70 0.03 285)" }}
+                className="text-base font-semibold mb-2.5 block"
+                style={{ color: "oklch(0.75 0.03 285)" }}
             >
                 {label}
             </label>
             <div className="relative">
                 <MapPin
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5"
-                    style={{ color: "oklch(0.45 0.03 285)" }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5"
+                    style={{ color: "oklch(0.50 0.05 285)" }}
                 />
                 <Input
                     value={value}
@@ -92,7 +92,7 @@ export function StopAutocomplete({
                         }
                     }}
                     placeholder={placeholder}
-                    className="pl-10 h-12 text-base bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 rounded-xl"
+                    className="pl-11 h-13 text-lg bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 rounded-xl"
                 />
             </div>
 
@@ -112,18 +112,18 @@ export function StopAutocomplete({
                             <Skeleton className="h-5 w-2/3" />
                         </div>
                     ) : results.length > 0 ? (
-                        <div className="max-h-52 overflow-y-auto">
+                        <div className="max-h-56 overflow-y-auto">
                             {results.map((stop) => (
                                 <button
                                     key={stop.id}
                                     onClick={() => handleSelect(stop)}
                                     className={cn(
-                                        "w-full px-4 py-3 text-left text-sm flex items-center gap-2.5",
+                                        "w-full px-4 py-3.5 text-left flex items-center gap-2.5",
                                         "hover:bg-white/5 transition-colors cursor-pointer"
                                     )}
                                 >
                                     <MapPin className="h-4 w-4 text-primary/60 flex-shrink-0" />
-                                    <span className="text-[15px] font-medium">{stop.name}</span>
+                                    <span className="text-base font-medium">{stop.name}</span>
                                 </button>
                             ))}
                         </div>

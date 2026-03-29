@@ -56,3 +56,20 @@ def add_history(
         history_in.to_stop_id
     )
     return {"message": "History added"}
+
+@router.delete("/me/history", status_code=200)
+def clear_history(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    users_repo.clear_user_search_history(db, current_user["id"])
+    return {"message": "History cleared"}
+
+@router.delete("/me/favorites", status_code=200)
+def clear_favorites(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    users_repo.clear_user_favorites(db, current_user["id"])
+    return {"message": "Favorites cleared"}
+

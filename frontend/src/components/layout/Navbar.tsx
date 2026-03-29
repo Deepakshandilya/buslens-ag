@@ -25,26 +25,27 @@ export function Navbar() {
     };
 
     const isActive = (path: string) => pathname === path;
+    const isDashboard = pathname === "/dashboard";
 
     return (
         <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl">
             <div
-                className="flex h-14 items-center justify-between px-2 sm:px-3 rounded-2xl shadow-xl shadow-black/20 backdrop-blur-xl"
+                className="flex h-16 items-center justify-between px-3 sm:px-5 rounded-2xl shadow-xl shadow-black/20 backdrop-blur-xl"
                 style={{
                     background: "oklch(0.17 0.02 285 / 85%)",
                     border: "1px solid oklch(1 0.02 285 / 10%)",
                 }}
             >
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group pl-1 shrink-0">
+                <Link href="/" className="flex items-center gap-2.5 group pl-1 shrink-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src="/logo.png"
                         alt="BusLens"
-                        className="h-8 w-8 rounded-lg object-cover transition-transform group-hover:scale-105"
+                        className="h-9 w-9 rounded-lg object-cover transition-transform group-hover:scale-105"
                     />
                     <span
-                        className="text-lg font-bold tracking-tight text-white hidden md:inline"
+                        className="text-xl font-bold tracking-tight text-white hidden md:inline"
                         style={{ fontFamily: "var(--font-heading), sans-serif" }}
                     >
                         Bus<span style={{ color: "oklch(0.78 0.12 290)" }}>Lens</span>
@@ -55,50 +56,50 @@ export function Navbar() {
                 <div className="flex items-center gap-0.5 sm:gap-1">
                     <Link
                         href="/"
-                        className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                        className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
                             isActive("/")
                                 ? "text-white bg-white/10"
                                 : "text-white/60 hover:text-white hover:bg-white/5"
                         }`}
                     >
-                        <Search className="h-4 w-4" />
+                        <Search className="h-4.5 w-4.5" />
                         <span className="hidden sm:inline">Search</span>
                     </Link>
                     {isAuthenticated && (
                         <>
                             <Link
                                 href="/dashboard?tab=history"
-                                className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
-                                    pathname === "/dashboard" && (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("tab") === "history")
+                                className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
+                                    isDashboard
                                         ? "text-white bg-white/10"
                                         : "text-white/60 hover:text-white hover:bg-white/5"
                                 }`}
                             >
-                                <Clock className="h-4 w-4" />
+                                <Clock className="h-4.5 w-4.5" />
                                 <span className="hidden sm:inline">History</span>
                             </Link>
                             <Link
                                 href="/dashboard?tab=favorites"
-                                className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
-                                    pathname === "/dashboard" && (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("tab") === "favorites")
+                                className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
+                                    isDashboard
                                         ? "text-white bg-white/10"
                                         : "text-white/60 hover:text-white hover:bg-white/5"
                                 }`}
                             >
-                                <Heart className="h-4 w-4" />
+                                <Heart className="h-4.5 w-4.5" />
                                 <span className="hidden sm:inline">Favourites</span>
                             </Link>
                         </>
                     )}
                     <Link
                         href="/about"
-                        className={`flex items-center gap-1.5 text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                        className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
                             isActive("/about")
                                 ? "text-white bg-white/10"
                                 : "text-white/60 hover:text-white hover:bg-white/5"
                         }`}
                     >
-                        <Info className="h-4 w-4" />
+                        <Info className="h-4.5 w-4.5" />
                         <span className="hidden sm:inline">About</span>
                     </Link>
                 </div>
@@ -108,10 +109,10 @@ export function Navbar() {
                     {isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="relative h-9 w-9 rounded-full hover:bg-white/10">
-                                    <Avatar className="h-9 w-9">
+                                <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/10">
+                                    <Avatar className="h-10 w-10">
                                         <AvatarFallback
-                                            className="font-bold text-sm"
+                                            className="font-bold text-base"
                                             style={{
                                                 background: "oklch(0.72 0.12 290 / 20%)",
                                                 color: "oklch(0.82 0.12 290)",
@@ -145,14 +146,14 @@ export function Navbar() {
                                 variant="ghost"
                                 size="sm"
                                 asChild
-                                className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl text-sm"
+                                className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl text-[15px] h-10 px-4"
                             >
                                 <Link href="/login">Log in</Link>
                             </Button>
                             <Button
                                 size="sm"
                                 asChild
-                                className="rounded-xl text-sm font-semibold"
+                                className="rounded-xl text-[15px] font-semibold h-10 px-5"
                                 style={{
                                     background: "oklch(0.72 0.12 290)",
                                     color: "white",

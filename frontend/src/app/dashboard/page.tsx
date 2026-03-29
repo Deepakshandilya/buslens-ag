@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
     Clock,
@@ -11,6 +11,7 @@ import {
     Bus,
     MapPin,
     RotateCcw,
+    ChevronRight,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,10 +38,19 @@ function DashboardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const tabParam = searchParams.get("tab");
+    const [activeTab, setActiveTab] = useState(tabParam === "favorites" ? "favorites" : "history");
     const { isAuthenticated, isHydrated, user } = useAuthStore();
 
+    // Sync tab with URL
     useEffect(() => {
-        // Wait for hydration to complete before checking auth
+        if (tabParam === "favorites") {
+            setActiveTab("favorites");
+        } else if (tabParam === "history") {
+            setActiveTab("history");
+        }
+    }, [tabParam]);
+
+    useEffect(() => {
         if (isHydrated && !isAuthenticated) {
             router.push("/login");
         }
@@ -60,10 +70,9 @@ function DashboardContent() {
 
     const deleteFavorite = useDeleteFavorite();
 
-    // Show loading while hydrating
     if (!isHydrated) {
         return (
-            <div className="min-h-screen bg-background pt-24 pb-12">
+            <div className="min-h-screen pt-24 pb-12" style={{ background: "linear-gradient(180deg, oklch(0.14 0.02 285) 0%, oklch(0.12 0.015 285) 100%)" }}>
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-4 w-64" />
@@ -102,38 +111,51 @@ function DashboardContent() {
         });
     };
 
-    const handleSearchAgain = (fromId: number, toId: number) => {
-        // NOTE: history returns stop IDs, not names. For now, navigate with IDs
-        // Backend enrichment needed to return stop names alongside IDs
-        router.push(`/search?from=${fromId}&to=${toId}`);
+    const handleSearchAgain = (item: { from_stop_id: number; to_stop_id: number; from_stop_name?: string | null; to_stop_name?: string | null }) => {
+        const fromParam = item.from_stop_name || String(item.from_stop_id);
+        const toParam = item.to_stop_name || String(item.to_stop_id);
+        router.push(`/search?from=${encodeURIComponent(fromParam)}&to=${encodeURIComponent(toParam)}`);
     };
 
     return (
-        <div className="min-h-screen bg-background pt-24 pb-12">
+        <div
+            className="min-h-screen pt-24 pb-12"
+            style={{
+                background: "linear-gradient(180deg, oklch(0.14 0.025 285) 0%, oklch(0.12 0.015 280) 50%, oklch(0.14 0.02 290) 100%)",
+            }}
+        >
             <div className="max-w-3xl mx-auto px-4 sm:px-6">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-heading), sans-serif" }}>Dashboard</h1>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Welcome, <span className="text-foreground">{user?.email}</span>
+                    <h1
+                        className="text-3xl font-bold tracking-tight"
+                        style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                    >
+                        Dashboard
+                    </h1>
+                    <p className="text-base text-muted-foreground mt-1">
+                        Welcome back, <span className="text-primary font-medium">{user?.email}</span>
                     </p>
                 </div>
 
-                <Tabs defaultValue={tabParam === "favorites" ? "favorites" : "history"} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6">
-                        <TabsTrigger value="history" className="gap-2">
-                            <Clock className="h-4 w-4" />
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-6 h-12">
+                        <TabsTrigger value="history" className="gap-2 text-[15px] font-semibold">
+                            <Clock className="h-4.5 w-4.5" />
                             Search History
                         </TabsTrigger>
-                        <TabsTrigger value="favorites" className="gap-2">
-                            <Heart className="h-4 w-4" />
-                            Favorites
+                        <TabsTrigger value="favorites" className="gap-2 text-[15px] font-semibold">
+                            <Heart className="h-4.5 w-4.5" />
+                            Favourites
                         </TabsTrigger>
                     </TabsList>
 
                     {/* History Tab */}
                     <TabsContent value="history" className="space-y-3">
-                        <div className="flex justify-end mb-2">
+                        <div className="flex justify-between items-center mb-2">
+                            <p className="text-sm text-muted-foreground">
+                                {history ? `${history.length} search${history.length !== 1 ? "es" : ""}` : ""}
+                            </p>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive gap-1.5">
@@ -163,7 +185,7 @@ function DashboardContent() {
                                 {[1, 2, 3].map((i) => (
                                     <Card key={i} className="border-border/40">
                                         <CardContent className="p-4 flex items-center gap-3">
-                                            <Skeleton className="h-9 w-9 rounded-lg" />
+                                            <Skeleton className="h-11 w-11 rounded-xl" />
                                             <div className="space-y-2 flex-1">
                                                 <Skeleton className="h-4 w-48" />
                                                 <Skeleton className="h-3 w-24" />
@@ -175,11 +197,18 @@ function DashboardContent() {
                         )}
 
                         {history && history.length === 0 && (
-                            <Card className="border-border/40">
-                                <CardContent className="p-8 text-center">
-                                    <Search className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                                    <p className="font-medium">No search history yet</p>
-                                    <p className="text-sm text-muted-foreground mt-1">
+                            <Card
+                                style={{
+                                    background: "oklch(0.17 0.02 285 / 80%)",
+                                    border: "1px solid oklch(1 0.02 285 / 6%)",
+                                }}
+                            >
+                                <CardContent className="p-10 text-center">
+                                    <Search className="h-14 w-14 mx-auto text-muted-foreground/30 mb-4" />
+                                    <h3 className="text-lg font-bold mb-1" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                        No search history
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground">
                                         Your route searches will appear here
                                     </p>
                                 </CardContent>
@@ -187,30 +216,48 @@ function DashboardContent() {
                         )}
 
                         {history && history.map((item) => (
-                            <Card key={item.id} className="border-border/40 bg-card/80 backdrop-blur-sm">
-                                <CardContent className="p-4 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
-                                            <Search className="h-4 w-4 text-muted-foreground" />
+                            <Card
+                                key={item.id}
+                                className="group cursor-pointer transition-all duration-200 hover:scale-[1.01]"
+                                style={{
+                                    background: "oklch(0.195 0.02 285 / 90%)",
+                                    border: "1px solid oklch(1 0.02 285 / 8%)",
+                                }}
+                                onClick={() => handleSearchAgain(item)}
+                            >
+                                <CardContent className="p-5 flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div
+                                            className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0"
+                                            style={{ background: "oklch(0.72 0.12 290 / 12%)" }}
+                                        >
+                                            <Search className="h-5 w-5 text-primary" />
                                         </div>
                                         <div>
-                                            <div className="flex items-center gap-1.5 text-sm font-medium">
-                                                <span>Stop #{item.from_stop_id}</span>
-                                                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-                                                <span>Stop #{item.to_stop_id}</span>
+                                            <div className="flex items-center gap-2 text-base font-semibold">
+                                                <span>{item.from_stop_name || `Stop #${item.from_stop_id}`}</span>
+                                                <ArrowRight className="h-4 w-4 text-primary" />
+                                                <span>{item.to_stop_name || `Stop #${item.to_stop_id}`}</span>
                                             </div>
-                                            <p className="text-xs text-muted-foreground">
-                                                {new Date(item.searched_at).toLocaleDateString()}
+                                            <p className="text-sm text-muted-foreground mt-0.5">
+                                                {new Date(item.searched_at).toLocaleDateString("en-IN", {
+                                                    day: "numeric",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                })}
                                             </p>
                                         </div>
                                     </div>
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => handleSearchAgain(item.from_stop_id, item.to_stop_id)}
-                                        className="gap-1.5"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleSearchAgain(item);
+                                        }}
+                                        className="gap-1.5 text-primary hover:text-primary hover:bg-primary/10 rounded-xl"
                                     >
-                                        <RotateCcw className="h-3.5 w-3.5" />
+                                        <RotateCcw className="h-4 w-4" />
                                         Again
                                     </Button>
                                 </CardContent>
@@ -220,7 +267,10 @@ function DashboardContent() {
 
                     {/* Favorites Tab */}
                     <TabsContent value="favorites" className="space-y-3">
-                        <div className="flex justify-end mb-2">
+                        <div className="flex justify-between items-center mb-2">
+                            <p className="text-sm text-muted-foreground">
+                                {favorites ? `${favorites.length} favourite${favorites.length !== 1 ? "s" : ""}` : ""}
+                            </p>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive gap-1.5">
@@ -230,9 +280,9 @@ function DashboardContent() {
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle>Clear all favorites?</AlertDialogTitle>
+                                        <AlertDialogTitle>Clear all favourites?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This will remove all saved favorites.
+                                            This will remove all saved favourites.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
@@ -250,7 +300,7 @@ function DashboardContent() {
                                 {[1, 2, 3].map((i) => (
                                     <Card key={i} className="border-border/40">
                                         <CardContent className="p-4 flex items-center gap-3">
-                                            <Skeleton className="h-9 w-9 rounded-lg" />
+                                            <Skeleton className="h-11 w-11 rounded-xl" />
                                             <div className="space-y-2 flex-1">
                                                 <Skeleton className="h-4 w-36" />
                                                 <Skeleton className="h-3 w-20" />
@@ -262,11 +312,18 @@ function DashboardContent() {
                         )}
 
                         {favorites && favorites.length === 0 && (
-                            <Card className="border-border/40">
-                                <CardContent className="p-8 text-center">
-                                    <Heart className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                                    <p className="font-medium">No favorites saved</p>
-                                    <p className="text-sm text-muted-foreground mt-1">
+                            <Card
+                                style={{
+                                    background: "oklch(0.17 0.02 285 / 80%)",
+                                    border: "1px solid oklch(1 0.02 285 / 6%)",
+                                }}
+                            >
+                                <CardContent className="p-10 text-center">
+                                    <Heart className="h-14 w-14 mx-auto text-muted-foreground/30 mb-4" />
+                                    <h3 className="text-lg font-bold mb-1" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                        No favourites saved
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground">
                                         Heart a route to save it here
                                     </p>
                                 </CardContent>
@@ -274,33 +331,61 @@ function DashboardContent() {
                         )}
 
                         {favorites && favorites.map((fav) => (
-                            <Card key={fav.id} className="border-border/40 bg-card/80 backdrop-blur-sm">
-                                <CardContent className="p-4 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <Card
+                                key={fav.id}
+                                className="group cursor-pointer transition-all duration-200 hover:scale-[1.01]"
+                                style={{
+                                    background: "oklch(0.195 0.02 285 / 90%)",
+                                    border: "1px solid oklch(1 0.02 285 / 8%)",
+                                }}
+                                onClick={() => {
+                                    if (fav.route_id) {
+                                        // Navigate to bus route page (will show both UP/DOWN)
+                                        router.push(`/bus/${fav.route_id}`);
+                                    } else if (fav.stop_id) {
+                                        router.push(`/stop/${fav.stop_id}`);
+                                    }
+                                }}
+                            >
+                                <CardContent className="p-5 flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div
+                                            className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0 shadow-md"
+                                            style={{
+                                                background: fav.route_id
+                                                    ? "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))"
+                                                    : "oklch(0.72 0.12 290 / 15%)",
+                                            }}
+                                        >
                                             {fav.route_id ? (
-                                                <Bus className="h-4 w-4" />
+                                                <Bus className="h-5 w-5 text-white" />
                                             ) : (
-                                                <MapPin className="h-4 w-4" />
+                                                <MapPin className="h-5 w-5 text-primary" />
                                             )}
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium">
+                                            <p className="text-base font-semibold">
                                                 {fav.route_id ? `Route #${fav.route_id}` : `Stop #${fav.stop_id}`}
                                             </p>
-                                            <p className="text-xs text-muted-foreground capitalize">
-                                                {fav.route_id ? "Route" : "Stop"} · Added {new Date(fav.created_at).toLocaleDateString()}
+                                            <p className="text-sm text-muted-foreground">
+                                                {fav.route_id ? "Bus Route" : "Bus Stop"} · {new Date(fav.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                                             </p>
                                         </div>
                                     </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                        onClick={() => handleRemoveFavorite(fav.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <div className="flex items-center gap-2">
+                                        <ChevronRight className="h-5 w-5 text-muted-foreground/40 group-hover:text-primary transition-colors" />
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-9 w-9 text-muted-foreground hover:text-destructive rounded-full"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleRemoveFavorite(fav.id);
+                                            }}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}
@@ -314,7 +399,7 @@ function DashboardContent() {
 export default function DashboardPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-background pt-24 pb-12">
+            <div className="min-h-screen pt-24 pb-12" style={{ background: "linear-gradient(180deg, oklch(0.14 0.025 285) 0%, oklch(0.12 0.015 280) 100%)" }}>
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-4 w-64" />

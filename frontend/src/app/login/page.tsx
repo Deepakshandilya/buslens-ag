@@ -56,21 +56,26 @@ export default function LoginPage() {
 
     return (
         <BeamsBackground intensity="medium" className="min-h-screen">
-            {/* Floating logo circle */}
-            <AuthFloatingNav />
-
             <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
                 {/* Main split card */}
                 <div
-                    className="relative w-full max-w-[960px] min-h-[580px] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 flex flex-col lg:flex-row"
+                    className="relative w-full max-w-[960px] min-h-[580px] rounded-3xl overflow-visible shadow-2xl shadow-black/50 flex flex-col lg:flex-row"
                     style={{
                         background: "oklch(0.16 0.025 285 / 80%)",
                         border: "1px solid oklch(1 0.02 285 / 8%)",
                         backdropFilter: "blur(20px)",
                     }}
                 >
+                    {/* Logo circle — at the edge of image section */}
+                    <div className="hidden lg:block absolute top-6 left-[45%] -translate-x-1/2 z-20">
+                        <AuthFloatingNav />
+                    </div>
+                    <div className="lg:hidden absolute top-4 left-1/2 -translate-x-1/2 z-20">
+                        <AuthFloatingNav />
+                    </div>
+
                     {/* Left — Image carousel */}
-                    <div className="hidden lg:block lg:w-[45%] relative">
+                    <div className="hidden lg:block lg:w-[45%] relative rounded-l-3xl overflow-hidden">
                         <AuthImageCarousel />
                     </div>
 

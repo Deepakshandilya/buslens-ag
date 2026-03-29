@@ -93,5 +93,7 @@ export interface HistoryResponse {
     user_id: number;
     from_stop_id: number;
     to_stop_id: number;
+    from_stop_name?: string | null;
+    to_stop_name?: string | null;
     searched_at: string;
 }
