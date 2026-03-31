@@ -1,17 +1,17 @@
 # BusLens 🚌🔍
 
-A full-stack bus route finder for **Chandigarh Tricity** (Chandigarh, Mohali, Panchkula, Zirakpur, Kharar). Search bus routes from Stop A to Stop B, look up routes by bus number, save favorites, and track your search history.
+**BusLens** is a robust, full-stack transit discovery application for the **Chandigarh Tricity** area (Chandigarh, Mohali, Panchkula, Zirakpur, Kharar). It's designed to simulate high-scale consumer transit platforms by allowing users to efficiently search bus routes between stops, lookup complex routes by designated bus numbers, execute stop-to-stop traversals, and manage authenticated favorite routes and history.
 
-## Key Features
+## Key Technical Features 🚀
 
-- 🔍 **Stop-to-Stop Search** — Find all bus routes connecting two stops
-- 🚌 **Bus Number Lookup** — View complete route timeline by bus/route number
-- 📍 **Stop Autocomplete** — Debounced, fuzzy search across all stops
-- ♡ **Favorites** — Save routes for quick access (auth-gated)
-- 📜 **Search History** — Re-run past searches with one click
-- 🔐 **Authentication** — Sign up, log in (JWT), Google OAuth (planned)
-- 🌑 **Dark Mode** — Default dark theme with glassmorphic UI
-- ✨ **Infinite Grid Hero** — Animated SVG grid background with mouse tracking
+- 🔍 **Real-time Stop-to-Stop Search Algorithm** — Fuzzy search with intelligent debouncing querying SQL constraints.
+- 🔐 **Secure JWT Authentication** — Encrypted password hashing (bcrypt), OAuth2PasswordBearer flow, and strict 401 unauthenticated request interceptors to auto-logout users securely.
+- 🏗️ **Repository Pattern Architecture** — Clean scalable FastAPI layer decoupling routing from raw SQL transactions. 
+- 🌐 **Modern Next.js 16 App Router** — Implementing intelligent SEO via nested `layout.tsx` dynamic metadata generation (`generateMetadata`).
+- 🔄 **Performant Data Caching** — Leveraging `TanStack React Query` with explicitly enabled authenticated queries to optimize fetching load.
+- 🎨 **Reusable Glassmorphic Design System** — A completely DRY `PageBackground` layout component wrapping pages while reducing DOM duplication.
+- 🛡️ **Strict Form Validation** — Implemented comprehensive input validation natively catching bad forms using `Zod` and `react-hook-form` across the site.
+- 🧪 **Pytest Integration Suites** — Exhaustive backend backend lifecycle tests checking Auth schemas, Foreign-Key dependencies, and DB seeding isolation.
 
 ---
 
@@ -19,29 +19,18 @@ A full-stack bus route finder for **Chandigarh Tricity** (Chandigarh, Mohali, Pa
 
 ### Backend
 - **Language**: Python 3.10+
-- **Framework**: FastAPI
-- **Database**: MySQL (via SQLAlchemy + raw SQL)
-- **Auth**: JWT (PyJWT) with OAuth2PasswordBearer
-- **ORM**: SQLAlchemy (connection layer) with raw SQL queries
-- **Validation**: Pydantic v2
+- **Framework**: FastAPI (Pydantic v2 validation)
+- **Database**: MySQL (via SQLAlchemy connection layer + raw SQL queries)
+- **Auth**: JWT (PyJWT) with bcrypt Hashing
+- **Testing**: PyTest with Dependency Injected SQL Sessions
 
 ### Frontend
 - **Framework**: Next.js 16 (App Router, TypeScript)
 - **Styling**: Tailwind CSS v4 + Shadcn UI
-- **State Management**: Zustand
-- **Data Fetching**: TanStack React Query + Axios
+- **State Management**: Zustand (Local Storage Hydration)
+- **Data Fetching**: TanStack React Query + Axios Interceptors
 - **Animations**: Framer Motion
-- **Icons**: Lucide React
-- **Forms**: React Hook Form + Zod
-
----
-
-## Prerequisites
-
-- **Python** 3.10+ with pip
-- **Node.js** 20+ with npm
-- **MySQL** 8.0+ (or MySQL Workbench for local development)
-- **Git**
+- **Validation**: React Hook Form + Zod Schema Parsing
 
 ---
 
@@ -73,57 +62,55 @@ pip install -r requirements.txt
 
 ### 3. Environment Variables
 
-Create `backend/.env`:
+Create `backend/.env` adjusting values depending on your SQL connection:
 
 ```env
-DATABASE_URL=mysql+pymysql://root:yourpassword@localhost:3306/buslens
-SECRET_KEY=your-super-secret-key-here
+APP_ENV=local
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=buslens
+DB_USER=buslens_user
+DB_PASSWORD=buslens_password
+CORS_ORIGINS=http://localhost:3000
+SECRET_KEY=generate_a_secure_long_random_string_here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DATABASE_URL` | MySQL connection string | `mysql+pymysql://root:pass@localhost:3306/buslens` |
-| `SECRET_KEY` | JWT signing secret | Any long random string |
-| `ALGORITHM` | JWT algorithm | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token TTL | `30` |
-
 ### 4. Database Setup
 
-Create the `buslens` database in MySQL Workbench or CLI:
+Create the database assigned in `.env` within MySQL Workbench or CLI:
 
 ```sql
 CREATE DATABASE buslens;
 ```
 
-Then run the table creation scripts:
+Run the table creation scripts from the `backend` root:
 
 ```bash
-cd backend
 python create_user_tables.py
 ```
 
-### 5. Start the Backend
+### 5. Running Tests
+
+To verify environment sanity, execute the test suite:
+```bash
+.venv\Scripts\pytest -v
+```
+
+### 6. Start the Backend
 
 ```bash
-cd backend
 uvicorn app.main:app --reload --port 8000
 ```
 
-API docs available at: [http://localhost:8000/docs](http://localhost:8000/docs)
+API docs will be available instantly at: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 6. Frontend Setup
+### 7. Frontend Setup & Run
 
 ```bash
-cd frontend
+cd ../frontend
 npm install
-```
-
-### 7. Start the Frontend
-
-```bash
-cd frontend
 npm run dev
 ```
 
@@ -131,178 +118,35 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Architecture
+## Architecture Lifecycle Flow
 
-### Directory Structure
-
-```
-buslens-ag/
-├── backend/
-│   ├── app/
-│   │   ├── api/v1/             # FastAPI route handlers
-│   │   │   ├── auth.py         # POST /login, /register
-│   │   │   ├── stops.py        # GET /stops?query=
-│   │   │   ├── routes.py       # POST /routes/search, GET /routes/{n}/{d}
-│   │   │   ├── stop_routes.py  # GET /stops/{id}/routes
-│   │   │   ├── users.py        # GET /users/me, favorites, history
-│   │   │   └── health.py       # GET /health
-│   │   ├── core/               # Config, CORS, logging
-│   │   ├── db/                 # Database session
-│   │   ├── repositories/       # Raw SQL query functions
-│   │   ├── schemas/            # Pydantic models
-│   │   ├── services/           # Business logic
-│   │   └── main.py             # FastAPI app factory
-│   └── requirements.txt
-│
-├── frontend/
-│   └── src/
-│       ├── app/                # Next.js App Router pages
-│       │   ├── page.tsx        # Landing (Infinite Grid + Search)
-│       │   ├── login/          # Login page
-│       │   ├── register/       # Register page
-│       │   ├── search/         # Search results
-│       │   ├── route/[n]/[d]/  # Route detail timeline
-│       │   └── dashboard/      # User history & favorites
-│       ├── components/
-│       │   ├── layout/         # Navbar
-│       │   ├── search/         # SearchCard, StopAutocomplete
-│       │   └── ui/             # Shadcn + InfiniteGrid
-│       ├── hooks/              # React Query hooks
-│       ├── stores/             # Zustand auth store
-│       ├── lib/                # Axios client, utils
-│       └── types/              # TypeScript interfaces
-│
-└── README.md
-```
-
-### API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/v1/health` | Health check |
-| `POST` | `/v1/auth/register` | Create account |
-| `POST` | `/v1/auth/login` | Login (returns JWT) |
-| `GET` | `/v1/stops?query=` | Search stops by name |
-| `POST` | `/v1/routes/search` | Find routes from Stop A → B |
-| `GET` | `/v1/routes/{num}/{dir}` | Get route stops timeline |
-| `GET` | `/v1/stops/{id}/routes` | Get all routes through a stop |
-| `GET` | `/v1/users/me` | Get current user profile |
-| `GET` | `/v1/users/me/favorites` | List user's favorites |
-| `POST` | `/v1/users/me/favorites` | Add a favorite |
-| `DELETE` | `/v1/users/me/favorites/{id}` | Remove a favorite |
-| `GET` | `/v1/users/me/history` | List search history |
-| `POST` | `/v1/users/me/history` | Record a search |
-
-### Request Lifecycle
-
-```
-User Action → React Component → React Query Hook → Axios (JWT attached)
-    → FastAPI Router → Repository (raw SQL) → MySQL
-    → Pydantic Response → React Query Cache → UI Update
-```
-
-### Database Schema
-
-```
-users
-├── id (INT, PK, AUTO_INCREMENT)
-├── email (VARCHAR, UNIQUE, NOT NULL)
-├── hashed_password (VARCHAR, NOT NULL)
-└── created_at (DATETIME)
-
-favorites
-├── id (INT, PK)
-├── user_id (INT, FK → users)
-├── route_id (INT, nullable)
-├── stop_id (INT, nullable)
-└── created_at (DATETIME)
-
-search_history
-├── id (INT, PK)
-├── user_id (INT, FK → users)
-├── from_stop_id (INT)
-├── to_stop_id (INT)
-└── searched_at (DATETIME)
-
-routes
-├── id (INT, PK)
-├── route_number (VARCHAR)
-└── direction (VARCHAR)  — UP or DOWN
-
-stops
-├── id (INT, PK)
-└── name (VARCHAR)
-
-route_stops
-├── route_id (INT, FK → routes)
-├── stop_id (INT, FK → stops)
-└── sequence_no (INT)
+User traffic seamlessly runs through the following hierarchy:
+```text
+User Action (Click/Type)
+  ↓
+React Hook Form + Zod (Validates Client-Side Schema)
+  ↓
+TanStack React Query Hook (Checks cache or fires Mutation)
+  ↓
+Axios Client (Attaches JWT Bearer Token Headers if present)
+  ↓
+FastAPI Router (app/api/v1/...) (Validates request with Pydantic)
+  ↓
+Dependency Injection (Yields SQLAlchemy Session + decodes CurrentUser JWT)
+  ↓
+Repository Layer (Executes raw SQL text() via SQLAlchemy ORM proxy)
+  ↓
+MySQL 8.0 Engine
 ```
 
 ---
 
-## Available Scripts
+## Contributing & Development
 
-### Backend
-
-| Command | Description |
-|---------|-------------|
-| `uvicorn app.main:app --reload` | Start dev server with hot reload |
-| `python create_user_tables.py` | Create user/favorites/history tables |
-
-### Frontend
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start Next.js dev server (port 3000) |
-| `npm run build` | Production build |
-| `npx tsc --noEmit` | TypeScript type check |
-| `npx shadcn@latest add <component>` | Add Shadcn UI component |
-
----
-
-## Troubleshooting
-
-### CORS Errors
-
-**Error:** `Access to XMLHttpRequest blocked by CORS`
-
-**Solution:** Ensure the backend CORS config in `app/core/cors.py` includes `http://localhost:3000`.
-
-### MySQL Connection Failed
-
-**Error:** `Can't connect to MySQL server`
-
-**Solution:**
-1. Verify MySQL is running: `mysql -u root -p`
-2. Check `DATABASE_URL` in `.env` matches your credentials
-3. Ensure the `buslens` database exists
-
-### JWT Token Expired
-
-**Error:** `401 Unauthorized`
-
-**Solution:** Log out and log back in. Tokens expire after `ACCESS_TOKEN_EXPIRE_MINUTES`.
-
-### Frontend Build Errors
-
-```bash
-# Clear Next.js cache
-rm -rf frontend/.next
-npm run dev
-```
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/my-feature`
-3. Commit using conventional commits: `feat(scope): Add feature description`
-4. Push to your branch: `git push origin feat/my-feature`
-5. Open a Pull Request
-
----
+Built with best practices spanning code separation and UI reusability. To contribute:
+1. **Branch Format:** `git checkout -b feature/auth-roles`
+2. **Commit Pattern:** `feat(auth): Update password requirements`
+3. Always run the `pytest` suite ensuring MySQL foreign key relationships trigger efficiently.
 
 ## License
 
