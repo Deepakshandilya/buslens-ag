@@ -50,9 +50,14 @@ def setup_schema(engine):
     yield
     # Optional cleanup: drop tables after tests
     cleanup = """
+    SET FOREIGN_KEY_CHECKS = 0;
+    DROP TABLE IF EXISTS search_history;
+    DROP TABLE IF EXISTS favorites;
     DROP TABLE IF EXISTS route_stops;
     DROP TABLE IF EXISTS routes;
     DROP TABLE IF EXISTS stops;
+    DROP TABLE IF EXISTS users;
+    SET FOREIGN_KEY_CHECKS = 1;
     """
     with engine.begin() as conn:
         for stmt in [s.strip() for s in cleanup.split(";") if s.strip()]:
@@ -71,18 +76,21 @@ def db(SessionLocal):
 def seed_data(engine):
     # Seed minimal mock data before each test (fast + predictable)
     with engine.begin() as conn:
+        conn.execute(text("DELETE FROM search_history"))
+        conn.execute(text("DELETE FROM favorites"))
+        conn.execute(text("DELETE FROM users"))
         conn.execute(text("DELETE FROM route_stops"))
         conn.execute(text("DELETE FROM routes"))
         conn.execute(text("DELETE FROM stops"))
 
         conn.execute(text("""
-            INSERT INTO stops (name) VALUES
-            ('Kharar'),('Sante Majra'),('Chappar Chiri'),('ISBT Sector 43')
+            INSERT INTO stops (id, name) VALUES
+            (1, 'Kharar'),(2, 'Sante Majra'),(3, 'Chappar Chiri'),(4, 'ISBT Sector 43')
         """))
 
         conn.execute(text("""
-            INSERT INTO routes (route_number, direction) VALUES
-            ('20','DOWN'),('20','UP')
+            INSERT INTO routes (id, route_number, direction) VALUES
+            (1, '20','DOWN'),(2, '20','UP')
         """))
 
         conn.execute(text("""

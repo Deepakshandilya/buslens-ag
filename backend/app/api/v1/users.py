@@ -14,7 +14,10 @@ def read_users_me(current_user: dict = Depends(get_current_user)):
 
 @router.get("/me/favorites", response_model=list[FavoriteResponse])
 def get_favorites(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    return users_repo.get_user_favorites(db, current_user["id"])
+    try:
+        return users_repo.get_user_favorites(db, current_user["id"])
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/me/favorites", status_code=201)
 def add_favorite(
@@ -27,8 +30,11 @@ def add_favorite(
     if favorite_in.route_id and favorite_in.stop_id:
         raise HTTPException(status_code=400, detail="Cannot provide both route_id and stop_id")
         
-    users_repo.add_user_favorite(db, current_user["id"], favorite_in.route_id, favorite_in.stop_id)
-    return {"message": "Favorite added"}
+    try:
+        users_repo.add_user_favorite(db, current_user["id"], favorite_in.route_id, favorite_in.stop_id)
+        return {"message": "Favorite added"}
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/me/favorites/{favorite_id}", status_code=200)
 def delete_favorite(
@@ -36,12 +42,18 @@ def delete_favorite(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
-    users_repo.delete_user_favorite(db, current_user["id"], favorite_id)
-    return {"message": "Favorite deleted"}
+    try:
+        users_repo.delete_user_favorite(db, current_user["id"], favorite_id)
+        return {"message": "Favorite deleted"}
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/me/history", response_model=list[HistoryResponse])
 def get_history(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    return users_repo.get_user_search_history(db, current_user["id"])
+    try:
+        return users_repo.get_user_search_history(db, current_user["id"])
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/me/history", status_code=201)
 def add_history(
@@ -49,27 +61,37 @@ def add_history(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
-    users_repo.add_user_search_history(
-        db, 
-        current_user["id"], 
-        history_in.from_stop_id, 
-        history_in.to_stop_id
-    )
-    return {"message": "History added"}
+    try:
+        users_repo.add_user_search_history(
+            db, 
+            current_user["id"], 
+            history_in.from_stop_id, 
+            history_in.to_stop_id
+        )
+        return {"message": "History added"}
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/me/history", status_code=200)
 def clear_history(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
-    users_repo.clear_user_search_history(db, current_user["id"])
-    return {"message": "History cleared"}
+    try:
+        users_repo.clear_user_search_history(db, current_user["id"])
+        return {"message": "History cleared"}
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/me/favorites", status_code=200)
 def clear_favorites(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
-    users_repo.clear_user_favorites(db, current_user["id"])
-    return {"message": "Favorites cleared"}
+    try:
+        users_repo.clear_user_favorites(db, current_user["id"])
+        return {"message": "Favorites cleared"}
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 

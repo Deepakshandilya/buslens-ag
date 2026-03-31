@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStopRoutes } from "@/hooks/useStopRoutes";
+import { PageBackground } from "@/components/layout/PageBackground";
 
 export default function StopRoutesPage({
     params,
@@ -20,15 +21,7 @@ export default function StopRoutesPage({
     const { data, isLoading, isError } = useStopRoutes(isNaN(stopId) ? null : stopId);
 
     return (
-        <div
-            className="min-h-screen pt-24 pb-12 relative overflow-hidden"
-            style={{ background: "linear-gradient(180deg, oklch(0.14 0.03 285) 0%, oklch(0.11 0.02 280) 40%, oklch(0.13 0.025 290) 100%)" }}
-        >
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full blur-[120px]" style={{ background: "oklch(0.55 0.15 290 / 12%)" }} />
-                <div className="absolute top-[30%] -left-[15%] w-[35%] h-[35%] rounded-full blur-[100px]" style={{ background: "oklch(0.50 0.12 260 / 8%)" }} />
-                <div className="absolute -bottom-[10%] right-[10%] w-[30%] h-[30%] rounded-full blur-[100px]" style={{ background: "oklch(0.50 0.10 310 / 8%)" }} />
-            </div>
+        <PageBackground>
             <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
                 <Button variant="ghost" size="sm" onClick={() => router.back()} className="mb-4 -ml-2">
                     <ArrowLeft className="h-4 w-4 mr-1" />
@@ -153,6 +146,6 @@ export default function StopRoutesPage({
                     </>
                 )}
             </div>
-        </div>
+        </PageBackground>
     );
 }

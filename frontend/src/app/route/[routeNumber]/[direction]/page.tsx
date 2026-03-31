@@ -12,6 +12,7 @@ import { useRouteDetail } from "@/hooks/useRouteDetail";
 import { useFavorites, useAddFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 import { Suspense } from "react";
+import { PageBackground } from "@/components/layout/PageBackground";
 
 function RouteDetailContent({
     routeNumber,
@@ -107,15 +108,7 @@ function RouteDetailContent({
         : 0;
 
     return (
-        <div
-            className="min-h-screen pt-24 pb-12 relative overflow-hidden"
-            style={{ background: "linear-gradient(180deg, oklch(0.14 0.03 285) 0%, oklch(0.11 0.02 280) 40%, oklch(0.13 0.025 290) 100%)" }}
-        >
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full blur-[120px]" style={{ background: "oklch(0.55 0.15 290 / 12%)" }} />
-                <div className="absolute top-[30%] -left-[15%] w-[35%] h-[35%] rounded-full blur-[100px]" style={{ background: "oklch(0.50 0.12 260 / 8%)" }} />
-                <div className="absolute -bottom-[10%] right-[10%] w-[30%] h-[30%] rounded-full blur-[100px]" style={{ background: "oklch(0.50 0.10 310 / 8%)" }} />
-            </div>
+        <PageBackground>
             <div className="max-w-2xl mx-auto px-4 sm:px-6 relative z-10">
                 <Button
                     variant="ghost"
@@ -342,7 +335,7 @@ function RouteDetailContent({
                     </>
                 )}
             </div>
-        </div>
+        </PageBackground>
     );
 }
 
@@ -356,12 +349,12 @@ export default function RouteDetailPage({
     return (
         <Suspense
             fallback={
-                <div className="min-h-screen pt-24 pb-12 relative overflow-hidden" style={{ background: "linear-gradient(180deg, oklch(0.14 0.03 285) 0%, oklch(0.11 0.02 280) 40%, oklch(0.13 0.025 290) 100%)" }}>
+                <PageBackground>
                     <div className="max-w-2xl mx-auto px-4 space-y-4 relative z-10">
                         <Skeleton className="h-8 w-48" />
                         <Skeleton className="h-32 w-full rounded-lg" />
                     </div>
-                </div>
+                </PageBackground>
             }
         >
             <RouteDetailContent routeNumber={routeNumber} direction={direction} />

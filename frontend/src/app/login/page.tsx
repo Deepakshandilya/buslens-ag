@@ -11,24 +11,30 @@ import type { Token, UserResponse } from "@/types/api";
 import { AuthImageCarousel } from "@/components/layout/AuthImageCarousel";
 import { AuthFloatingNav } from "@/components/layout/AuthFloatingNav";
 import { BeamsBackground } from "@/components/ui/beams-background";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginFormData } from "@/lib/validations";
 
 export default function LoginPage() {
     const router = useRouter();
     const login = useAuthStore((s) => s.login);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email || !password) return;
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginFormData>({
+        resolver: zodResolver(loginSchema),
+    });
 
+    const onSubmit = async (data: LoginFormData) => {
         setLoading(true);
         try {
             const formData = new URLSearchParams();
-            formData.append("username", email);
-            formData.append("password", password);
+            formData.append("username", data.email);
+            formData.append("password", data.password);
 
             const { data: tokenData } = await api.post<Token>("/auth/login", formData, {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -131,7 +137,7 @@ export default function LoginPage() {
                             </div>
 
                             {/* Form */}
-                            <form onSubmit={handleLogin} className="space-y-5">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                                 <div>
                                     <label htmlFor="login-email" className="block text-sm font-medium mb-2" style={{ color: "oklch(0.70 0.03 285)" }}>
                                         Email address
@@ -141,13 +147,14 @@ export default function LoginPage() {
                                         <input
                                             id="login-email"
                                             type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            {...register("email")}
                                             placeholder="you@example.com"
-                                            className="w-full h-12 pl-10 pr-4 rounded-xl text-sm text-white placeholder:text-[oklch(0.40_0.02_285)] auth-input outline-none transition-all duration-200"
-                                            required
+                                            className={`w-full h-12 pl-10 pr-4 rounded-xl text-sm text-white placeholder:text-[oklch(0.40_0.02_285)] auth-input outline-none transition-all duration-200 ${errors.email ? 'border border-red-500' : ''}`}
                                         />
                                     </div>
+                                    {errors.email && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -159,11 +166,9 @@ export default function LoginPage() {
                                         <input
                                             id="login-password"
                                             type={showPassword ? "text" : "password"}
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            {...register("password")}
                                             placeholder="••••••••"
-                                            className="w-full h-12 pl-10 pr-12 rounded-xl text-sm text-white placeholder:text-[oklch(0.40_0.02_285)] auth-input outline-none transition-all duration-200"
-                                            required
+                                            className={`w-full h-12 pl-10 pr-12 rounded-xl text-sm text-white placeholder:text-[oklch(0.40_0.02_285)] auth-input outline-none transition-all duration-200 ${errors.password ? 'border border-red-500' : ''}`}
                                         />
                                         <button
                                             type="button"
@@ -174,6 +179,9 @@ export default function LoginPage() {
                                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                         </button>
                                     </div>
+                                    {errors.password && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                                    )}
                                 </div>
 
                                 <button

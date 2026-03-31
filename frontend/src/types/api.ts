@@ -79,6 +79,9 @@ export interface FavoriteResponse {
     user_id: number;
     route_id: number | null;
     stop_id: number | null;
+    route_number?: string | null;
+    direction?: string | null;
+    stop_name?: string | null;
     created_at: string;
 }
 

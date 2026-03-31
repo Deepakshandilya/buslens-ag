@@ -10,8 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouteDetail } from "@/hooks/useRouteDetail";
 import { useAuthStore } from "@/stores/authStore";
-import { useAddFavorite, useFavorites } from "@/hooks/useFavorites";
+import { useAddFavorite, useFavorites, useDeleteFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
+import { PageBackground } from "@/components/layout/PageBackground";
 
 export default function BusNumberPage({
     params,
@@ -28,6 +29,7 @@ export default function BusNumberPage({
 
     const { data: favorites } = useFavorites();
     const addFavorite = useAddFavorite();
+    const deleteFavorite = useDeleteFavorite();
 
     const isLoading = upQuery.isLoading || downQuery.isLoading;
     const hasUp = !!upQuery.data;
@@ -43,13 +45,21 @@ export default function BusNumberPage({
             router.push("/login");
             return;
         }
-        addFavorite.mutate(
-            { route_id: routeId },
-            {
-                onSuccess: () => toast.success("Added to favorites!"),
-                onError: () => toast.error("Failed to add favorite"),
-            }
-        );
+        const existing = favorites?.find((f) => f.route_id === routeId);
+        if (existing) {
+            deleteFavorite.mutate(existing.id, {
+                onSuccess: () => toast.success("Removed from favorites"),
+                onError: () => toast.error("Failed to remove favorite"),
+            });
+        } else {
+            addFavorite.mutate(
+                { route_id: routeId },
+                {
+                    onSuccess: () => toast.success("Added to favorites!"),
+                    onError: () => toast.error("Failed to add favorite"),
+                }
+            );
+        }
     };
 
     const renderTimeline = (data: { route_id: number; route_number: string; direction: string; stops: { sequence_no: number; name: string }[] }) => (
@@ -118,19 +128,7 @@ export default function BusNumberPage({
     );
 
     return (
-        <div
-            className="min-h-screen pt-24 pb-12 relative overflow-hidden"
-            style={{
-                background: "linear-gradient(180deg, oklch(0.14 0.03 285) 0%, oklch(0.11 0.02 280) 40%, oklch(0.13 0.025 290) 100%)",
-            }}
-        >
-            {/* Ambient glow orbs */}
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full blur-[120px]" style={{ background: "oklch(0.55 0.15 290 / 12%)" }} />
-                <div className="absolute top-[30%] -left-[15%] w-[35%] h-[35%] rounded-full blur-[100px]" style={{ background: "oklch(0.50 0.12 260 / 8%)" }} />
-                <div className="absolute -bottom-[10%] right-[10%] w-[30%] h-[30%] rounded-full blur-[100px]" style={{ background: "oklch(0.50 0.10 310 / 8%)" }} />
-            </div>
-
+        <PageBackground>
             <div className="max-w-2xl mx-auto px-4 sm:px-6 relative z-10">
                 <Button variant="ghost" size="sm" onClick={() => router.back()} className="mb-4 -ml-2">
                     <ArrowLeft className="h-4 w-4 mr-1" />
@@ -214,6 +212,6 @@ export default function BusNumberPage({
                     </Tabs>
                 )}
             </div>
-        </div>
+        </PageBackground>
     );
 }

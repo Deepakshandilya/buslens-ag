@@ -3,14 +3,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import type { FavoriteResponse } from "@/types/api";
+import { useAuthStore } from "@/stores/authStore";
 
 export function useFavorites() {
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
     return useQuery<FavoriteResponse[]>({
         queryKey: ["favorites"],
         queryFn: async () => {
             const { data } = await api.get<FavoriteResponse[]>("/users/me/favorites");
             return data;
         },
+        enabled: isAuthenticated,
     });
 }
 

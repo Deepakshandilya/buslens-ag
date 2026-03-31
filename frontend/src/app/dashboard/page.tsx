@@ -33,6 +33,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { useFavorites, useDeleteFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { PageBackground } from "@/components/layout/PageBackground";
 
 function DashboardContent() {
     const router = useRouter();
@@ -72,13 +73,13 @@ function DashboardContent() {
 
     if (!isHydrated) {
         return (
-            <div className="min-h-screen pt-24 pb-12" style={{ background: "linear-gradient(180deg, oklch(0.14 0.02 285) 0%, oklch(0.12 0.015 285) 100%)" }}>
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4">
+            <PageBackground>
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4 relative z-10">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-4 w-64" />
                     <Skeleton className="h-32 w-full rounded-lg" />
                 </div>
-            </div>
+            </PageBackground>
         );
     }
 
@@ -118,13 +119,8 @@ function DashboardContent() {
     };
 
     return (
-        <div
-            className="min-h-screen pt-24 pb-12"
-            style={{
-                background: "linear-gradient(180deg, oklch(0.14 0.025 285) 0%, oklch(0.12 0.015 280) 50%, oklch(0.14 0.02 290) 100%)",
-            }}
-        >
-            <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        <PageBackground>
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
                 {/* Header */}
                 <div className="mb-8">
                     <h1
@@ -339,9 +335,8 @@ function DashboardContent() {
                                     border: "1px solid oklch(1 0.02 285 / 8%)",
                                 }}
                                 onClick={() => {
-                                    if (fav.route_id) {
-                                        // Navigate to bus route page (will show both UP/DOWN)
-                                        router.push(`/bus/${fav.route_id}`);
+                                    if (fav.route_number) {
+                                        router.push(`/bus/${encodeURIComponent(fav.route_number)}`);
                                     } else if (fav.stop_id) {
                                         router.push(`/stop/${fav.stop_id}`);
                                     }
@@ -365,10 +360,16 @@ function DashboardContent() {
                                         </div>
                                         <div>
                                             <p className="text-base font-semibold">
-                                                {fav.route_id ? `Route #${fav.route_id}` : `Stop #${fav.stop_id}`}
+                                                {fav.route_number
+                                                    ? `Route ${fav.route_number}`
+                                                    : fav.stop_name
+                                                        ? fav.stop_name
+                                                        : `Stop #${fav.stop_id}`}
                                             </p>
                                             <p className="text-sm text-muted-foreground">
-                                                {fav.route_id ? "Bus Route" : "Bus Stop"} · {new Date(fav.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                                                {fav.route_number
+                                                    ? `${fav.direction || "Bus Route"} · ${new Date(fav.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}`
+                                                    : `Bus Stop · ${new Date(fav.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}`}
                                             </p>
                                         </div>
                                     </div>
@@ -392,20 +393,20 @@ function DashboardContent() {
                     </TabsContent>
                 </Tabs>
             </div>
-        </div>
+        </PageBackground>
     );
 }
 
 export default function DashboardPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen pt-24 pb-12" style={{ background: "linear-gradient(180deg, oklch(0.14 0.025 285) 0%, oklch(0.12 0.015 280) 100%)" }}>
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4">
+            <PageBackground>
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-4 relative z-10">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-4 w-64" />
                     <Skeleton className="h-32 w-full rounded-lg" />
                 </div>
-            </div>
+            </PageBackground>
         }>
             <DashboardContent />
         </Suspense>

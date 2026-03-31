@@ -37,9 +37,13 @@ class Settings:
             if origin.strip()
         ]
 
-        self.secret_key = os.getenv("SECRET_KEY", "b3c959828461ab1057e627ceec3cd02082b26c6d267ac83f4bdbc82928509c12")
+        self.secret_key = os.getenv("SECRET_KEY")
+        if not self.secret_key:
+            if self.app_env == "local":
+                self.secret_key = "dev-only-insecure-key-change-in-production"
+            else:
+                raise RuntimeError("SECRET_KEY env var is required in non-local environments")
         self.algorithm = os.getenv("ALGORITHM", "HS256")
         self.access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
     
 settings = Settings()
-print(vars(settings))

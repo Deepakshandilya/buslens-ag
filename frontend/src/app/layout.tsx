@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { NavbarWrapper } from "@/components/layout/NavbarWrapper";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -17,7 +18,10 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "BusLens — Find Your Bus Route",
+  title: {
+    template: "%s | BusLens",
+    default: "BusLens — Find Your Bus Route",
+  },
   description:
     "Search bus routes from Stop A to Stop B, search by bus number, and track your favorite routes across Chandigarh.",
 };
@@ -32,9 +36,12 @@ export default function RootLayout({
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         <Providers>
           <NavbarWrapper />
-          <main>{children}</main>
+          <ErrorBoundary>
+            <main>{children}</main>
+          </ErrorBoundary>
         </Providers>
       </body>
     </html>
   );
 }
+

@@ -3,14 +3,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import type { HistoryResponse } from "@/types/api";
+import { useAuthStore } from "@/stores/authStore";
 
 export function useHistory() {
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
     return useQuery<HistoryResponse[]>({
         queryKey: ["history"],
         queryFn: async () => {
             const { data } = await api.get<HistoryResponse[]>("/users/me/history");
             return data;
         },
+        enabled: isAuthenticated,
     });
 }
 

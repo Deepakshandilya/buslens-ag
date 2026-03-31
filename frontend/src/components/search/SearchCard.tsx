@@ -77,7 +77,7 @@ export function SearchCard() {
                 </div>
 
                 <Tabs defaultValue="stops" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 mb-6 h-12">
+                    <TabsList className="grid w-full grid-cols-3 mb-6 h-14">
                         <TabsTrigger value="stops" className="text-[15px] gap-2 font-semibold">
                             <Search className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">Stop to Stop</span>

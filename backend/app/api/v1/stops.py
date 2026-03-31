@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -15,8 +15,11 @@ def stops(
     db: Session = Depends(get_db),
 ):
     q = normalize_stop_name(query)
-    rows = search_stops(db, q, limit)
-    return{
-        "query": q,
-        "results": [StopOut(**r) for r in rows],
-    }
+    try:
+        rows = search_stops(db, q, limit)
+        return{
+            "query": q,
+            "results": [StopOut(**r) for r in rows],
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))

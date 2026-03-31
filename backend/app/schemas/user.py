@@ -31,8 +31,10 @@ class FavoriteResponse(BaseModel):
     user_id: int
     route_id: Optional[int]
     stop_id: Optional[int]
+    route_number: Optional[str] = None
+    direction: Optional[str] = None
+    stop_name: Optional[str] = None
     created_at: datetime
-    # We can also add detailed fields if needed later
 
 class HistoryCreate(BaseModel):
     from_stop_id: int
