@@ -1,27 +1,22 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { 
     MapPin, 
     Bus,
     Users,
-    Building,
-    Sparkles, 
     ArrowRight, 
     Network,
-    Zap,
-    MapIcon,
     CodeXml,
     Github,
     Linkedin,
     CheckCircle2,
-    AlertCircle,
-    ActivitySquare
+    AlertCircle
 } from "lucide-react";
 import { PageBackground } from "@/components/layout/PageBackground";
 
 // Animation Variants - simplified to trigger reliably
-const fadeUpVariant = {
+const fadeUpVariant: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: { 
         opacity: 1, 
