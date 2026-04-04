@@ -196,27 +196,27 @@ function RouteDetailContent({
                         {highlightInfo && (
                             <Card className="mb-6 border-[var(--route-active-line)] bg-gradient-to-r from-[var(--route-start-bg)] via-transparent to-[var(--route-end-bg)]">
                                 <CardContent className="p-4">
-                                    <div className="flex items-center gap-1.5 mb-2">
+                                    <div className="flex items-center justify-center gap-1.5 mb-2">
                                         <Navigation className="h-3.5 w-3.5 text-[var(--route-active)]" />
                                         <span className="text-xs font-semibold uppercase tracking-wider text-[var(--route-active)]">
                                             Your Journey
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-3 flex-wrap">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="h-2.5 w-2.5 rounded-full bg-[var(--route-start)]" />
-                                            <span className="text-sm font-semibold">{fromStop}</span>
+                                    <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+                                        <div className="flex items-center gap-2">
+                                            <div className="h-2.5 w-2.5 rounded-full bg-[var(--route-start)] shrink-0" />
+                                            <span className="text-sm font-semibold leading-none pt-[1px]">{fromStop}</span>
                                         </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="h-px w-4 bg-border" />
-                                            <Badge variant="outline" className="text-xs font-bold px-2 border-primary/30 text-primary">
+                                        <div className="flex items-center gap-1.5 text-muted-foreground/50">
+                                            <span className="h-px w-3 sm:w-4 bg-border" />
+                                            <Badge variant="outline" className="text-[10px] sm:text-xs font-bold px-2 py-0 h-5 border-primary/30 text-primary shrink-0 leading-none flex items-center justify-center">
                                                 {journeyStopCount} {journeyStopCount === 1 ? "stop" : "stops"}
                                             </Badge>
-                                            <div className="h-px w-4 bg-border" />
+                                            <span className="h-px w-3 sm:w-4 bg-border" />
                                         </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="h-2.5 w-2.5 rounded-full bg-[var(--route-end)]" />
-                                            <span className="text-sm font-semibold">{toStop}</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="h-2.5 w-2.5 rounded-full bg-[var(--route-end)] shrink-0" />
+                                            <span className="text-sm font-semibold leading-none pt-[1px]">{toStop}</span>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -236,14 +236,18 @@ function RouteDetailContent({
                                         const isHighlighted = role === "from" || role === "to" || role === "between";
                                         const isDimmed = highlightInfo && role === "outside";
 
+                                        const isMajorStop = isFirst || isLast || isFromStop || isToStop;
+
                                         // Determine circle styling
                                         let circleClass = "border-border bg-background";
                                         if (isFromStop) {
-                                            circleClass = "border-[var(--route-start)] bg-[var(--route-start)] text-white";
+                                            circleClass = "border-[var(--route-start)] bg-[var(--route-start)] text-white h-10 w-10 ring-4 ring-[var(--route-start-bg)]";
                                         } else if (isToStop) {
-                                            circleClass = "border-[var(--route-end)] bg-[var(--route-end)] text-white";
+                                            circleClass = "border-[var(--route-end)] bg-[var(--route-end)] text-white h-10 w-10 ring-4 ring-[var(--route-end-bg)]";
                                         } else if (isFirst || isLast) {
-                                            circleClass = "border-primary bg-primary text-primary-foreground";
+                                            circleClass = "border-primary bg-primary text-primary-foreground h-9 w-9";
+                                        } else {
+                                            circleClass = "bg-muted border-foreground/20 h-3 w-3 mt-1.5 opacity-60";
                                         }
 
                                         // Determine line color
@@ -256,31 +260,15 @@ function RouteDetailContent({
                                             <div
                                                 key={stop.sequence_no}
                                                 ref={isFromStop ? fromStopRef : undefined}
-                                                className={`flex gap-4 relative transition-opacity duration-300 ${isDimmed ? "opacity-40" : "opacity-100"
+                                                className={`flex gap-4 relative transition-opacity duration-300 ${isDimmed ? "opacity-30" : "opacity-100"
                                                     }`}
                                             >
-                                                <div className="flex flex-col items-center">
+                                                <div className="flex flex-col items-center w-10 shrink-0">
                                                     <div
-                                                        className={`flex h-10 w-10 items-center justify-center rounded-full border-2 z-10 transition-all ${circleClass} ${isFromStop || isToStop
-                                                            ? "ring-4 ring-opacity-20 scale-110"
-                                                            : ""
-                                                            }`}
-                                                        style={
-                                                            isFromStop
-                                                                ? { boxShadow: "0 0 0 4px var(--route-start-bg)" }
-                                                                : isToStop
-                                                                    ? { boxShadow: "0 0 0 4px var(--route-end-bg)" }
-                                                                    : undefined
-                                                        }
+                                                        className={`flex items-center justify-center rounded-full border-[1.5px] z-10 transition-all ${circleClass} ${isFromStop || isToStop ? "scale-[1.15]" : ""}`}
                                                     >
-                                                        {isFromStop || isToStop ? (
-                                                            <MapPin className="h-4.5 w-4.5" />
-                                                        ) : isFirst || isLast ? (
-                                                            <MapPin className="h-4 w-4" />
-                                                        ) : (
-                                                            <span className="text-sm font-semibold text-muted-foreground">
-                                                                {stop.sequence_no}
-                                                            </span>
+                                                        {isMajorStop && (
+                                                            <MapPin className={isFromStop || isToStop ? "h-4.5 w-4.5" : "h-4 w-4"} />
                                                         )}
                                                     </div>
                                                     {!isLast && (

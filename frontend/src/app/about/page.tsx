@@ -81,26 +81,20 @@ export default function AboutPage() {
                         The Path We Traveled
                     </motion.h2>
 
-                    <div className="relative max-w-4xl mx-auto">
+                    <div className="relative max-w-3xl mx-auto">
                         {/* The Road (Vertical Line) */}
-                        <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1.5 bg-gradient-to-b from-red-500/50 via-primary/50 to-primary/10 rounded-full md:-translate-x-1/2 z-0" />
+                        <div className="absolute left-[39px] top-0 bottom-0 w-1.5 bg-gradient-to-b from-red-500/50 via-primary/50 to-primary/10 rounded-full z-0" />
                         
                         {/* Stop 1: The Problem */}
-                        <motion.div variants={fadeUpVariant} className="relative flex flex-col md:flex-row items-stretch w-full mb-16 group z-10">
-                            <div className="hidden md:flex flex-1 justify-end pr-14" />
+                        <motion.div variants={fadeUpVariant} className="relative flex w-full mb-16 group z-10">
                             
-                            {/* Desktop Center Node */}
-                            <div className="hidden md:flex absolute left-1/2 -top-2 -translate-x-1/2 w-8 h-8 rounded-full bg-background border-4 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)] items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
+                            {/* Node */}
+                            <div className="absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)] flex flex-col items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
                                 <div className="w-2 h-2 rounded-full bg-red-500" />
                             </div>
 
-                            {/* Mobile Node (Absolute to align with line) */}
-                            <div className="md:hidden absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)] flex flex-col items-center justify-center z-20">
-                                <div className="w-2 h-2 rounded-full bg-red-500" />
-                            </div>
-
-                            <div className="w-full md:flex-1 pl-24 md:pl-14 pt-0">
-                                <div className="bg-red-500/5 border border-red-500/20 rounded-3xl p-8 hover:bg-red-500/10 transition-colors duration-300 shadow-xl shadow-red-500/5 h-full">
+                            <div className="w-full pl-24 pt-0">
+                                <div className="bg-red-500/5 border border-red-500/20 rounded-3xl p-8 hover:bg-red-500/10 transition-colors duration-300 shadow-xl shadow-red-500/5 w-full">
                                     <h3 
                                         className="text-2xl font-bold flex items-center gap-3 text-red-400 mb-6"
                                         style={{ fontFamily: "var(--font-heading), sans-serif" }}
@@ -110,15 +104,15 @@ export default function AboutPage() {
                                     <ul className="space-y-4">
                                         <li className="flex items-start gap-3">
                                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Fragmented Network:</strong> Hundreds of overlapping CTU buses connecting residential hubs to universities.</p>
+                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Messy Routes:</strong> Too many confusing bus routes that overlap with each other.</p>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Obsolete Data:</strong> Reliance on analogue timetables and disconnected PDFs causes confusion.</p>
+                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Outdated Info:</strong> Paper schedules and old PDFs make finding the right buses hard.</p>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Travel Anxiety:</strong> Students and professionals experience severe pathfinding friction daily.</p>
+                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Daily Stress:</strong> People struggle every day to figure out how to reach their destination.</p>
                                         </li>
                                     </ul>
                                 </div>
@@ -126,20 +120,15 @@ export default function AboutPage() {
                         </motion.div>
 
                         {/* Stop 2: The Solution */}
-                        <motion.div variants={fadeUpVariant} className="relative flex flex-col md:flex-row items-stretch w-full mb-12 group z-10">
+                        <motion.div variants={fadeUpVariant} className="relative flex w-full mb-12 group z-10">
                             
-                            {/* Mobile Node */}
-                            <div className="md:hidden absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-primary shadow-[0_0_20px_oklch(0.72_0.12_290/0.4)] flex flex-col items-center justify-center z-20">
+                            {/* Node */}
+                            <div className="absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-primary shadow-[0_0_20px_oklch(0.72_0.12_290/0.4)] flex flex-col items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
                                 <div className="w-2 h-2 rounded-full bg-primary" />
                             </div>
 
-                            {/* Desktop Center Node */}
-                            <div className="hidden md:flex absolute left-1/2 -top-2 -translate-x-1/2 w-8 h-8 rounded-full bg-background border-4 border-primary shadow-[0_0_20px_oklch(0.72_0.12_290/0.4)] items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
-                                <div className="w-2 h-2 rounded-full bg-primary" />
-                            </div>
-
-                            <div className="w-full md:flex-1 pl-24 md:pl-0 md:pr-14 pt-0">
-                                <div className="bg-primary/5 border border-primary/20 rounded-3xl p-8 backdrop-blur-sm relative overflow-hidden hover:bg-primary/10 transition-colors duration-300 shadow-xl shadow-primary/5 h-full">
+                            <div className="w-full pl-24 pt-0">
+                                <div className="bg-primary/5 border border-primary/20 rounded-3xl p-8 backdrop-blur-sm relative overflow-hidden hover:bg-primary/10 transition-colors duration-300 shadow-xl shadow-primary/5 w-full">
                                     <h3 
                                         className="text-2xl font-bold flex items-center gap-3 text-primary mb-6 relative z-10"
                                         style={{ fontFamily: "var(--font-heading), sans-serif" }}
@@ -149,21 +138,19 @@ export default function AboutPage() {
                                     <ul className="space-y-4 relative z-10">
                                         <li className="flex items-start gap-3">
                                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Normalized Data:</strong> Centralized transit chaos into a highly indexed relational architecture.</p>
+                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Organized Data:</strong> We collected all the messy data and built a clean, fast system.</p>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Instant Searching:</strong> Built an application executing O(1) stop-to-stop traversals with fuzzy-search.</p>
+                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Fast Search:</strong> Instantly find buses and stops with a smart search engine.</p>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Save & Sync:</strong> Users can favorite permutations and view route history across devices seamlessly.</p>
+                                            <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Easy Saving:</strong> Save your favorite routes and see your history anywhere.</p>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            
-                            <div className="hidden md:flex flex-1 pl-14" />
                         </motion.div>
                     </div>
                 </motion.section>
@@ -183,89 +170,74 @@ export default function AboutPage() {
                         Network Scope
                     </motion.h2>
 
-                    {/* Bento Grid layout */}
+                    {/* Bento Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-min max-w-5xl mx-auto">
                         
-                        {/* Large Main Metric */}
-                        <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border border-primary/20 rounded-[2rem] p-10 flex flex-col justify-between group overflow-hidden relative shadow-2xl">
-                            <div className="absolute right-0 top-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full translate-x-1/3 -translate-y-1/3" />
-                            <div className="mb-4">
-                                <Users className="h-10 w-10 text-primary mb-6" />
-                                <h4 className="text-xl text-primary/80 uppercase tracking-widest font-bold">Daily Commutes</h4>
+                        {/* Box 1: Large Routes Metric */}
+                        <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-white/10 hover:border-primary/50 rounded-[2rem] p-10 flex flex-col justify-between group overflow-hidden relative shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                            <div className="absolute right-0 top-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full translate-x-1/3 -translate-y-1/3 group-hover:bg-primary/40 transition-colors duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-[200%] transition-transform duration-[1500ms] ease-in-out" />
+                            <div className="mb-4 relative z-10">
+                                <Network className="h-10 w-10 text-primary mb-6 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500" />
+                                <h4 className="text-xl text-primary/80 uppercase tracking-widest font-bold">Active Routes</h4>
                             </div>
-                            <div>
-                                <p className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-primary/80 tracking-tighter" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
-                                    50,000<span className="text-primary">+</span>
+                            <div className="relative z-10">
+                                <p className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-primary/80 tracking-tighter" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                    72
                                 </p>
-                                <p className="text-muted-foreground mt-4 text-lg">Potential routes optimized instantly.</p>
+                                <p className="text-muted-foreground mt-4 text-lg">Distinct bus routes traversing interconnected city corridors.</p>
                             </div>
                         </motion.div>
 
-                        {/* Top Right Mini Metric */}
-                        <motion.div variants={fadeUpVariant} className="bg-white/5 border border-white/10 rounded-[2rem] p-8 flex flex-col justify-center hover:bg-white/10 transition-colors duration-300 shadow-xl group">
-                            <Bus className="h-8 w-8 text-blue-400 mb-6 group-hover:scale-110 transition-transform" />
-                            <p className="text-4xl font-black mb-2 text-white">~500<span className="text-blue-400">+</span></p>
-                            <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold">CTU Buses</p>
+                        {/* Box 2: Stops Metric */}
+                        <motion.div variants={fadeUpVariant} className="bg-white/5 border border-white/10 hover:border-teal-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
+                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-teal-500/20 blur-[80px] rounded-full translate-x-1/3 translate-y-1/3 group-hover:bg-teal-500/40 transition-colors duration-500" />
+                            <MapPin className="h-8 w-8 text-teal-400 mb-6 group-hover:scale-125 group-hover:-translate-y-2 transition-all duration-500 relative z-10" />
+                            <p className="text-5xl font-black mb-2 text-white relative z-10">700<span className="text-teal-400">+</span></p>
+                            <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold group-hover:text-teal-200 transition-colors relative z-10">Stops Indexed</p>
                         </motion.div>
 
-                        {/* Bottom Right Mini Metric */}
-                        <motion.div variants={fadeUpVariant} className="bg-white/5 border border-white/10 rounded-[2rem] p-8 flex flex-col justify-center hover:bg-white/10 transition-colors duration-300 shadow-xl group">
-                            <Building className="h-8 w-8 text-orange-400 mb-6 group-hover:scale-110 transition-transform" />
-                            <p className="text-4xl font-black mb-2 text-white">10<span className="text-orange-400">+</span></p>
-                            <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold">Tricity Hubs</p>
+                        {/* Box 3: Buses Metric */}
+                        <motion.div variants={fadeUpVariant} className="bg-white/5 border border-white/10 hover:border-pink-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
+                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-500/20 blur-[80px] rounded-full -translate-x-1/3 translate-y-1/3 group-hover:bg-pink-500/40 transition-colors duration-500" />
+                            <Bus className="h-8 w-8 text-pink-400 mb-6 group-hover:scale-125 group-hover:translate-x-2 transition-all duration-500 relative z-10" />
+                            <p className="text-5xl font-black mb-2 text-white relative z-10">~500</p>
+                            <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold group-hover:text-pink-200 transition-colors relative z-10">CTU Buses</p>
                         </motion.div>
 
-                        {/* Bottom Full Row Metric */}
-                        <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-black/40 border border-white/5 rounded-[2rem] p-8 flex items-center justify-between shadow-xl">
-                           <div>
-                                <h4 className="text-lg text-gray-400 uppercase tracking-widest font-bold mb-2">Stops Indexed</h4>
-                                <p className="text-3xl font-black text-white">1,500+</p>
+                        {/* Box 4: Wide Commutes Metric */}
+                        <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-black/40 border border-white/10 hover:border-orange-500/50 rounded-[2rem] p-8 md:p-10 flex items-center justify-between shadow-xl transition-all duration-500 group hover:-translate-y-1 relative overflow-hidden">
+                           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                           <div className="relative z-10">
+                                <h4 className="text-lg text-gray-400 uppercase tracking-widest font-bold mb-2 group-hover:text-orange-200 transition-colors">Daily Commutes</h4>
+                                <p className="text-4xl md:text-5xl font-black text-white">50,000<span className="text-orange-500">+</span></p>
                            </div>
-                           <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                               <MapPin className="h-8 w-8 text-primary" />
+                           <div className="w-20 h-20 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center relative z-10 group-hover:bg-orange-500/30 group-hover:scale-110 transition-all duration-500">
+                               <Users className="h-10 w-10 text-orange-500" />
                            </div>
                         </motion.div>
 
                     </div>
                 </motion.section>
 
-                {/* 4. Beautiful Photographic Context (Fixed locally generated images) */}
+                {/* 4. Tricity Map Context */}
                 <motion.section 
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, amount: 0.2 }}
                     className="mb-24"
                 >
-                    <motion.div variants={fadeUpVariant} className="flex flex-col md:flex-row gap-6">
-                        <div className="flex-1 rounded-[2rem] overflow-hidden relative group h-[400px] shadow-2xl">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/transit_node.png"
-                                alt="Modern intelligent transit"
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                            <div className="absolute bottom-8 left-8 right-8">
-                                <h3 className="text-white text-2xl font-bold mb-3 flex items-center gap-2">
-                                    <ActivitySquare className="h-6 w-6 text-primary" /> The Modern Engine
-                                </h3>
-                                <p className="text-gray-300 text-sm md:text-base">Intelligently indexing stop chronologies into a performant RESTful SQL engine.</p>
-                            </div>
-                        </div>
-                        <div className="flex-1 rounded-[2rem] overflow-hidden relative group h-[400px] shadow-2xl">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/city_grid.png"
-                                alt="Chandigarh City Layout"
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                            <div className="absolute bottom-8 left-8 right-8">
-                                <h3 className="text-white text-2xl font-bold mb-3 flex items-center gap-2">
-                                    <Network className="h-6 w-6 text-primary" /> The City Beautiful
-                                </h3>
-                                <p className="text-gray-300 text-sm md:text-base">Providing an organic, user-friendly digital overlay on Le Corbusier's famous grid layout.</p>
-                            </div>
+                    <motion.div variants={fadeUpVariant} className="flex flex-col gap-6">
+                        <div className="w-full rounded-[2rem] overflow-hidden relative group h-[500px] shadow-2xl border border-white/10">
+                            <iframe 
+                                src="https://maps.google.com/maps?q=Chandigarh&t=m&z=12&output=embed&iwloc=near" 
+                                title="Chandigarh Tricity Map"
+                                className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                                style={{ border: 0 }} 
+                                allowFullScreen 
+                                loading="lazy" 
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
                         </div>
                     </motion.div>
                 </motion.section>

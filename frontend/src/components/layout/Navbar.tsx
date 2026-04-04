@@ -15,7 +15,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useRouter, usePathname } from "next/navigation";
 
 export function Navbar() {
-    const { isAuthenticated, user, logout } = useAuthStore();
+    const { isAuthenticated, user, logout, isHydrated } = useAuthStore();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -65,7 +65,7 @@ export function Navbar() {
                         <Search className="h-4.5 w-4.5" />
                         <span className="hidden sm:inline">Search</span>
                     </Link>
-                    {isAuthenticated && (
+                    {isHydrated && isAuthenticated && (
                         <>
                             <Link
                                 href="/dashboard?tab=history"
@@ -105,8 +105,12 @@ export function Navbar() {
                 </div>
 
                 {/* Right side */}
-                <div className="flex items-center gap-1.5 pr-1 shrink-0">
-                    {isAuthenticated ? (
+                <div className="flex items-center gap-1.5 pr-1 shrink-0 min-w-[140px] justify-end">
+                    {!isHydrated ? (
+                        <div className="flex items-center justify-center h-10 px-4">
+                            <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+                        </div>
+                    ) : isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/10">
