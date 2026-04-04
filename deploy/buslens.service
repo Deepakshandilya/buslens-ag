@@ -1,0 +1,15 @@
+[Unit]
+Description=Uvicorn daemon for BusLens FastAPI Backend
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/buslens-ag/backend
+# Update PATH to point to your specific virtual environment
+Environment="PATH=/home/ubuntu/buslens-ag/backend/.venv/bin"
+# Runs uvicorn with 4 workers. You can adjust this based on the EC2 CPU cores.
+ExecStart=/home/ubuntu/buslens-ag/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 4
+
+[Install]
+WantedBy=multi-user.target
