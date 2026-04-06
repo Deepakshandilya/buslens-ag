@@ -24,8 +24,9 @@ jobs:
             npm install
             npm run build
             pm2 restart nextjs
-
-            cd ../backend
+        
+            cd ..
             source venv/bin/activate
+            cd backend
             pip install -r requirements.txt
             sudo systemctl restart fastapi
