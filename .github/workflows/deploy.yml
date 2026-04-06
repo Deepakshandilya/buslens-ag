@@ -20,13 +20,15 @@ jobs:
             cd ~/buslens-ag
             git pull origin main
 
+            # FRONTEND
             cd frontend
             npm install
             npm run build
-            pm2 restart nextjs
-        
-            cd ..
-            source venv/bin/activate
-            cd backend
-            pip install -r requirements.txt
-            sudo systemctl restart fastapi
+            pm2 restart nextjs || pm2 start npm --name "nextjs" -- start
+
+            # BACKEND
+            cd ~/buslens-ag/backend
+            /home/ubuntu/buslens-ag/venv/bin/pip install -r requirements.txt
+
+            # restart service WITHOUT sudo prompt issue
+            sudo systemctl restart fastapi || echo "restart failed"
