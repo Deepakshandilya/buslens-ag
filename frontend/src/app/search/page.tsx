@@ -81,7 +81,7 @@ function SearchResultsContent() {
 
     return (
         <PageBackground>
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-8 relative z-10">
                 {/* Header */}
                 <div className="mb-8">
                     <Button
@@ -101,7 +101,7 @@ function SearchResultsContent() {
                         Routes found
                     </h1>
 
-                    {/* Journey summary — premium card */}
+                    {/* Journey summary — premium card, mobile stacked */}
                     <Card
                         className="mt-4 overflow-hidden"
                         style={{
@@ -110,30 +110,34 @@ function SearchResultsContent() {
                         }}
                     >
                         <CardContent className="p-4 sm:p-5">
-                            <div className="flex items-center gap-3 flex-wrap">
+                            {/* Mobile: vertical stack; desktop: horizontal row */}
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                {/* From */}
                                 <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                                    <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 150 / 15%)" }}>
-                                        <MapPin className="h-5 w-5" style={{ color: "oklch(0.75 0.22 150)" }} />
+                                    <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 150 / 15%)" }}>
+                                        <MapPin className="h-4 w-4" style={{ color: "oklch(0.75 0.22 150)" }} />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium">From</p>
-                                        <p className="text-base font-bold truncate">{from}</p>
+                                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">From</p>
+                                        <p className="text-sm font-bold truncate">{from}</p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 px-2 shrink-0">
-                                    <div className="w-6 h-px" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
-                                    <Route className="h-5 w-5 text-primary" />
-                                    <div className="w-6 h-px" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
+                                {/* Arrow connector — horizontal on desktop, small text on mobile */}
+                                <div className="flex items-center gap-2 shrink-0 sm:px-2">
+                                    <div className="hidden sm:block w-5 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
+                                    <Route className="h-4 w-4 text-primary" />
+                                    <div className="hidden sm:block w-5 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
                                 </div>
 
-                                <div className="flex items-center gap-2.5 flex-1 min-w-0 justify-end text-right">
-                                    <div className="min-w-0">
-                                        <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium">To</p>
-                                        <p className="text-base font-bold truncate">{to}</p>
+                                {/* To */}
+                                <div className="flex items-center gap-2.5 flex-1 min-w-0 sm:justify-end sm:text-right">
+                                    <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 265 / 15%)" }}>
+                                        <MapPin className="h-4 w-4" style={{ color: "oklch(0.72 0.2 265)" }} />
                                     </div>
-                                    <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 265 / 15%)" }}>
-                                        <MapPin className="h-5 w-5" style={{ color: "oklch(0.72 0.2 265)" }} />
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">To</p>
+                                        <p className="text-sm font-bold truncate">{to}</p>
                                     </div>
                                 </div>
                             </div>
@@ -294,20 +298,21 @@ function SearchResultsContent() {
                                                 </div>
                                             </div>
 
-                                            {/* Journey visualization — horizontal timeline */}
+                                            {/* Journey visualization — mobile stack, desktop horizontal */}
                                             <div
-                                                className="mx-5 sm:mx-6 mb-4 p-4 rounded-xl"
+                                                className="mx-4 sm:mx-6 mb-4 p-3 sm:p-4 rounded-xl"
                                                 style={{
                                                     background: "oklch(0.15 0.015 285 / 80%)",
                                                     border: "1px solid oklch(1 0.02 285 / 5%)",
                                                 }}
                                             >
-                                                <div className="flex items-center">
+                                                {/* Mobile: column layout to prevent text truncation */}
+                                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0">
                                                     {/* From */}
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center gap-2">
                                                             <div
-                                                                className="h-4 w-4 rounded-full shrink-0 ring-[3px]"
+                                                                className="h-3.5 w-3.5 rounded-full shrink-0"
                                                                 style={{
                                                                     background: "oklch(0.75 0.22 150)",
                                                                     boxShadow: "0 0 0 3px oklch(0.75 0.22 150 / 20%)",
@@ -320,11 +325,11 @@ function SearchResultsContent() {
                                                         </div>
                                                     </div>
 
-                                                    {/* Connecting line with stop count */}
-                                                    <div className="flex items-center mx-3 shrink-0">
-                                                        <div className="w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
+                                                    {/* Connecting line with stop count — centered on both layouts */}
+                                                    <div className="flex items-center gap-1 sm:mx-3 shrink-0 pl-5 sm:pl-0">
+                                                        <div className="hidden sm:block w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
                                                         <div
-                                                            className="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                                                            className="px-2.5 py-0.5 rounded-full text-xs font-bold whitespace-nowrap"
                                                             style={{
                                                                 background: "oklch(0.72 0.12 290 / 12%)",
                                                                 color: "oklch(0.82 0.12 290)",
@@ -333,23 +338,23 @@ function SearchResultsContent() {
                                                         >
                                                             {stopCount} {stopCount === 1 ? "stop" : "stops"}
                                                         </div>
-                                                        <div className="w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
+                                                        <div className="hidden sm:block w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
                                                     </div>
 
                                                     {/* To */}
-                                                    <div className="flex-1 min-w-0 text-right">
-                                                        <div className="flex items-center gap-2 justify-end">
-                                                            <div className="min-w-0">
-                                                                <p className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold">Alight at</p>
-                                                                <p className="text-sm font-bold truncate">{to}</p>
-                                                            </div>
+                                                    <div className="flex-1 min-w-0 sm:text-right">
+                                                        <div className="flex items-center gap-2 sm:justify-end">
                                                             <div
-                                                                className="h-4 w-4 rounded-full shrink-0 ring-[3px]"
+                                                                className="h-3.5 w-3.5 rounded-full shrink-0"
                                                                 style={{
                                                                     background: "oklch(0.72 0.2 265)",
                                                                     boxShadow: "0 0 0 3px oklch(0.72 0.2 265 / 20%)",
                                                                 }}
                                                             />
+                                                            <div className="min-w-0">
+                                                                <p className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold">Alight at</p>
+                                                                <p className="text-sm font-bold truncate">{to}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -357,33 +362,33 @@ function SearchResultsContent() {
 
                                             {/* Intermediate stops — collapsible preview */}
                                             {route.stops_between && route.stops_between.length > 0 && (
-                                                <div className="px-5 sm:px-6 mb-4">
-                                                    <div className="flex items-center gap-2 flex-wrap">
-                                                        <Circle className="h-3 w-3 text-muted-foreground/30 shrink-0" />
-                                                        {route.stops_between.slice(0, 5).map((stop, j) => (
+                                                <div className="px-4 sm:px-6 mb-4">
+                                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                                        <Circle className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                                                        {route.stops_between.slice(0, 4).map((stop, j) => (
                                                             <span key={j} className="flex items-center">
                                                                 <span
-                                                                    className="text-xs font-medium px-2.5 py-1 rounded-lg inline-block"
+                                                                    className="text-xs font-medium px-2 py-0.5 rounded-lg inline-block"
                                                                     style={{
-                                                                        background: "oklch(1 0 0 / 4%)",
-                                                                        color: "oklch(0.65 0.02 285)",
+                                                                        background: "oklch(1 0 0 / 5%)",
+                                                                        color: "oklch(0.72 0.03 285)",
                                                                     }}
                                                                 >
                                                                     {stop}
                                                                 </span>
-                                                                {j < Math.min(4, route.stops_between!.length - 1) && (
-                                                                    <ChevronRight className="h-3 w-3 text-muted-foreground/20 mx-0.5" />
+                                                                {j < Math.min(3, route.stops_between!.length - 1) && (
+                                                                    <ChevronRight className="h-3 w-3 text-muted-foreground/30 mx-0.5" />
                                                                 )}
                                                             </span>
                                                         ))}
-                                                        {route.stops_between.length > 5 && (
+                                                        {route.stops_between.length > 4 && (
                                                             <span
-                                                                className="text-xs font-bold px-2 py-1 rounded-lg"
+                                                                className="text-xs font-bold px-2 py-0.5 rounded-lg"
                                                                 style={{
                                                                     color: "oklch(0.72 0.12 290)",
                                                                 }}
                                                             >
-                                                                +{route.stops_between.length - 5} more
+                                                                +{route.stops_between.length - 4} more
                                                             </span>
                                                         )}
                                                     </div>

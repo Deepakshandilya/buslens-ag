@@ -75,7 +75,7 @@ export default function RegisterPage() {
                     </div>
 
                     {/* Right — Form */}
-                    <div className="flex-1 flex flex-col justify-center p-8 sm:p-12 lg:p-14">
+                    <div className="flex-1 flex flex-col justify-center pt-20 pb-8 px-6 sm:pt-12 sm:px-12 lg:p-14">
                         <div className="w-full max-w-sm mx-auto">
                             {/* Header */}
                             <div className="mb-8">
@@ -108,16 +108,16 @@ export default function RegisterPage() {
                             </button>
 
                             {/* Divider */}
-                            <div className="relative my-7">
+                            <div className="relative my-6">
                                 <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full" style={{ borderTop: "1px solid oklch(1 0.02 285 / 8%)" }} />
+                                    <div className="w-full" style={{ borderTop: "1px solid oklch(1 0.02 285 / 15%)" }} />
                                 </div>
                                 <div className="relative flex justify-center text-xs">
                                     <span
                                         className="px-3 rounded"
                                         style={{
                                             background: "oklch(0.16 0.025 285)",
-                                            color: "oklch(0.50 0.02 285)",
+                                            color: "oklch(0.65 0.03 285)",
                                         }}
                                     >
                                         or continue with email

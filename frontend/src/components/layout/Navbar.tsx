@@ -105,9 +105,9 @@ export function Navbar() {
                 </div>
 
                 {/* Right side */}
-                <div className="flex items-center gap-1.5 pr-1 shrink-0 min-w-[140px] justify-end">
+                <div className="flex items-center gap-1 sm:gap-1.5 pr-1 shrink-0 justify-end">
                     {!isHydrated ? (
-                        <div className="flex items-center justify-center h-10 px-4">
+                        <div className="flex items-center justify-center h-10 w-10">
                             <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white animate-spin" />
                         </div>
                     ) : isAuthenticated ? (
@@ -146,24 +146,31 @@ export function Navbar() {
                         </DropdownMenu>
                     ) : (
                         <>
+                            {/* Mobile: icon-only log in button; desktop: text label */}
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 asChild
-                                className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl text-[15px] h-10 px-4"
+                                className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl h-10 px-2.5 sm:px-4"
                             >
-                                <Link href="/login">Log in</Link>
+                                <Link href="/login">
+                                    <span className="hidden sm:inline text-[15px]">Log in</span>
+                                    <span className="sm:hidden text-[13px] font-medium">Login</span>
+                                </Link>
                             </Button>
                             <Button
                                 size="sm"
                                 asChild
-                                className="rounded-xl text-[15px] font-semibold h-10 px-5"
+                                className="rounded-xl font-semibold h-10 px-3 sm:px-5 text-[13px] sm:text-[15px]"
                                 style={{
                                     background: "oklch(0.72 0.12 290)",
                                     color: "white",
                                 }}
                             >
-                                <Link href="/register">Sign up</Link>
+                                <Link href="/register">
+                                    <span className="hidden sm:inline">Sign up</span>
+                                    <span className="sm:hidden">Sign up</span>
+                                </Link>
                             </Button>
                         </>
                     )}
