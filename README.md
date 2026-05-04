@@ -1,68 +1,167 @@
 # BusLens 🚌🔍
 
-**BusLens** is a robust, full-stack transit discovery application for the **Chandigarh Tricity** area (Chandigarh, Mohali, Panchkula, Zirakpur, Kharar). It's designed to simulate high-scale consumer transit platforms by allowing users to efficiently search bus routes between stops, lookup complex routes by designated bus numbers, execute stop-to-stop traversals, and manage authenticated favorite routes and history.
+**Real-time bus route discovery for the Chandigarh Tricity region.**
 
-## Key Technical Features 🚀
+Search bus routes between any two stops, browse routes by bus number, view full stop timelines, and manage authenticated favorites and search history — across Chandigarh, Mohali, Panchkula, Zirakpur, and Kharar.
 
-- 🔍 **Real-time Stop-to-Stop Search Algorithm** — Fuzzy search with intelligent debouncing querying SQL constraints.
-- 🔐 **Secure JWT Authentication** — Encrypted password hashing (bcrypt), OAuth2PasswordBearer flow, and strict 401 unauthenticated request interceptors to auto-logout users securely.
-- 🏗️ **Repository Pattern Architecture** — Clean scalable FastAPI layer decoupling routing from raw SQL transactions. 
-- 🌐 **Modern Next.js 16 App Router** — Implementing intelligent SEO via nested `layout.tsx` dynamic metadata generation (`generateMetadata`).
-- 🔄 **Performant Data Caching** — Leveraging `TanStack React Query` with explicitly enabled authenticated queries to optimize fetching load.
-- 🎨 **Reusable Glassmorphic Design System** — A completely DRY `PageBackground` layout component wrapping pages while reducing DOM duplication.
-- 🛡️ **Strict Form Validation** — Implemented comprehensive input validation natively catching bad forms using `Zod` and `react-hook-form` across the site.
-- 🧪 **Pytest Integration Suites** — Exhaustive backend backend lifecycle tests checking Auth schemas, Foreign-Key dependencies, and DB seeding isolation.
+[![Live](https://img.shields.io/badge/Live-buslens.live-72a5f2?style=flat&logo=googlechrome)](https://buslens.live)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat&logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript)](https://typescriptlang.org)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python)](https://python.org)
+
+---
+
+## Highlights
+
+| | Feature | Detail |
+|---|---------|--------|
+| 🔍 | **Directional Route Search** | Returns a route **only if** the departure stop comes before the destination in that direction — no false positives |
+| 🔐 | **JWT Authentication** | bcrypt password hashing, Axios 401 interceptor auto-logout, Zustand auth hydration |
+| 🏗️ | **Layered Backend** | Repository pattern isolating SQL from business logic, Pydantic v2 contracts |
+| ⚡ | **Cached Data Layer** | TanStack React Query with `staleTime`, `enabled` guards, and mutation-based invalidation |
+| 🎨 | **OKLCH Design System** | Dark-first glassmorphic UI with ambient gradient backgrounds and responsive typography |
+| 🛡️ | **Schema Validation** | Zod + React Hook Form on the client, Pydantic on the server — validated at both ends |
+| 🚀 | **CI/CD Pipeline** | GitHub Actions → SSH → EC2 auto-deploy on every push to `main` |
 
 ---
 
 ## Tech Stack
 
 ### Backend
-- **Language**: Python 3.10+
-- **Framework**: FastAPI (Pydantic v2 validation)
-- **Database**: MySQL (via SQLAlchemy connection layer + raw SQL queries)
-- **Auth**: JWT (PyJWT) with bcrypt Hashing
-- **Testing**: PyTest with Dependency Injected SQL Sessions
+
+| Technology | Role |
+|-----------|------|
+| Python 3.10+ / FastAPI | API framework with async support |
+| SQLAlchemy + raw SQL | Database access layer with connection pooling |
+| MySQL 8.0 (AWS RDS) | Persistent route, stop, and user data |
+| JWT (PyJWT) + bcrypt | Authentication and password hashing |
+| Pytest | Integration and unit test suite |
 
 ### Frontend
-- **Framework**: Next.js 16 (App Router, TypeScript)
-- **Styling**: Tailwind CSS v4 + Shadcn UI
-- **State Management**: Zustand (Local Storage Hydration)
-- **Data Fetching**: TanStack React Query + Axios Interceptors
-- **Animations**: Framer Motion
-- **Validation**: React Hook Form + Zod Schema Parsing
+
+| Technology | Role |
+|-----------|------|
+| Next.js 16 (App Router) | SSR, file-based routing, dynamic metadata |
+| TypeScript 5 | Type-safe development |
+| Tailwind CSS v4 + Shadcn UI | Design system and component primitives |
+| TanStack React Query + Axios | Cached data fetching with JWT interceptors |
+| Zustand | Auth state with localStorage hydration |
+| Framer Motion | Animations and page transitions |
+| Zod + React Hook Form | Client-side schema validation |
+
+### Infrastructure
+
+| Service | Role |
+|---------|------|
+| AWS EC2 (Ubuntu 22.04) | Hosts both frontend and backend |
+| AWS RDS (MySQL) | Managed database (private subnet) |
+| Nginx | Reverse proxy, SSL termination, path-based routing |
+| PM2 / systemd | Process management for Next.js / FastAPI |
+| Let's Encrypt | HTTPS certificates with auto-renewal |
+| GitHub Actions | CI/CD — auto-deploy on push to `main` |
+
+---
+
+## Project Structure
+
+```
+buslens-ag/
+├── frontend/               # Next.js 16 (TypeScript, React 19)
+│   ├── src/
+│   │   ├── app/            # App Router pages (home, search, route, dashboard, auth, about)
+│   │   ├── components/     # Layout, search, UI primitives, error boundary
+│   │   ├── hooks/          # React Query hooks (route search, favorites, history)
+│   │   ├── stores/         # Zustand auth store
+│   │   ├── lib/            # Axios client, validations, utilities
+│   │   └── types/          # TypeScript interfaces mirroring Pydantic schemas
+│   └── public/             # Static assets (logo, images)
+│
+├── backend/                # FastAPI (Python 3.10+)
+│   ├── app/
+│   │   ├── api/v1/         # Route handlers (health, stops, routes, auth, users)
+│   │   ├── schemas/        # Pydantic request/response models
+│   │   ├── services/       # Business logic (route ordering, normalization)
+│   │   ├── repositories/   # SQL queries (isolated from business logic)
+│   │   ├── db/             # Connection pool, ORM models
+│   │   └── core/           # Config, CORS, logging
+│   └── tests/              # Pytest suite
+│
+├── docs/
+│   ├── DEPLOYMENT.md       # Full production deployment guide
+│   └── ARCHITECTURE.md     # System design and architecture documentation
+│
+└── .github/workflows/      # CI/CD pipeline
+```
+
+---
+
+## Architecture
+
+```
+User (Browser)
+    ↓
+DNS  (buslens.live → EC2 Public IP)
+    ↓
+Nginx (Port 443 → SSL termination)
+    ├── /      → Next.js   (localhost:3000, PM2)
+    └── /api/  → FastAPI   (localhost:8000, systemd + Gunicorn)
+    ↓
+AWS RDS MySQL  (private subnet)
+```
+
+### Request Lifecycle
+
+```
+User Action (click / type)
+  ↓
+React Hook Form + Zod (validates client-side schema)
+  ↓
+TanStack React Query (checks cache → fires request)
+  ↓
+Axios client (attaches JWT Bearer token)
+  ↓
+FastAPI router → Pydantic validation → Service layer → Repository (raw SQL)
+  ↓
+MySQL 8.0
+```
+
+For the full system design including database ERD, auth flow diagrams, state management, and design decisions, see **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
 ---
 
 ## Getting Started
 
-### 1. Clone the Repository
+### Prerequisites
+
+- **Python** 3.10+
+- **Node.js** ≥ 20
+- **MySQL** 8.0 (local or remote)
+
+### 1. Clone
 
 ```bash
 git clone https://github.com/Deepakshandilya/buslens-ag.git
 cd buslens-ag
 ```
 
-### 2. Backend Setup
+### 2. Backend
 
 ```bash
 cd backend
 
-# Create virtual environment
+# Create and activate virtual environment
 python -m venv venv
-
-# Activate (Windows)
+# Windows:
 venv\Scripts\activate
-# Activate (macOS/Linux)
+# macOS/Linux:
 source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Environment Variables
-
-Create `backend/.env` adjusting values depending on your SQL connection:
+Create `backend/.env`:
 
 ```env
 APP_ENV=local
@@ -77,76 +176,104 @@ ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
-### 4. Database Setup
-
-Create the database assigned in `.env` within MySQL Workbench or CLI:
+Set up the database:
 
 ```sql
 CREATE DATABASE buslens;
 ```
 
-Run the table creation scripts from the `backend` root:
-
 ```bash
 python create_user_tables.py
 ```
 
-### 5. Running Tests
-
-To verify environment sanity, execute the test suite:
-```bash
-.venv\Scripts\pytest -v
-```
-
-### 6. Start the Backend
+Start the backend:
 
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-API docs will be available instantly at: [http://localhost:8000/docs](http://localhost:8000/docs)
+Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 7. Frontend Setup & Run
+### 3. Frontend
 
 ```bash
 cd ../frontend
 npm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env — set NEXT_PUBLIC_API_URL if backend is not on localhost:8000
+
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
----
+### 4. Run Tests
 
-## Architecture Lifecycle Flow
-
-User traffic seamlessly runs through the following hierarchy:
-```text
-User Action (Click/Type)
-  ↓
-React Hook Form + Zod (Validates Client-Side Schema)
-  ↓
-TanStack React Query Hook (Checks cache or fires Mutation)
-  ↓
-Axios Client (Attaches JWT Bearer Token Headers if present)
-  ↓
-FastAPI Router (app/api/v1/...) (Validates request with Pydantic)
-  ↓
-Dependency Injection (Yields SQLAlchemy Session + decodes CurrentUser JWT)
-  ↓
-Repository Layer (Executes raw SQL text() via SQLAlchemy ORM proxy)
-  ↓
-MySQL 8.0 Engine
+```bash
+cd backend
+pytest -v
 ```
 
 ---
 
-## Contributing & Development
+## Pages
 
-Built with best practices spanning code separation and UI reusability. To contribute:
-1. **Branch Format:** `git checkout -b feature/auth-roles`
-2. **Commit Pattern:** `feat(auth): Update password requirements`
-3. Always run the `pytest` suite ensuring MySQL foreign key relationships trigger efficiently.
+| Route | Description |
+|-------|-------------|
+| `/` | Home — infinite grid hero with stop-to-stop search |
+| `/search?from=X&to=Y` | Search results with journey visualization |
+| `/route/[number]/[direction]` | Full stop timeline with from/to highlighting |
+| `/bus/[number]` | All directions for a bus number |
+| `/stop/[id]` | All routes through a specific stop |
+| `/dashboard` | 🔒 Search history and saved favorites |
+| `/login` | Login form |
+| `/register` | Registration form |
+| `/about` | Story, network analytics, embedded map |
+
+---
+
+## API Reference
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/v1/health` | Health check |
+| `GET` | `/v1/stops?query=&limit=` | Stop autocomplete |
+| `POST` | `/v1/routes/search` | Search routes between two stops |
+| `GET` | `/v1/routes/{number}/{direction}` | Route detail with all stops |
+| `GET` | `/v1/stops/{id}/routes` | All routes through a stop |
+| `POST` | `/v1/auth/register` | User registration |
+| `POST` | `/v1/auth/login` | Login (returns JWT) |
+| `GET` | `/v1/users/me/favorites` | 🔒 List favorites |
+| `POST` | `/v1/users/me/favorites` | 🔒 Add favorite |
+| `DELETE` | `/v1/users/me/favorites/{id}` | 🔒 Remove favorite |
+| `GET` | `/v1/users/me/history` | 🔒 Search history |
+| `POST` | `/v1/users/me/history` | 🔒 Record search |
+
+Full interactive docs at `/docs` (Swagger) when running locally.
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [frontend/README.md](frontend/README.md) | Frontend architecture, project structure, design system, key patterns |
+| [backend/readme.md](backend/readme.md) | Backend architecture, API reference, database schema, data import |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design — infrastructure topology, request lifecycle, ERD, auth flow, design decisions |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production deployment — EC2, Nginx, SSL, systemd, PM2, CI/CD, troubleshooting |
+
+---
+
+## Contributing
+
+1. **Branch:** `git checkout -b feature/your-feature`
+2. **Commit:** `feat(scope): description` (conventional commits)
+3. **Test:** Run `pytest -v` before opening a PR
+4. **PR:** Open against `main`
+
+---
 
 ## License
 
