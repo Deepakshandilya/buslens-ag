@@ -4,7 +4,7 @@ A FastAPI service powering real-time bus route discovery for the Chandigarh Tric
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python)](https://python.org)
-[![AWS](https://img.shields.io/badge/AWS-Lambda%20%2B%20RDS-FF9900?style=flat&logo=amazonaws)](https://aws.amazon.com)
+[![AWS](https://img.shields.io/badge/AWS-EC2%20%2B%20RDS-FF9900?style=flat&logo=amazonaws)](https://aws.amazon.com)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
