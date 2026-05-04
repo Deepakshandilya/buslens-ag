@@ -2,7 +2,7 @@
 
 **Real-time bus route discovery for the Chandigarh Tricity region.**
 
-Search bus routes between any two stops, browse routes by bus number, view full stop timelines, and manage authenticated favorites and search history — across Chandigarh, Mohali, Panchkula, Zirakpur, and Kharar.
+Search bus routes between any two stops, browse routes by bus number, view full stop timelines, and manage authenticated favorites and search history — across Chandigarh, Mohali and Panchkula.
 
 [![Live](https://img.shields.io/badge/Live-buslens.live-72a5f2?style=flat&logo=googlechrome)](https://buslens.live)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
