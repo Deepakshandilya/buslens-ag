@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/hooks/useIsMobile";
 
 interface AnimatedGradientBackgroundProps {
     className?: string;
@@ -39,11 +40,45 @@ function createBeam(width: number, height: number): Beam {
     };
 }
 
+/**
+ * Mobile-optimised: renders a static gradient background with a subtle
+ * radial glow — zero canvas, zero rAF, zero blur filters.
+ */
+function MobileBeamsBackground({
+    className,
+    children,
+}: AnimatedGradientBackgroundProps) {
+    return (
+        <div
+            className={cn("relative min-h-screen w-full overflow-hidden", className)}
+            style={{
+                background:
+                    "linear-gradient(145deg, oklch(0.14 0.03 280) 0%, oklch(0.12 0.025 285) 40%, oklch(0.15 0.03 295) 100%)",
+            }}
+        >
+            {/* Static ambient glow — cheap radial gradient, no blur filter */}
+            <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                    background:
+                        "radial-gradient(ellipse 60% 50% at 50% 40%, oklch(0.55 0.12 285 / 8%) 0%, transparent 70%)",
+                }}
+            />
+
+            {/* Content slot */}
+            <div className="relative z-10 w-full h-full">
+                {children}
+            </div>
+        </div>
+    );
+}
+
 export function BeamsBackground({
     className,
     children,
     intensity = "strong",
 }: AnimatedGradientBackgroundProps) {
+    const reducedMotion = useReducedMotion();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const beamsRef = useRef<Beam[]>([]);
     const animationFrameRef = useRef<number>(0);
@@ -56,6 +91,9 @@ export function BeamsBackground({
     };
 
     useEffect(() => {
+        // Skip canvas setup entirely on mobile
+        if (reducedMotion) return;
+
         const canvas = canvasRef.current;
         if (!canvas) return;
 
@@ -162,8 +200,18 @@ export function BeamsBackground({
                 cancelAnimationFrame(animationFrameRef.current);
             }
         };
-    }, [intensity]);
+    }, [intensity, reducedMotion]);
 
+    // ── Mobile: lightweight static background ──
+    if (reducedMotion) {
+        return (
+            <MobileBeamsBackground className={className} intensity={intensity}>
+                {children}
+            </MobileBeamsBackground>
+        );
+    }
+
+    // ── Desktop: full animated beams ──
     return (
         <div
             className={cn(
