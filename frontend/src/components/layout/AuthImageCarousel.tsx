@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const IMAGES = [
     {
@@ -27,6 +28,7 @@ export function AuthImageCarousel({
     tagline = "Navigate Your City,\nOne Bus at a Time",
     subtitle = "Smart transit companion for Chandigarh Tricity",
 }: AuthImageCarouselProps) {
+    const isMobile = useIsMobile();
     const [current, setCurrent] = useState(0);
 
     const nextSlide = useCallback(() => {
@@ -34,9 +36,17 @@ export function AuthImageCarousel({
     }, []);
 
     useEffect(() => {
+        // Don't run the timer on mobile — the carousel is hidden anyway
+        if (isMobile) return;
+
         const timer = setInterval(nextSlide, 4500);
         return () => clearInterval(timer);
-    }, [nextSlide]);
+    }, [nextSlide, isMobile]);
+
+    // On mobile, don't render anything — parent already hides this with
+    // `hidden lg:block`, but skipping render avoids image preloading
+    // and animation overhead entirely.
+    if (isMobile) return null;
 
     return (
         <div className="relative h-full w-full overflow-hidden rounded-2xl">
