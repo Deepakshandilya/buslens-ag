@@ -56,3 +56,7 @@ class HistoryResponse(BaseModel):
     from_stop_name: Optional[str] = None
     to_stop_name: Optional[str] = None
     searched_at: datetime
+
+class DeleteAccountRequest(BaseModel):
+    """Password confirmation for account deletion. Empty string for Google-only accounts."""
+    password: str = ""
