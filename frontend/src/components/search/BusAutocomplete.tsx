@@ -13,6 +13,7 @@ interface BusAutocompleteProps {
     value: string;
     onValueChange: (value: string) => void;
     onBusSelect: (routeNumber: string) => void;
+    active?: boolean;
 }
 
 export function BusAutocomplete({
@@ -21,6 +22,7 @@ export function BusAutocomplete({
     value,
     onValueChange,
     onBusSelect,
+    active = true,
 }: BusAutocompleteProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -57,6 +59,14 @@ export function BusAutocomplete({
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    // Force-close dropdown when this tab becomes inactive
+    useEffect(() => {
+        if (!active) {
+            setIsOpen(false);
+            setDebouncedQuery("");
+        }
+    }, [active]);
 
     const handleSelect = (routeNumber: string) => {
         justSelectedRef.current = true;
