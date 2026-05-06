@@ -12,17 +12,19 @@ import httpx
 from app.db.session import get_db
 from app.core.security import verify_password, create_access_token
 from app.core.config import settings
-from app.schemas.user import UserCreate, UserResponse, Token, OTPRequest, OTPResponse
+from app.schemas.user import UserCreate, UserResponse, Token, OTPRequest, OTPResponse, ForgotPasswordRequest, ResetPasswordRequest
 from app.repositories.users_repo import (
     get_user_by_email,
     create_user,
     get_user_by_google_id,
     create_google_user,
     link_google_to_user,
+    update_user_password,
 )
 from app.repositories.otp_repo import create_otp, verify_otp, get_seconds_since_last_otp
-from app.services.email_service import generate_otp, send_otp_email, send_welcome_email
+from app.services.email_service import generate_otp, send_otp_email, send_welcome_email, send_password_reset_email
 from app.api.deps import get_current_user
+from app.core.security import verify_password, create_access_token, get_password_hash
 
 logger = logging.getLogger(__name__)
 
@@ -217,3 +219,59 @@ def validate_token(current_user: dict = Depends(get_current_user)):
     Returns 200 if valid, 401 if expired/invalid (handled by get_current_user).
     """
     return {"valid": True, "email": current_user["email"]}
+
+# ── Forgot Password (send OTP to email) ───────────────────────────────
+@router.post("/forgot-password", response_model=OTPResponse)
+def forgot_password(body: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Send a password reset OTP to the user's email.
+    Always returns success message (even if email not found) to prevent email enumeration.
+    """
+    user = get_user_by_email(db, email=body.email)
+    if user:
+        # Only allow for local auth users who have a password
+        if user.get("auth_provider") == "google" and not user.get("hashed_password"):
+            # Google-only users can't reset password — but don't leak this info
+            return {"message": "If an account exists with this email, a reset code has been sent."}
+
+        # Rate limit: check last OTP was sent more than 60 seconds ago
+        elapsed = get_seconds_since_last_otp(db, user["id"])
+        if elapsed is not None and elapsed < 60:
+            remaining = int(60 - elapsed)
+            if remaining > 0:
+                raise HTTPException(
+                    status_code=429,
+                    detail=f"Please wait {remaining} seconds before requesting a new code.",
+                )
+
+        otp = generate_otp()
+        create_otp(db, user["id"], otp, purpose="password_reset")
+        send_password_reset_email(body.email, otp)
+
+    # Always return the same message to prevent email enumeration
+    return {"message": "If an account exists with this email, a reset code has been sent."}
+
+
+# ── Reset Password (verify OTP + set new password) ────────────────────
+@router.post("/reset-password", response_model=OTPResponse)
+def reset_password(body: ResetPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Verify the password reset OTP and set a new password.
+    """
+    user = get_user_by_email(db, email=body.email)
+    if not user:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired reset code.",
+        )
+
+    if not verify_otp(db, user["id"], body.otp, purpose="password_reset"):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired reset code. Please request a new one.",
+        )
+
+    new_hash = get_password_hash(body.new_password)
+    update_user_password(db, user["id"], new_hash)
+
+    return {"message": "Password reset successfully. You can now log in with your new password."}

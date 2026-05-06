@@ -5,18 +5,18 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import settings
 
 
-def create_otp(db: Session, user_id: int, code: str) -> None:
-    """Insert a new OTP, invalidating any previous unused ones for this user."""
+def create_otp(db: Session, user_id: int, code: str, purpose: str = "email_verify") -> None:
+    """Insert a new OTP, invalidating any previous unused ones for this user and purpose."""
     try:
-        # Invalidate old OTPs
+        # Invalidate old OTPs for this user and purpose
         db.execute(
-            text("UPDATE otp_codes SET used = TRUE WHERE user_id = :uid AND used = FALSE"),
-            {"uid": user_id}
+            text("UPDATE otp_codes SET used = TRUE WHERE user_id = :uid AND used = FALSE AND purpose = :purpose"),
+            {"uid": user_id, "purpose": purpose}
         )
         db.execute(
-            text("""INSERT INTO otp_codes (user_id, code, expires_at)
-                    VALUES (:uid, :code, NOW() + INTERVAL :exp MINUTE)"""),
-            {"uid": user_id, "code": code, "exp": settings.otp_expire_minutes}
+            text("""INSERT INTO otp_codes (user_id, code, purpose, expires_at)
+                    VALUES (:uid, :code, :purpose, NOW() + INTERVAL :exp MINUTE)"""),
+            {"uid": user_id, "code": code, "purpose": purpose, "exp": settings.otp_expire_minutes}
         )
         db.commit()
     except SQLAlchemyError as e:
@@ -24,26 +24,31 @@ def create_otp(db: Session, user_id: int, code: str) -> None:
         raise ValueError("Database error while creating OTP") from e
 
 
-def verify_otp(db: Session, user_id: int, code: str) -> bool:
+def verify_otp(db: Session, user_id: int, code: str, purpose: str = "email_verify") -> bool:
     """
     Check if the OTP is valid (correct, not expired, not used).
-    If valid: marks OTP as used AND sets user.is_verified = True.
+    If valid and purpose is email_verify: marks OTP as used AND sets user.is_verified = True.
+    If valid and purpose is password_reset: just marks OTP as used.
     """
     try:
         row = db.execute(
             text("""SELECT id FROM otp_codes
-                    WHERE user_id = :uid AND code = :code
+                    WHERE user_id = :uid AND code = :code AND purpose = :purpose
                       AND used = FALSE AND expires_at > NOW()
                     ORDER BY created_at DESC LIMIT 1"""),
-            {"uid": user_id, "code": code}
+            {"uid": user_id, "code": code, "purpose": purpose}
         ).mappings().first()
 
         if not row:
             return False
 
-        # Mark OTP as used and verify the user
+        # Mark OTP as used
         db.execute(text("UPDATE otp_codes SET used = TRUE WHERE id = :id"), {"id": row["id"]})
-        db.execute(text("UPDATE users SET is_verified = TRUE WHERE id = :uid"), {"uid": user_id})
+        
+        # Only verify user email if the purpose is email verification
+        if purpose == "email_verify":
+            db.execute(text("UPDATE users SET is_verified = TRUE WHERE id = :uid"), {"uid": user_id})
+        
         db.commit()
         return True
     except SQLAlchemyError as e:
