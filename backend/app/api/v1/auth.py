@@ -21,7 +21,7 @@ from app.repositories.users_repo import (
     link_google_to_user,
 )
 from app.repositories.otp_repo import create_otp, verify_otp, get_seconds_since_last_otp
-from app.services.email_service import generate_otp, send_otp_email
+from app.services.email_service import generate_otp, send_otp_email, send_welcome_email
 from app.api.deps import get_current_user
 
 logger = logging.getLogger(__name__)
@@ -43,6 +43,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     # Generate and send OTP (non-blocking — if email fails, user is still registered)
     otp = generate_otp()
     create_otp(db, user["id"], otp)
+    send_welcome_email(user_in.email)
     send_otp_email(user_in.email, otp)
 
     # Instant login: return JWT immediately
@@ -198,6 +199,7 @@ def google_callback(
         else:
             # Brand new user via Google
             user = create_google_user(db, email, google_id)
+            send_welcome_email(email)
 
     # 4. Issue our JWT and redirect to frontend callback page
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
