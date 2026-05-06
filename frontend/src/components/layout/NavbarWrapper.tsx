@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 
@@ -10,5 +11,9 @@ export function NavbarWrapper() {
     const isAuthPage = AUTH_ROUTES.includes(pathname);
 
     if (isAuthPage) return null;
-    return <Navbar />;
+    return (
+        <Suspense>
+            <Navbar />
+        </Suspense>
+    );
 }

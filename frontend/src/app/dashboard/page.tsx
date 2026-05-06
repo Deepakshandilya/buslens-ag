@@ -15,12 +15,10 @@ import {
     ShieldCheck,
     Mail,
     RefreshCw,
-    Lock,
-    AlertTriangle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     AlertDialog,
@@ -41,94 +39,6 @@ import api from "@/lib/api";
 import { PageBackground } from "@/components/layout/PageBackground";
 import type { UserResponse } from "@/types/api";
 
-// ── Delete Account Section ───────────────────────────────────────────
-function DeleteAccountSection({ user }: { user: UserResponse | null }) {
-    const router = useRouter();
-    const { logout } = useAuthStore();
-    const [showDialog, setShowDialog] = useState(false);
-    const [password, setPassword] = useState("");
-    const [deleting, setDeleting] = useState(false);
-
-    const isGoogleOnly = user?.auth_provider === "google";
-
-    const handleDelete = async () => {
-        setDeleting(true);
-        try {
-            await api.delete("/users/me", {
-                data: { password: isGoogleOnly ? "" : password },
-            });
-            toast.success("Account deleted successfully.");
-            logout();
-            router.push("/");
-        } catch (err: unknown) {
-            const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
-            toast.error(detail || "Failed to delete account");
-        } finally {
-            setDeleting(false);
-            setShowDialog(false);
-            setPassword("");
-        }
-    };
-
-    return (
-        <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
-            <AlertDialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="gap-2 border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                >
-                    <Trash2 className="h-4 w-4" />
-                    Delete my account
-                </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle className="flex items-center gap-2 text-destructive">
-                        <AlertTriangle className="h-5 w-5" />
-                        Delete your account?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription className="space-y-2">
-                        <span className="block">
-                            This will permanently delete your account, favorites, search history, and all associated data.
-                        </span>
-                        <span className="block font-semibold text-destructive/80">
-                            This action cannot be undone.
-                        </span>
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-
-                {!isGoogleOnly && (
-                    <div className="py-2">
-                        <label className="text-sm font-medium text-muted-foreground block mb-2">
-                            Confirm your password
-                        </label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter your password"
-                                className="w-full h-10 pl-9 pr-3 rounded-lg text-sm bg-background/50 border border-border/50 text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-destructive/50 transition-colors"
-                            />
-                        </div>
-                    </div>
-                )}
-
-                <AlertDialogFooter>
-                    <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
-                    <Button
-                        variant="destructive"
-                        onClick={handleDelete}
-                        disabled={deleting || (!isGoogleOnly && !password)}
-                    >
-                        {deleting ? "Deleting..." : "Delete permanently"}
-                    </Button>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-    );
-}
 
 function DashboardContent() {
     const router = useRouter();
@@ -154,7 +64,7 @@ function DashboardContent() {
 
     useEffect(() => {
         if (isHydrated && !isAuthenticated) {
-            router.push("/login");
+            router.push("/");
         }
     }, [isAuthenticated, isHydrated, router]);
 
@@ -342,16 +252,6 @@ function DashboardContent() {
                 )}
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6 h-12">
-                        <TabsTrigger value="history" className="gap-2 text-[15px] font-semibold">
-                            <Clock className="h-4.5 w-4.5" />
-                            Search History
-                        </TabsTrigger>
-                        <TabsTrigger value="favorites" className="gap-2 text-[15px] font-semibold">
-                            <Heart className="h-4.5 w-4.5" />
-                            Favourites
-                        </TabsTrigger>
-                    </TabsList>
 
                     {/* History Tab */}
                     <TabsContent value="history" className="space-y-3">
@@ -600,19 +500,7 @@ function DashboardContent() {
                     </TabsContent>
                 </Tabs>
 
-                {/* Danger Zone — Delete Account */}
-                <div className="mt-12 pt-8" style={{ borderTop: "1px solid oklch(1 0.02 285 / 8%)" }}>
-                    <h3
-                        className="text-lg font-bold mb-1 text-destructive"
-                        style={{ fontFamily: "var(--font-heading), sans-serif" }}
-                    >
-                        Danger Zone
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                        Permanently delete your account and all associated data. This action cannot be undone.
-                    </p>
-                    <DeleteAccountSection user={user} />
-                </div>
+
             </div>
         </PageBackground>
     );

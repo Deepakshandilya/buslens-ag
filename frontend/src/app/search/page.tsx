@@ -46,7 +46,7 @@ function SearchResultsContent() {
     const handleFavorite = (routeId: number, routeNumber: string) => {
         if (!isAuthenticated) {
             toast.error("Please login to save favorites");
-            router.push("/login");
+            router.push("/");
             return;
         }
 
