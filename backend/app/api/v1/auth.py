@@ -109,10 +109,11 @@ def resend_otp(
     if current_user.get("is_verified"):
         return {"message": "Email already verified"}
 
-    # Rate limit: check last OTP was sent more than 60 seconds ago
+    # Rate limit: check last OTP was sent more than X seconds ago
     elapsed = get_seconds_since_last_otp(db, current_user["id"])
-    if elapsed is not None and elapsed < 60:
-        remaining = int(60 - elapsed)
+    delay = settings.otp_resend_delay_seconds
+    if elapsed is not None and elapsed < delay:
+        remaining = int(delay - elapsed)
         # Prevent negative remaining if there's clock skew or edge case
         if remaining > 0:
             raise HTTPException(
@@ -234,10 +235,11 @@ def forgot_password(body: ForgotPasswordRequest, db: Session = Depends(get_db)):
             # Google-only users can't reset password — but don't leak this info
             return {"message": "If an account exists with this email, a reset code has been sent."}
 
-        # Rate limit: check last OTP was sent more than 60 seconds ago
+        # Rate limit: check last OTP was sent more than X seconds ago
         elapsed = get_seconds_since_last_otp(db, user["id"])
-        if elapsed is not None and elapsed < 60:
-            remaining = int(60 - elapsed)
+        delay = settings.otp_resend_delay_seconds
+        if elapsed is not None and elapsed < delay:
+            remaining = int(delay - elapsed)
             if remaining > 0:
                 raise HTTPException(
                     status_code=429,
