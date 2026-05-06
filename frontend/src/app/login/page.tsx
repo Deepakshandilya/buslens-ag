@@ -198,6 +198,15 @@ export default function LoginPage() {
                                     )}
                                 </div>
 
+                                <div className="flex justify-end">
+                                    <Link
+                                        href="/forgot-password"
+                                        className="text-sm font-medium transition-colors hover:underline"
+                                        style={{ color: "oklch(0.70 0.08 290)" }}
+                                    >
+                                        Forgot password?
+                                    </Link>
+                                </div>
                                 <button
                                     type="submit"
                                     disabled={loading}
