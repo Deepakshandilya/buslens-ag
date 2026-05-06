@@ -52,6 +52,8 @@ class Settings:
         self.smtp_user = os.getenv("SMTP_USER", "")
         self.smtp_password = os.getenv("SMTP_PASSWORD", "")
         self.otp_expire_minutes = int(os.getenv("OTP_EXPIRE_MINUTES", "10"))
+        self.password_reset_expire_minutes = int(os.getenv("PASSWORD_RESET_EXPIRE_MINUTES", "15"))
+        self.otp_resend_delay_seconds = int(os.getenv("OTP_RESEND_DELAY_SECONDS", "60"))
 
         # Google OAuth
         self.google_client_id = os.getenv("GOOGLE_CLIENT_ID", "")

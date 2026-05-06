@@ -8,6 +8,9 @@ from app.core.config import settings
 def create_otp(db: Session, user_id: int, code: str, purpose: str = "email_verify") -> None:
     """Insert a new OTP, invalidating any previous unused ones for this user and purpose."""
     try:
+        # Determine expiry based on purpose
+        exp_minutes = settings.password_reset_expire_minutes if purpose == "password_reset" else settings.otp_expire_minutes
+        
         # Invalidate old OTPs for this user and purpose
         db.execute(
             text("UPDATE otp_codes SET used = TRUE WHERE user_id = :uid AND used = FALSE AND purpose = :purpose"),
@@ -16,7 +19,7 @@ def create_otp(db: Session, user_id: int, code: str, purpose: str = "email_verif
         db.execute(
             text("""INSERT INTO otp_codes (user_id, code, purpose, expires_at)
                     VALUES (:uid, :code, :purpose, NOW() + INTERVAL :exp MINUTE)"""),
-            {"uid": user_id, "code": code, "purpose": purpose, "exp": settings.otp_expire_minutes}
+            {"uid": user_id, "code": code, "purpose": purpose, "exp": exp_minutes}
         )
         db.commit()
     except SQLAlchemyError as e:
