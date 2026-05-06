@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.api.deps import get_current_user, get_verified_user
-from app.schemas.user import FavoriteCreate, FavoriteResponse, HistoryCreate, HistoryResponse, UserResponse
+from app.schemas.user import FavoriteCreate, FavoriteResponse, HistoryCreate, HistoryResponse, UserResponse, DeleteAccountRequest
 from app.repositories import users_repo
+from app.core.security import verify_password
 
 router = APIRouter()
 
@@ -94,4 +95,33 @@ def clear_favorites(
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.delete("/me", status_code=200)
+def delete_account(
+    body: DeleteAccountRequest,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    """
+    Permanently delete the current user's account and all associated data.
+    Local users must confirm with their password.
+    Google-only users can delete without password.
+    """
+    # For local auth users, require password confirmation
+    if current_user.get("hashed_password"):
+        if not body.password:
+            raise HTTPException(
+                status_code=400,
+                detail="Password is required to delete your account.",
+            )
+        if not verify_password(body.password, current_user["hashed_password"]):
+            raise HTTPException(
+                status_code=403,
+                detail="Incorrect password. Account deletion cancelled.",
+            )
+
+    try:
+        users_repo.delete_user(db, current_user["id"])
+        return {"message": "Account deleted successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
