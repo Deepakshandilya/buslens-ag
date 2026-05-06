@@ -142,3 +142,13 @@ def clear_user_favorites(db: Session, user_id: int):
     except SQLAlchemyError as e:
         db.rollback()
         raise ValueError("Database error while clearing user favorites") from e
+
+def update_user_password(db: Session, user_id: int, new_hashed_password: str) -> None:
+    """Update a user's password hash."""
+    try:
+        sql = text("UPDATE users SET hashed_password = :pwd WHERE id = :uid")
+        db.execute(sql, {"pwd": new_hashed_password, "uid": user_id})
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise ValueError("Database error while updating password") from e
