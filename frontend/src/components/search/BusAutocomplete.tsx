@@ -3,26 +3,25 @@
 import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin } from "lucide-react";
+import { Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useStopSearch } from "@/hooks/useStopSearch";
-import type { StopOut } from "@/types/api";
+import { useBusSearch } from "@/hooks/useBusSearch";
 
-interface StopAutocompleteProps {
+interface BusAutocompleteProps {
     label: string;
     placeholder?: string;
     value: string;
     onValueChange: (value: string) => void;
-    onStopSelect: (stop: StopOut) => void;
+    onBusSelect: (routeNumber: string) => void;
 }
 
-export function StopAutocomplete({
+export function BusAutocomplete({
     label,
-    placeholder = "Search stop...",
+    placeholder = "Search bus number...",
     value,
     onValueChange,
-    onStopSelect,
-}: StopAutocompleteProps) {
+    onBusSelect,
+}: BusAutocompleteProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [debouncedQuery, setDebouncedQuery] = useState("");
     const justSelectedRef = useRef(false);
@@ -37,7 +36,7 @@ export function StopAutocomplete({
         return () => clearTimeout(timer);
     }, [value]);
 
-    const { data, isLoading } = useStopSearch(debouncedQuery);
+    const { data, isLoading } = useBusSearch(debouncedQuery);
     const results = data?.results || [];
 
     useEffect(() => {
@@ -59,10 +58,10 @@ export function StopAutocomplete({
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const handleSelect = (stop: StopOut) => {
+    const handleSelect = (routeNumber: string) => {
         justSelectedRef.current = true;
-        onStopSelect(stop);
-        onValueChange(stop.name);
+        onBusSelect(routeNumber);
+        onValueChange(routeNumber);
         setIsOpen(false);
         setDebouncedQuery("");
     };
@@ -76,7 +75,7 @@ export function StopAutocomplete({
                 {label}
             </label>
             <div className="relative">
-                <MapPin
+                <Hash
                     className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5"
                     style={{ color: "oklch(0.50 0.05 285)" }}
                 />
@@ -93,6 +92,7 @@ export function StopAutocomplete({
                     }}
                     placeholder={placeholder}
                     className="pl-11 h-13 text-lg bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 rounded-xl"
+                    style={{ fontFamily: "var(--font-heading), sans-serif" }}
                 />
             </div>
 
@@ -113,23 +113,35 @@ export function StopAutocomplete({
                         </div>
                     ) : results.length > 0 ? (
                         <div className="max-h-56 overflow-y-auto">
-                            {results.map((stop) => (
+                            {results.map((item) => (
                                 <button
-                                    key={stop.id}
-                                    onClick={() => handleSelect(stop)}
+                                    key={item.route_number}
+                                    onClick={() => handleSelect(item.route_number)}
                                     className={cn(
                                         "w-full px-4 py-3.5 text-left flex items-center gap-2.5",
                                         "hover:bg-white/5 transition-colors cursor-pointer"
                                     )}
                                 >
-                                    <MapPin className="h-4 w-4 text-primary/60 flex-shrink-0" />
-                                    <span className="text-base font-medium">{stop.name}</span>
+                                    <div
+                                        className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+                                        style={{
+                                            background: "linear-gradient(135deg, oklch(0.68 0.15 280 / 20%), oklch(0.72 0.12 295 / 20%))",
+                                        }}
+                                    >
+                                        <span
+                                            className="text-sm font-bold text-primary"
+                                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                                        >
+                                            {item.route_number}
+                                        </span>
+                                    </div>
+                                    <span className="text-base font-medium">Route {item.route_number}</span>
                                 </button>
                             ))}
                         </div>
                     ) : (
                         <div className="p-4 text-sm text-muted-foreground text-center">
-                            No stops found
+                            No routes found
                         </div>
                     )}
                 </div>

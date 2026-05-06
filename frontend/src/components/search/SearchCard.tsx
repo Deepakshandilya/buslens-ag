@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { Search, ArrowRightLeft, Hash, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StopAutocomplete } from "@/components/search/StopAutocomplete";
+import { BusAutocomplete } from "@/components/search/BusAutocomplete";
 import { useAuthStore } from "@/stores/authStore";
 import { useAddHistory } from "@/hooks/useHistory";
 import type { StopOut } from "@/types/api";
@@ -142,24 +142,13 @@ export function SearchCard() {
 
                     {/* Bus Number Tab */}
                     <TabsContent value="bus" className="space-y-5 mt-0">
-                        <div>
-                            <label
-                                className="text-base font-semibold mb-2.5 block"
-                                style={{ color: "oklch(0.75 0.03 285)" }}
-                            >
-                                Route / Bus Number
-                            </label>
-                            <div className="relative">
-                                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
-                                    value={busNumber}
-                                    onChange={(e) => setBusNumber(e.target.value)}
-                                    placeholder="e.g. 20, 35A, 12..."
-                                    className="pl-11 h-13 text-lg bg-background/50 backdrop-blur-sm border-border/50 rounded-xl"
-                                    style={{ fontFamily: "var(--font-heading), sans-serif" }}
-                                />
-                            </div>
-                        </div>
+                        <BusAutocomplete
+                            label="Route / Bus Number"
+                            placeholder="e.g. 20, 35A, 12..."
+                            value={busNumber}
+                            onValueChange={setBusNumber}
+                            onBusSelect={(routeNumber) => setBusNumber(routeNumber)}
+                        />
 
                         <Button
                             onClick={handleBusSearch}

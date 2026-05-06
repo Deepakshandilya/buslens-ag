@@ -2,6 +2,24 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 
+def search_route_numbers(db: Session, query: str, limit: int = 10) -> list[dict]:
+    """
+    Returns list of {route_number} for autocomplete.
+    Substring match on route_number.
+    """
+    try:
+        sql = text("""
+            SELECT DISTINCT route_number
+            FROM routes
+            WHERE route_number LIKE :q
+            ORDER BY route_number ASC
+            LIMIT :limit
+        """)
+        rows = db.execute(sql, {"q": f"%{query}%", "limit": limit}).mappings().all()
+        return [dict(r) for r in rows]
+    except SQLAlchemyError as e:
+        raise ValueError("Database error while searching route numbers") from e
+
 def find_route_matches(db: Session, from_stop: str, to_stop: str,limit: int = 20) -> list[dict]:
     """
     Find routes where both stops exits AND from_sequence < to_sequence.

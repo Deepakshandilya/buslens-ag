@@ -18,7 +18,7 @@ def search_stops(db: Session ,query: str, limit: int) -> list[dict]:
             LIMIT :limit
         """)
 
-        rows = db.execute(sql, {"q": f"{query}%", "limit": limit}).mappings().all()
+        rows = db.execute(sql, {"q": f"%{query}%", "limit": limit}).mappings().all()
         return [dict(r) for r in rows]
     except SQLAlchemyError as e:
         raise ValueError("Database error while searching stops") from e

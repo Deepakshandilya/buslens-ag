@@ -1,13 +1,31 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session 
 
 from app.db.session import get_db
-from app.schemas.routes import RouteSearchRequest, RouteSearchResult, RouteDetailResponse
-from app.repositories.routes_repo import find_route_matches, get_stops_between, get_route_detail
+from app.schemas.routes import RouteSearchRequest, RouteSearchResult, RouteDetailResponse, RouteAutocompleteResponse, RouteAutocompleteItem
+from app.repositories.routes_repo import find_route_matches, get_stops_between, get_route_detail, search_route_numbers
 # from app.services.route_service import normalize_stop_name
 from app.services.validation import normalize_stop_name, normalize_direction
 
 router = APIRouter()
+
+
+@router.get("/routes/autocomplete", response_model=RouteAutocompleteResponse)
+def route_autocomplete(
+    query: str = Query(..., min_length=1, max_length=50),
+    limit: int = Query(10, ge=1, le=50),
+    db: Session = Depends(get_db),
+):
+    q = query.strip()
+    try:
+        rows = search_route_numbers(db, q, limit)
+        return {
+            "query": q,
+            "results": [RouteAutocompleteItem(**r) for r in rows],
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @router.post("/routes/search", response_model=list[RouteSearchResult])
