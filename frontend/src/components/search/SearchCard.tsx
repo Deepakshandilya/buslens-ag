@@ -24,6 +24,7 @@ export function SearchCard() {
     const [busNumber, setBusNumber] = useState("");
     const [searchStop, setSearchStop] = useState("");
     const [selectedSearchStop, setSelectedSearchStop] = useState<StopOut | null>(null);
+    const [activeTab, setActiveTab] = useState("stops");
 
     const handleSwap = () => {
         setFromStop(toStop);
@@ -76,7 +77,7 @@ export function SearchCard() {
                     </p>
                 </div>
 
-                <Tabs defaultValue="stops" className="w-full">
+                <Tabs defaultValue="stops" className="w-full" onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-3 mb-6 h-14">
                         <TabsTrigger value="stops" className="text-[15px] gap-2 font-semibold">
                             <Search className="h-4.5 w-4.5" />
@@ -103,6 +104,7 @@ export function SearchCard() {
                             value={fromStop}
                             onValueChange={setFromStop}
                             onStopSelect={setSelectedFrom}
+                            active={activeTab === "stops"}
                         />
 
                         <div className="flex justify-center -my-2.5 relative z-10">
@@ -123,6 +125,7 @@ export function SearchCard() {
                             value={toStop}
                             onValueChange={setToStop}
                             onStopSelect={setSelectedTo}
+                            active={activeTab === "stops"}
                         />
 
                         <Button
@@ -148,6 +151,7 @@ export function SearchCard() {
                             value={busNumber}
                             onValueChange={setBusNumber}
                             onBusSelect={(routeNumber) => setBusNumber(routeNumber)}
+                            active={activeTab === "bus"}
                         />
 
                         <Button
@@ -173,6 +177,7 @@ export function SearchCard() {
                             value={searchStop}
                             onValueChange={setSearchStop}
                             onStopSelect={setSelectedSearchStop}
+                            active={activeTab === "stop"}
                         />
 
                         <Button
