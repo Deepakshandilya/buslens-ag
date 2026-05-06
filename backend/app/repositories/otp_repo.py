@@ -13,11 +13,10 @@ def create_otp(db: Session, user_id: int, code: str) -> None:
             text("UPDATE otp_codes SET used = TRUE WHERE user_id = :uid AND used = FALSE"),
             {"uid": user_id}
         )
-        expires_at = datetime.now(timezone.utc) + timedelta(minutes=settings.otp_expire_minutes)
         db.execute(
             text("""INSERT INTO otp_codes (user_id, code, expires_at)
-                    VALUES (:uid, :code, :exp)"""),
-            {"uid": user_id, "code": code, "exp": expires_at}
+                    VALUES (:uid, :code, NOW() + INTERVAL :exp MINUTE)"""),
+            {"uid": user_id, "code": code, "exp": settings.otp_expire_minutes}
         )
         db.commit()
     except SQLAlchemyError as e:
@@ -52,14 +51,15 @@ def verify_otp(db: Session, user_id: int, code: str) -> bool:
         raise ValueError("Database error while verifying OTP") from e
 
 
-def get_last_otp_time(db: Session, user_id: int) -> datetime | None:
-    """Return created_at of the most recent OTP for rate-limiting resend."""
+def get_seconds_since_last_otp(db: Session, user_id: int) -> int | None:
+    """Return seconds elapsed since the most recent OTP was created."""
     try:
         row = db.execute(
-            text("SELECT created_at FROM otp_codes WHERE user_id = :uid ORDER BY created_at DESC LIMIT 1"),
+            text("SELECT TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed "
+                 "FROM otp_codes WHERE user_id = :uid ORDER BY created_at DESC LIMIT 1"),
             {"uid": user_id}
         ).mappings().first()
-        return row["created_at"] if row else None
+        return row["elapsed"] if row else None
     except SQLAlchemyError as e:
         raise ValueError("Database error while checking OTP rate limit") from e
 

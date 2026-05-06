@@ -20,7 +20,7 @@ from app.repositories.users_repo import (
     create_google_user,
     link_google_to_user,
 )
-from app.repositories.otp_repo import create_otp, verify_otp, get_last_otp_time
+from app.repositories.otp_repo import create_otp, verify_otp, get_seconds_since_last_otp
 from app.services.email_service import generate_otp, send_otp_email
 from app.api.deps import get_current_user
 
@@ -107,14 +107,11 @@ def resend_otp(
         return {"message": "Email already verified"}
 
     # Rate limit: check last OTP was sent more than 60 seconds ago
-    last_otp_time = get_last_otp_time(db, current_user["id"])
-    if last_otp_time:
-        # Ensure timezone-aware comparison
-        if last_otp_time.tzinfo is None:
-            last_otp_time = last_otp_time.replace(tzinfo=timezone.utc)
-        elapsed = (datetime.now(timezone.utc) - last_otp_time).total_seconds()
-        if elapsed < 60:
-            remaining = int(60 - elapsed)
+    elapsed = get_seconds_since_last_otp(db, current_user["id"])
+    if elapsed is not None and elapsed < 60:
+        remaining = int(60 - elapsed)
+        # Prevent negative remaining if there's clock skew or edge case
+        if remaining > 0:
             raise HTTPException(
                 status_code=429,
                 detail=f"Please wait {remaining} seconds before requesting a new OTP.",

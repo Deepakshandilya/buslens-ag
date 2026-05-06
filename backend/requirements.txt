@@ -11,3 +11,4 @@ bcrypt
 pyjwt
 python-multipart
 email-validator
+cryptography
