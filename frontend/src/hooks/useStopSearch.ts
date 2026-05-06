@@ -13,7 +13,7 @@ export function useStopSearch(query: string) {
             });
             return data;
         },
-        enabled: query.length >= 2,
+        enabled: query.length >= 1,
         staleTime: 30_000,
     });
 }

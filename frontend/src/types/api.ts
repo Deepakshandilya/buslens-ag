@@ -38,6 +38,16 @@ export interface RouteDetailResponse {
     stops: RouteStop[];
 }
 
+// ── Route Autocomplete ──
+export interface RouteAutocompleteItem {
+    route_number: string;
+}
+
+export interface RouteAutocompleteResponse {
+    query: string;
+    results: RouteAutocompleteItem[];
+}
+
 // ── Stop Routes ──
 export interface StopRouteItem {
     route_number: string;

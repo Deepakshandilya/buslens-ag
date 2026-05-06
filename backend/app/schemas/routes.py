@@ -4,6 +4,14 @@ class RouteSearchRequest(BaseModel):
     from_stop: str = Field(min_length=1,max_length=200)
     to_stop: str = Field(min_length=1,max_length=200)
 
+class RouteAutocompleteItem(BaseModel):
+    route_number: str
+
+class RouteAutocompleteResponse(BaseModel):
+    query: str
+    results: list[RouteAutocompleteItem]
+
+
 class RouteSearchResult(BaseModel):
     route_id: int
     route_number: str
