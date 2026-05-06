@@ -96,7 +96,7 @@ def send_welcome_email(to_email: str) -> bool:
         With BusLens, you can easily track routes, save your favorite stops, and review your search history.
       </p>
       <div style="text-align: center; margin-bottom: 24px;">
-        <a href="{settings.frontend_url}/dashboard" 
+        <a href="{settings.frontend_url}" 
            style="display: inline-block; padding: 12px 24px; background: #6d28d9; color: #ffffff;
                   text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px;">
           Go to Dashboard
