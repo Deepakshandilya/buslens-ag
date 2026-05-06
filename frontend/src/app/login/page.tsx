@@ -57,7 +57,8 @@ export default function LoginPage() {
     };
 
     const handleGoogleLogin = () => {
-        toast.info("Google login coming soon!");
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/v1";
+        window.location.href = `${apiBase}/auth/google/login`;
     };
 
     return (

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { useAuthStore } from "@/stores/authStore";
+import type { Token, UserResponse } from "@/types/api";
 import { AuthImageCarousel } from "@/components/layout/AuthImageCarousel";
 import { AuthFloatingNav } from "@/components/layout/AuthFloatingNav";
 import { BeamsBackground } from "@/components/ui/beams-background";
@@ -15,6 +17,7 @@ import { registerSchema, type RegisterFormData } from "@/lib/validations";
 
 export default function RegisterPage() {
     const router = useRouter();
+    const login = useAuthStore((s) => s.login);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -29,9 +32,21 @@ export default function RegisterPage() {
     const onSubmit = async (data: RegisterFormData) => {
         setLoading(true);
         try {
-            await api.post("/auth/register", { email: data.email, password: data.password });
-            toast.success("Account created! Please sign in.");
-            router.push("/login");
+            // Register now returns a token (instant login)
+            const { data: tokenData } = await api.post<Token>("/auth/register", {
+                email: data.email,
+                password: data.password,
+            });
+
+            // Fetch user profile with the new token
+            localStorage.setItem("buslens_token", tokenData.access_token);
+            const { data: userData } = await api.get<UserResponse>("/users/me", {
+                headers: { Authorization: `Bearer ${tokenData.access_token}` },
+            });
+
+            login(tokenData.access_token, userData);
+            toast.success("Account created! Check your email for a verification code.");
+            router.push("/");
         } catch (err: unknown) {
             const msg =
                 (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ||
@@ -43,7 +58,8 @@ export default function RegisterPage() {
     };
 
     const handleGoogleSignup = () => {
-        toast.info("Google signup coming soon!");
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/v1";
+        window.location.href = `${apiBase}/auth/google/login`;
     };
 
     return (

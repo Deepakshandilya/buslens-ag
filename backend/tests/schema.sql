@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS otp_codes;
 DROP TABLE IF EXISTS search_history;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS route_stops;
@@ -21,7 +22,10 @@ CREATE TABLE routes (
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) NOT NULL,
-  hashed_password VARCHAR(255) NOT NULL,
+  hashed_password VARCHAR(255) NULL,
+  is_verified BOOLEAN NOT NULL DEFAULT FALSE,
+  auth_provider ENUM('local','google') NOT NULL DEFAULT 'local',
+  google_id VARCHAR(255) NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_users_email (email)
 );
@@ -68,8 +72,21 @@ CREATE TABLE search_history (
   CONSTRAINT fk_history_to_stop FOREIGN KEY (to_stop_id) REFERENCES stops(id) ON DELETE CASCADE
 );
 
+CREATE TABLE otp_codes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  code VARCHAR(6) NOT NULL,
+  purpose ENUM('email_verify') NOT NULL DEFAULT 'email_verify',
+  expires_at TIMESTAMP NOT NULL,
+  used BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_otp_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE INDEX idx_stops_name ON stops(name);
 CREATE INDEX idx_route_stops_stop_id ON route_stops(stop_id);
 CREATE INDEX idx_route_stops_route_seq ON route_stops(route_id, sequence_no);
 CREATE INDEX idx_favorites_user_id ON favorites(user_id);
 CREATE INDEX idx_search_history_user_id ON search_history(user_id);
+CREATE INDEX idx_users_google_id ON users(google_id);
+CREATE INDEX idx_otp_user_purpose ON otp_codes(user_id, purpose, used);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
     Clock,
@@ -12,6 +12,9 @@ import {
     MapPin,
     RotateCcw,
     ChevronRight,
+    ShieldCheck,
+    Mail,
+    RefreshCw,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,13 +37,20 @@ import { useFavorites, useDeleteFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 import api from "@/lib/api";
 import { PageBackground } from "@/components/layout/PageBackground";
+import type { UserResponse } from "@/types/api";
 
 function DashboardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const tabParam = searchParams.get("tab");
     const [activeTab, setActiveTab] = useState(tabParam === "favorites" ? "favorites" : "history");
-    const { isAuthenticated, isHydrated, user } = useAuthStore();
+    const { isAuthenticated, isHydrated, user, setUser } = useAuthStore();
+
+    // Verification state
+    const [otpValue, setOtpValue] = useState("");
+    const [verifying, setVerifying] = useState(false);
+    const [resendCooldown, setResendCooldown] = useState(0);
+    const [resending, setResending] = useState(false);
 
     // Sync tab with URL
     useEffect(() => {
@@ -56,6 +66,47 @@ function DashboardContent() {
             router.push("/login");
         }
     }, [isAuthenticated, isHydrated, router]);
+
+    // Resend cooldown timer
+    useEffect(() => {
+        if (resendCooldown <= 0) return;
+        const timer = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
+        return () => clearTimeout(timer);
+    }, [resendCooldown]);
+
+    const handleVerifyOTP = useCallback(async () => {
+        if (otpValue.length !== 6) {
+            toast.error("Please enter a 6-digit code");
+            return;
+        }
+        setVerifying(true);
+        try {
+            await api.post("/auth/verify-email", { otp: otpValue });
+            // Refresh user data in store
+            const { data: updatedUser } = await api.get<UserResponse>("/users/me");
+            setUser(updatedUser);
+            toast.success("Email verified successfully!");
+            setOtpValue("");
+        } catch {
+            toast.error("Invalid or expired code. Try again.");
+        } finally {
+            setVerifying(false);
+        }
+    }, [otpValue, setUser]);
+
+    const handleResendOTP = useCallback(async () => {
+        setResending(true);
+        try {
+            await api.post("/auth/resend-otp");
+            toast.success("Verification code sent to your email");
+            setResendCooldown(60);
+        } catch (err: unknown) {
+            const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
+            toast.error(detail || "Failed to resend code");
+        } finally {
+            setResending(false);
+        }
+    }, []);
 
     const {
         data: history,
@@ -133,6 +184,71 @@ function DashboardContent() {
                         Welcome back, <span className="text-primary font-medium">{user?.email}</span>
                     </p>
                 </div>
+
+                {/* Email Verification Banner */}
+                {user && !user.is_verified && (
+                    <Card
+                        className="mb-6 overflow-hidden"
+                        style={{
+                            background: "linear-gradient(135deg, oklch(0.22 0.04 280 / 90%), oklch(0.18 0.03 290 / 90%))",
+                            border: "1px solid oklch(0.72 0.12 290 / 20%)",
+                        }}
+                    >
+                        <CardContent className="p-5 sm:p-6">
+                            <div className="flex items-start gap-4">
+                                <div
+                                    className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0"
+                                    style={{ background: "oklch(0.72 0.12 290 / 15%)" }}
+                                >
+                                    <ShieldCheck className="h-5 w-5 text-primary" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-base font-semibold mb-1">Verify your email</h3>
+                                    <p className="text-sm text-muted-foreground mb-4">
+                                        Enter the 6-digit code sent to <span className="text-primary font-medium">{user.email}</span> to
+                                        unlock favorites and search history.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                        <div className="relative flex-1 max-w-[200px]">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
+                                            <input
+                                                type="text"
+                                                inputMode="numeric"
+                                                maxLength={6}
+                                                placeholder="000000"
+                                                value={otpValue}
+                                                onChange={(e) => setOtpValue(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                                                onKeyDown={(e) => { if (e.key === "Enter") handleVerifyOTP(); }}
+                                                className="w-full h-10 pl-9 pr-3 rounded-lg text-sm font-mono tracking-[4px] text-center bg-background/50 border border-border/50 text-foreground placeholder:text-muted-foreground/30 outline-none focus:border-primary/50 transition-colors"
+                                            />
+                                        </div>
+                                        <Button
+                                            onClick={handleVerifyOTP}
+                                            disabled={verifying || otpValue.length !== 6}
+                                            size="sm"
+                                            className="h-10 px-5 rounded-lg font-semibold"
+                                            style={{
+                                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                                            }}
+                                        >
+                                            {verifying ? "Verifying..." : "Verify"}
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={handleResendOTP}
+                                            disabled={resending || resendCooldown > 0}
+                                            className="h-10 gap-1.5 text-muted-foreground hover:text-foreground"
+                                        >
+                                            <RefreshCw className={`h-3.5 w-3.5 ${resending ? "animate-spin" : ""}`} />
+                                            {resendCooldown > 0 ? `Resend (${resendCooldown}s)` : "Resend"}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mb-6 h-12">
