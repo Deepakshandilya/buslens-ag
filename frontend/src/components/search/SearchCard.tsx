@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, ArrowRightLeft, Hash, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +11,24 @@ import { BusAutocomplete } from "@/components/search/BusAutocomplete";
 import { useAuthStore } from "@/stores/authStore";
 import { useAddHistory } from "@/hooks/useHistory";
 import type { StopOut } from "@/types/api";
+
+const setCookie = (name: string, value: string, days = 30) => {
+    const d = new Date();
+    d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/`;
+};
+
+const getCookie = (name: string) => {
+    if (typeof document === "undefined") return null;
+    const nameEQ = `${name}=`;
+    const ca = document.cookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === " ") c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+};
 
 export function SearchCard() {
     const router = useRouter();
@@ -26,6 +44,32 @@ export function SearchCard() {
     const [selectedSearchStop, setSelectedSearchStop] = useState<StopOut | null>(null);
     const [activeTab, setActiveTab] = useState("stops");
 
+    // Load cached search history from cookies on mount
+    useEffect(() => {
+        try {
+            const stopToStop = getCookie("lastStopToStopSearch");
+            if (stopToStop) {
+                const parsed = JSON.parse(stopToStop);
+                if (parsed.fromStop) setFromStop(parsed.fromStop);
+                if (parsed.toStop) setToStop(parsed.toStop);
+                if (parsed.selectedFrom) setSelectedFrom(parsed.selectedFrom);
+                if (parsed.selectedTo) setSelectedTo(parsed.selectedTo);
+            }
+
+            const bus = getCookie("lastBusSearch");
+            if (bus) setBusNumber(bus);
+
+            const stopLookup = getCookie("lastStopLookup");
+            if (stopLookup) {
+                const parsed = JSON.parse(stopLookup);
+                if (parsed.searchStop) setSearchStop(parsed.searchStop);
+                if (parsed.selectedSearchStop) setSelectedSearchStop(parsed.selectedSearchStop);
+            }
+        } catch (e) {
+            console.error("Failed to parse cached search from cookies", e);
+        }
+    }, []);
+
     const handleSwap = () => {
         setFromStop(toStop);
         setToStop(fromStop);
@@ -35,6 +79,10 @@ export function SearchCard() {
 
     const handleStopSearch = () => {
         if (!fromStop.trim() || !toStop.trim()) return;
+        
+        // Cache this search
+        setCookie("lastStopToStopSearch", JSON.stringify({ fromStop, toStop, selectedFrom, selectedTo }));
+
         if (isAuthenticated && selectedFrom && selectedTo) {
             addHistory.mutate({
                 from_stop_id: selectedFrom.id,
@@ -46,11 +94,13 @@ export function SearchCard() {
 
     const handleBusSearch = () => {
         if (!busNumber.trim()) return;
+        setCookie("lastBusSearch", busNumber.trim());
         router.push(`/bus/${encodeURIComponent(busNumber.trim())}`);
     };
 
     const handleStopLookup = () => {
         if (!selectedSearchStop) return;
+        setCookie("lastStopLookup", JSON.stringify({ searchStop, selectedSearchStop }));
         router.push(`/stop/${selectedSearchStop.id}`);
     };
 
