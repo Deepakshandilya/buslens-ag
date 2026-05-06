@@ -207,3 +207,13 @@ def google_callback(
         data={"sub": user["email"]}, expires_delta=access_token_expires
     )
     return RedirectResponse(f"{settings.frontend_url}/auth/callback?token={access_token}")
+
+
+# ── Validate Token ────────────────────────────────────────────────────
+@router.get("/validate-token")
+def validate_token(current_user: dict = Depends(get_current_user)):
+    """
+    Lightweight endpoint to validate the current JWT.
+    Returns 200 if valid, 401 if expired/invalid (handled by get_current_user).
+    """
+    return {"valid": True, "email": current_user["email"]}
