@@ -266,3 +266,12 @@ def reset_password(body: ResetPasswordRequest, db: Session = Depends(get_db)):
     update_user_password(db, user["id"], new_hash)
 
     return {"message": "Password reset successfully. You can now log in with your new password."}
+  
+# ── Validate Token ────────────────────────────────────────────────────
+@router.get("/validate-token")
+def validate_token(current_user: dict = Depends(get_current_user)):
+    """
+    Lightweight endpoint to validate the current JWT.
+    Returns 200 if valid, 401 if expired/invalid (handled by get_current_user).
+    """
+    return {"valid": True, "email": current_user["email"]}

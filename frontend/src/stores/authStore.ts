@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { UserResponse } from "@/types/api";
+import api from "@/lib/api";
 
 interface AuthState {
     user: UserResponse | null;
@@ -10,6 +11,7 @@ interface AuthState {
     logout: () => void;
     hydrate: () => void;
     setUser: (user: UserResponse) => void;
+    validateToken: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -56,5 +58,17 @@ export const useAuthStore = create<AuthState>((set) => ({
             localStorage.setItem("buslens_user", JSON.stringify(user));
         }
         set({ user });
+    },
+
+    validateToken: async () => {
+        const state = useAuthStore.getState();
+        if (!state.token || !state.isAuthenticated) return;
+        try {
+            await api.get("/auth/validate-token");
+            // Token is valid — no action needed
+        } catch {
+            // Token is expired or invalid — auto-logout
+            state.logout();
+        }
     },
 }));

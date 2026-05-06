@@ -152,3 +152,18 @@ def update_user_password(db: Session, user_id: int, new_hashed_password: str) ->
     except SQLAlchemyError as e:
         db.rollback()
         raise ValueError("Database error while updating password") from e
+        
+def delete_user(db: Session, user_id: int) -> None:
+    """
+    Delete a user and all associated data.
+    Clears: favorites, search_history, otp_codes, then the user record.
+    """
+    try:
+        db.execute(text("DELETE FROM favorites WHERE user_id = :uid"), {"uid": user_id})
+        db.execute(text("DELETE FROM search_history WHERE user_id = :uid"), {"uid": user_id})
+        db.execute(text("DELETE FROM otp_codes WHERE user_id = :uid"), {"uid": user_id})
+        db.execute(text("DELETE FROM users WHERE id = :uid"), {"uid": user_id})
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise ValueError("Database error while deleting user account") from e

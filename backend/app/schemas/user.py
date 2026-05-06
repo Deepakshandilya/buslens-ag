@@ -71,3 +71,6 @@ class ResetPasswordRequest(BaseModel):
         if len(v) < 6:
             raise ValueError("Password must be at least 6 characters")
         return v
+class DeleteAccountRequest(BaseModel):
+    """Password confirmation for account deletion. Empty string for Google-only accounts."""
+    password: str = ""

@@ -7,9 +7,17 @@ import { Toaster } from "@/components/ui/sonner";
 
 function AuthHydration() {
     const hydrate = useAuthStore((s) => s.hydrate);
+    const validateToken = useAuthStore((s) => s.validateToken);
+    const isHydrated = useAuthStore((s) => s.isHydrated);
     useEffect(() => {
         hydrate();
     }, [hydrate]);
+    // After hydration, validate the token against the backend
+    useEffect(() => {
+        if (isHydrated) {
+            validateToken();
+        }
+    }, [isHydrated, validateToken]);
     return null;
 }
 
