@@ -45,5 +45,18 @@ class Settings:
                 raise RuntimeError("SECRET_KEY env var is required in non-local environments")
         self.algorithm = os.getenv("ALGORITHM", "HS256")
         self.access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+
+        # SMTP for OTP emails
+        self.smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
+        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        self.smtp_user = os.getenv("SMTP_USER", "")
+        self.smtp_password = os.getenv("SMTP_PASSWORD", "")
+        self.otp_expire_minutes = int(os.getenv("OTP_EXPIRE_MINUTES", "10"))
+
+        # Google OAuth
+        self.google_client_id = os.getenv("GOOGLE_CLIENT_ID", "")
+        self.google_client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "")
+        self.google_redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/v1/auth/google/callback")
+        self.frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
     
 settings = Settings()

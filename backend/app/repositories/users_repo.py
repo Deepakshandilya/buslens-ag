@@ -15,7 +15,7 @@ def get_user_by_email(db: Session, email: str) -> dict | None:
 def create_user(db: Session, user: UserCreate) -> dict:
     try:
         hashed_password = get_password_hash(user.password)
-        sql = text("INSERT INTO users (email, hashed_password) VALUES (:email, :hashed_password)")
+        sql = text("INSERT INTO users (email, hashed_password, is_verified, auth_provider) VALUES (:email, :hashed_password, FALSE, 'local')")
         db.execute(sql, {"email": user.email, "hashed_password": hashed_password})
         db.commit()
         
@@ -24,6 +24,36 @@ def create_user(db: Session, user: UserCreate) -> dict:
     except SQLAlchemyError as e:
         db.rollback()
         raise ValueError("Database error while creating user") from e
+
+def get_user_by_google_id(db: Session, google_id: str) -> dict | None:
+    try:
+        sql = text("SELECT * FROM users WHERE google_id = :gid LIMIT 1")
+        row = db.execute(sql, {"gid": google_id}).mappings().first()
+        return dict(row) if row else None
+    except SQLAlchemyError as e:
+        raise ValueError("Database error while retrieving user by Google ID") from e
+
+def create_google_user(db: Session, email: str, google_id: str) -> dict:
+    try:
+        sql = text(
+            "INSERT INTO users (email, hashed_password, is_verified, auth_provider, google_id) "
+            "VALUES (:email, NULL, TRUE, 'google', :gid)"
+        )
+        db.execute(sql, {"email": email, "gid": google_id})
+        db.commit()
+        return get_user_by_email(db, email)
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise ValueError("Database error while creating Google user") from e
+
+def link_google_to_user(db: Session, user_id: int, google_id: str) -> None:
+    try:
+        sql = text("UPDATE users SET google_id = :gid, is_verified = TRUE WHERE id = :uid")
+        db.execute(sql, {"gid": google_id, "uid": user_id})
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise ValueError("Database error while linking Google account") from e
 
 def get_user_favorites(db: Session, user_id: int) -> list[dict]:
     try:

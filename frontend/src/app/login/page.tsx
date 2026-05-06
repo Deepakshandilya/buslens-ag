@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/stores/authStore";
@@ -14,6 +14,16 @@ import { BeamsBackground } from "@/components/ui/beams-background";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "@/lib/validations";
+
+function LoginErrorToast() {
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        if (searchParams.get("error") === "access_denied") {
+            toast.error("Google login was canceled or denied.");
+        }
+    }, [searchParams]);
+    return null;
+}
 
 export default function LoginPage() {
     const router = useRouter();
@@ -57,11 +67,15 @@ export default function LoginPage() {
     };
 
     const handleGoogleLogin = () => {
-        toast.info("Google login coming soon!");
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/v1";
+        window.location.href = `${apiBase}/auth/google/login`;
     };
 
     return (
         <BeamsBackground intensity="medium" className="min-h-screen">
+            <Suspense fallback={null}>
+                <LoginErrorToast />
+            </Suspense>
             <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
                 {/* Main split card */}
                 <div

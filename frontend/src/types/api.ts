@@ -60,6 +60,8 @@ export interface UserCreate {
 export interface UserResponse {
     id: number;
     email: string;
+    is_verified: boolean;
+    auth_provider: string;
     created_at: string;
 }
 

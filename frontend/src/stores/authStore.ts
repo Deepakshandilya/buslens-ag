@@ -9,6 +9,7 @@ interface AuthState {
     login: (token: string, user: UserResponse) => void;
     logout: () => void;
     hydrate: () => void;
+    setUser: (user: UserResponse) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -48,5 +49,12 @@ export const useAuthStore = create<AuthState>((set) => ({
             }
             set({ isHydrated: true });
         }
+    },
+
+    setUser: (user) => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem("buslens_user", JSON.stringify(user));
+        }
+        set({ user });
     },
 }));
