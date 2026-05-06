@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_verified_user
 from app.schemas.user import FavoriteCreate, FavoriteResponse, HistoryCreate, HistoryResponse, UserResponse
 from app.repositories import users_repo
 
@@ -13,7 +13,7 @@ def read_users_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
 @router.get("/me/favorites", response_model=list[FavoriteResponse])
-def get_favorites(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def get_favorites(db: Session = Depends(get_db), current_user: dict = Depends(get_verified_user)):
     try:
         return users_repo.get_user_favorites(db, current_user["id"])
     except ValueError as e:
@@ -23,7 +23,7 @@ def get_favorites(db: Session = Depends(get_db), current_user: dict = Depends(ge
 def add_favorite(
     favorite_in: FavoriteCreate, 
     db: Session = Depends(get_db), 
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_verified_user)
 ):
     if not favorite_in.route_id and not favorite_in.stop_id:
         raise HTTPException(status_code=400, detail="Must provide either route_id or stop_id")
@@ -40,7 +40,7 @@ def add_favorite(
 def delete_favorite(
     favorite_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_verified_user)
 ):
     try:
         users_repo.delete_user_favorite(db, current_user["id"], favorite_id)
@@ -49,7 +49,7 @@ def delete_favorite(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/me/history", response_model=list[HistoryResponse])
-def get_history(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def get_history(db: Session = Depends(get_db), current_user: dict = Depends(get_verified_user)):
     try:
         return users_repo.get_user_search_history(db, current_user["id"])
     except ValueError as e:
@@ -59,7 +59,7 @@ def get_history(db: Session = Depends(get_db), current_user: dict = Depends(get_
 def add_history(
     history_in: HistoryCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_verified_user)
 ):
     try:
         users_repo.add_user_search_history(
@@ -75,7 +75,7 @@ def add_history(
 @router.delete("/me/history", status_code=200)
 def clear_history(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_verified_user)
 ):
     try:
         users_repo.clear_user_search_history(db, current_user["id"])
@@ -86,7 +86,7 @@ def clear_history(
 @router.delete("/me/favorites", status_code=200)
 def clear_favorites(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_verified_user)
 ):
     try:
         users_repo.clear_user_favorites(db, current_user["id"])

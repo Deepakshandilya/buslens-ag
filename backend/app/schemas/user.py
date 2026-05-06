@@ -13,6 +13,8 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
+    is_verified: bool
+    auth_provider: str
     created_at: datetime
 
 class Token(BaseModel):
@@ -21,6 +23,12 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: str | None = None
+
+class OTPRequest(BaseModel):
+    otp: str
+
+class OTPResponse(BaseModel):
+    message: str
 
 class FavoriteCreate(BaseModel):
     route_id: Optional[int] = None
