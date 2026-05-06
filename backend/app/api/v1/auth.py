@@ -143,7 +143,15 @@ def google_login():
 
 # ── Google OAuth: callback ────────────────────────────────────────────
 @router.get("/google/callback")
-def google_callback(code: str, db: Session = Depends(get_db)):
+def google_callback(
+    code: str | None = None, 
+    error: str | None = None, 
+    db: Session = Depends(get_db)
+):
+    if error or not code:
+        logger.warning(f"Google OAuth failed or was canceled. Error: {error}")
+        return RedirectResponse(f"{settings.frontend_url}/login?error=access_denied")
+
     # 1. Exchange authorization code for tokens
     token_resp = httpx.post(
         "https://oauth2.googleapis.com/token",
