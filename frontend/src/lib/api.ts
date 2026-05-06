@@ -41,8 +41,8 @@ api.interceptors.response.use(
 
             toast.error("Session expired. Please sign in again.");
 
-            // Redirect to login page
-            window.location.href = "/login";
+            // Redirect to homepage
+            window.location.href = "/";
         }
         return Promise.reject(error);
     }

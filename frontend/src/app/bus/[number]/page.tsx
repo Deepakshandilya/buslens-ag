@@ -42,7 +42,7 @@ export default function BusNumberPage({
     const handleFavorite = (routeId: number) => {
         if (!isAuthenticated) {
             toast.error("Please login to save favorites");
-            router.push("/login");
+            router.push("/");
             return;
         }
         const existing = favorites?.find((f) => f.route_id === routeId);

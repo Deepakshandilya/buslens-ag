@@ -45,7 +45,7 @@ function RouteDetailContent({
     const handleFavorite = () => {
         if (!isAuthenticated) {
             toast.error("Please login to save favorites");
-            router.push("/login");
+            router.push("/");
             return;
         }
         if (!data) return;
