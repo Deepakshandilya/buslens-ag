@@ -26,6 +26,7 @@ export function BusAutocomplete({
 }: BusAutocompleteProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [debouncedQuery, setDebouncedQuery] = useState("");
+    const [isFocused, setIsFocused] = useState(false);
     const justSelectedRef = useRef(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -43,12 +44,12 @@ export function BusAutocomplete({
 
     useEffect(() => {
         if (justSelectedRef.current) return;
-        if (debouncedQuery.length >= 1 && results.length > 0) {
+        if (isFocused && debouncedQuery.length >= 1 && results.length > 0) {
             setIsOpen(true);
         } else if (debouncedQuery.length < 1) {
             setIsOpen(false);
         }
-    }, [debouncedQuery, results.length]);
+    }, [debouncedQuery, results.length, isFocused]);
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
@@ -96,10 +97,12 @@ export function BusAutocomplete({
                         onValueChange(e.target.value);
                     }}
                     onFocus={() => {
+                        setIsFocused(true);
                         if (!justSelectedRef.current && debouncedQuery.length >= 1 && results.length > 0) {
                             setIsOpen(true);
                         }
                     }}
+                    onBlur={() => setIsFocused(false)}
                     placeholder={placeholder}
                     className="pl-11 h-13 text-lg bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 rounded-xl"
                     style={{ fontFamily: "var(--font-heading), sans-serif" }}
