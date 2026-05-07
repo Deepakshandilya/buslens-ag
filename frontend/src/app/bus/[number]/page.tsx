@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Bus, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,8 @@ export default function BusNumberPage({
 }) {
     const { number } = use(params);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const highlightStopName = searchParams.get("highlightStopName");
     const decoded = decodeURIComponent(number);
     const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
@@ -89,10 +91,16 @@ export default function BusNumberPage({
                         {data.stops.map((stop, i) => {
                             const isFirst = i === 0;
                             const isLast = i === data.stops.length - 1;
+                            const isHighlighted = highlightStopName && stop.name.toLowerCase() === highlightStopName.toLowerCase();
 
-                            const circleClass = (isFirst || isLast)
-                                ? "border-primary bg-primary text-primary-foreground"
-                                : "border-border bg-background";
+                            let circleClass = "";
+                            if (isHighlighted) {
+                                circleClass = "border-green-500 bg-green-500/10 text-green-500 shadow-[0_0_12px_rgba(34,197,94,0.3)]";
+                            } else if (isFirst || isLast) {
+                                circleClass = "border-primary bg-primary text-primary-foreground";
+                            } else {
+                                circleClass = "border-border bg-background";
+                            }
 
                             return (
                                 <div key={stop.sequence_no} className="flex gap-4 relative">
@@ -103,7 +111,7 @@ export default function BusNumberPage({
                                             {isFirst || isLast ? (
                                                 <MapPin className="h-4 w-4" />
                                             ) : (
-                                                <span className="text-sm font-semibold text-muted-foreground">
+                                                <span className={`text-sm font-semibold ${isHighlighted ? "text-green-500" : "text-muted-foreground"}`}>
                                                     {stop.sequence_no}
                                                 </span>
                                             )}
@@ -113,10 +121,10 @@ export default function BusNumberPage({
                                         )}
                                     </div>
                                     <div className={`pb-7 pt-1.5 ${isLast ? "pb-0" : ""}`}>
-                                        <p className={`font-medium transition-colors ${isFirst || isLast ? "text-base text-foreground font-semibold" : "text-[15px] text-muted-foreground"}`}>
+                                        <p className={`font-medium transition-colors ${isHighlighted ? "text-base text-green-500 font-bold" : isFirst || isLast ? "text-base text-foreground font-semibold" : "text-[15px] text-muted-foreground"}`}>
                                             {stop.name}
                                         </p>
-                                        <p className="text-xs text-muted-foreground/60 mt-0.5">Stop #{stop.sequence_no}</p>
+                                        <p className={`text-xs mt-0.5 ${isHighlighted ? "text-green-500/70 font-medium" : "text-muted-foreground/60"}`}>Stop #{stop.sequence_no}</p>
                                     </div>
                                 </div>
                             );
