@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.api.deps import get_current_user, get_verified_user
 from app.schemas.user import FavoriteCreate, FavoriteResponse, HistoryCreate, HistoryResponse, UserResponse, DeleteAccountRequest
 from app.repositories import users_repo
+from app.repositories.users_repo import cleanup_user_data
 from app.core.security import verify_password
 
 router = APIRouter()
@@ -98,6 +99,7 @@ def clear_favorites(
 @router.delete("/me", status_code=200)
 def delete_account(
     body: DeleteAccountRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
@@ -120,7 +122,10 @@ def delete_account(
             )
 
     try:
-        users_repo.delete_user(db, current_user["id"])
+        user_id = current_user["id"]
+        users_repo.delete_user(db, user_id)
+        # Run background cleanup as a safety net for any orphaned data
+        background_tasks.add_task(cleanup_user_data, user_id)
         return {"message": "Account deleted successfully"}
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
