@@ -113,13 +113,13 @@ function DashboardContent() {
         data: history,
         isLoading: historyLoading,
         refetch: refetchHistory,
-    } = useHistory();
+    } = useHistory(activeTab === "history");
 
     const {
         data: favorites,
         isLoading: favoritesLoading,
         refetch: refetchFavorites,
-    } = useFavorites();
+    } = useFavorites(activeTab === "favorites");
 
     const deleteFavorite = useDeleteFavorite();
 
