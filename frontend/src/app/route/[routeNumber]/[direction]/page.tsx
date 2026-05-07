@@ -260,8 +260,7 @@ function RouteDetailContent({
                                             <div
                                                 key={stop.sequence_no}
                                                 ref={isFromStop ? fromStopRef : undefined}
-                                                className={`flex gap-4 relative transition-opacity duration-300 ${isDimmed ? "opacity-30" : "opacity-100"
-                                                    }`}
+                                                className="flex gap-4 relative"
                                             >
                                                 <div className="flex flex-col items-center w-10 shrink-0">
                                                     <div
