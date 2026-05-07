@@ -20,18 +20,24 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -e
+
             cd ~/buslens-ag
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            echo "Deploying commit $(git rev-parse --short HEAD)"
 
             # FRONTEND
             cd frontend
-            npm install
+            npm ci
             npm run build
-            pm2 restart nextjs || pm2 start npm --name "nextjs" -- start
+            pm2 delete nextjs || true
+            pm2 start npm --name "nextjs" --cwd /home/ubuntu/buslens-ag/frontend -- start
+            pm2 save
 
             # BACKEND
             cd ~/buslens-ag/backend
-            /home/ubuntu/buslens-ag/venv/bin/pip install -r requirements.txt
+            /home/ubuntu/buslens-ag/backend/venv/bin/pip install -r requirements.txt
 
             # restart service WITHOUT sudo prompt issue
-            sudo systemctl restart fastapi || echo "restart failed"
+            sudo systemctl restart fastapi
