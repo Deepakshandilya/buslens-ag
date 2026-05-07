@@ -155,18 +155,38 @@ def update_user_password(db: Session, user_id: int, new_hashed_password: str) ->
         
 def delete_user(db: Session, user_id: int) -> None:
     """
-    Delete a user and all associated data.
-    Clears: favorites, search_history, otp_codes, then the user record.
+    Delete a user record. Related data (favorites, search_history, otp_codes)
+    is automatically removed via ON DELETE CASCADE foreign keys.
     """
     try:
-        db.execute(text("DELETE FROM favorites WHERE user_id = :uid"), {"uid": user_id})
-        db.execute(text("DELETE FROM search_history WHERE user_id = :uid"), {"uid": user_id})
-        db.execute(text("DELETE FROM otp_codes WHERE user_id = :uid"), {"uid": user_id})
         db.execute(text("DELETE FROM users WHERE id = :uid"), {"uid": user_id})
         db.commit()
     except SQLAlchemyError as e:
         db.rollback()
         raise ValueError("Database error while deleting user account") from e
+
+
+def cleanup_user_data(user_id: int) -> None:
+    """
+    Background task: ensures all orphaned data for a deleted user is cleaned up.
+    This is a safety net — CASCADE should handle it, but this catches edge cases.
+    Called asynchronously after the API has already responded.
+    """
+    import logging
+    from app.db.session import SessionLocal
+
+    logger = logging.getLogger(__name__)
+    db = SessionLocal()
+    try:
+        for table in ("favorites", "search_history", "otp_codes"):
+            db.execute(text(f"DELETE FROM {table} WHERE user_id = :uid"), {"uid": user_id})
+        db.commit()
+        logger.info("Background cleanup completed for user_id=%s", user_id)
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.warning("Background cleanup failed for user_id=%s: %s", user_id, e)
+    finally:
+        db.close()
 
 def update_user_password(db: Session, user_id: int, new_hashed_password: str) -> None:
     """Update a user's password hash."""
