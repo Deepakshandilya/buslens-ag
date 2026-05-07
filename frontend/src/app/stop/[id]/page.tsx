@@ -96,15 +96,21 @@ export default function StopRoutesPage({
                             </Card>
                         ) : (
                             <div className="space-y-3">
-                                {data.routes.map((route, i) => (
+                                {Array.from(
+                                    data.routes.reduce((acc, route) => {
+                                        if (!acc.has(route.route_number)) acc.set(route.route_number, []);
+                                        acc.get(route.route_number)!.push(route);
+                                        return acc;
+                                    }, new Map<string, typeof data.routes>())
+                                ).map(([route_number, routes], i) => (
                                     <Card
-                                        key={`${route.route_number}-${route.direction}-${i}`}
+                                        key={`${route_number}-${i}`}
                                         className="group overflow-hidden transition-all duration-200 cursor-pointer hover:scale-[1.01]"
                                         style={{
                                             background: "oklch(0.195 0.02 285 / 90%)",
                                             border: "1px solid oklch(1 0.02 285 / 8%)",
                                         }}
-                                        onClick={() => router.push(`/route/${route.route_number}/${route.direction}`)}
+                                        onClick={() => router.push(`/bus/${encodeURIComponent(route_number)}`)}
                                     >
                                         <CardContent className="p-4 sm:p-5 flex items-center justify-between">
                                             <div className="flex items-center gap-3.5">
@@ -123,17 +129,22 @@ export default function StopRoutesPage({
                                                             className="text-lg font-bold"
                                                             style={{ fontFamily: "var(--font-heading), sans-serif" }}
                                                         >
-                                                            Route {route.route_number}
+                                                            Route {route_number}
                                                         </span>
-                                                        <Badge
-                                                            variant={route.direction === "UP" ? "default" : "secondary"}
-                                                            className="text-[11px] px-2 py-0"
-                                                        >
-                                                            {route.direction === "UP" ? "↑ UP" : "↓ DOWN"}
-                                                        </Badge>
+                                                        {routes.map((route) => (
+                                                            <Badge
+                                                                key={route.direction}
+                                                                variant={route.direction === "UP" ? "default" : "secondary"}
+                                                                className="text-[11px] px-2 py-0"
+                                                            >
+                                                                {route.direction === "UP" ? "↑ UP" : "↓ DOWN"}
+                                                            </Badge>
+                                                        ))}
                                                     </div>
                                                     <p className="text-sm text-muted-foreground mt-0.5">
-                                                        Stop #{route.sequence_no} in sequence
+                                                        {routes.length === 1 
+                                                            ? `Stop #${routes[0].sequence_no} in sequence` 
+                                                            : routes.map(r => `Stop #${r.sequence_no} (${r.direction})`).join(" • ")}
                                                     </p>
                                                 </div>
                                             </div>
