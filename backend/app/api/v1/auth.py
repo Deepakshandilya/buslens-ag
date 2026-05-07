@@ -2,7 +2,7 @@ from datetime import timedelta, datetime, timezone
 from urllib.parse import urlencode
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
@@ -33,7 +33,11 @@ router = APIRouter()
 
 # ── Register (instant login + sends OTP) ──────────────────────────────
 @router.post("/register", response_model=Token)
-def register(user_in: UserCreate, db: Session = Depends(get_db)):
+def register(
+    user_in: UserCreate,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     user = get_user_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
@@ -42,11 +46,11 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
         )
     user = create_user(db, user_in)
 
-    # Generate and send OTP (non-blocking — if email fails, user is still registered)
+    # Generate OTP synchronously (DB write), but send emails in the background
     otp = generate_otp()
     create_otp(db, user["id"], otp)
-    send_welcome_email(user_in.email)
-    send_otp_email(user_in.email, otp)
+    background_tasks.add_task(send_welcome_email, user_in.email)
+    background_tasks.add_task(send_otp_email, user_in.email, otp)
 
     # Instant login: return JWT immediately
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
@@ -148,9 +152,10 @@ def google_login():
 # ── Google OAuth: callback ────────────────────────────────────────────
 @router.get("/google/callback")
 def google_callback(
+    background_tasks: BackgroundTasks,
     code: str | None = None, 
     error: str | None = None, 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     if error or not code:
         logger.warning(f"Google OAuth failed or was canceled. Error: {error}")
@@ -202,7 +207,7 @@ def google_callback(
         else:
             # Brand new user via Google
             user = create_google_user(db, email, google_id)
-            send_welcome_email(email)
+            background_tasks.add_task(send_welcome_email, email)
 
     # 4. Issue our JWT and redirect to frontend callback page
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
