@@ -110,7 +110,7 @@ export default function StopRoutesPage({
                                             background: "oklch(0.195 0.02 285 / 90%)",
                                             border: "1px solid oklch(1 0.02 285 / 8%)",
                                         }}
-                                        onClick={() => router.push(`/bus/${encodeURIComponent(route_number)}`)}
+                                        onClick={() => router.push(`/bus/${encodeURIComponent(route_number)}?highlightStopName=${encodeURIComponent(data.stop_name)}`)}
                                     >
                                         <CardContent className="p-4 sm:p-5 flex items-center justify-between">
                                             <div className="flex items-center gap-3.5">
