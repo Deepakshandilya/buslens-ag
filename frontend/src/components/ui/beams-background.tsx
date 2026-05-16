@@ -52,16 +52,14 @@ function MobileBeamsBackground({
         <div
             className={cn("relative min-h-screen w-full overflow-hidden", className)}
             style={{
-                background:
-                    "linear-gradient(145deg, oklch(0.14 0.03 280) 0%, oklch(0.12 0.025 285) 40%, oklch(0.15 0.03 295) 100%)",
+                background: "var(--background)",
             }}
         >
             {/* Static ambient glow — cheap radial gradient, no blur filter */}
             <div
-                className="absolute inset-0 pointer-events-none"
+                className="absolute inset-0 pointer-events-none opacity-50"
                 style={{
-                    background:
-                        "radial-gradient(ellipse 60% 50% at 50% 40%, oklch(0.55 0.12 285 / 8%) 0%, transparent 70%)",
+                    background: "radial-gradient(ellipse 60% 50% at 50% 40%, var(--brand-glow) 0%, transparent 70%)",
                 }}
             />
 
@@ -215,10 +213,9 @@ export function BeamsBackground({
     return (
         <div
             className={cn(
-                "relative min-h-screen w-full overflow-hidden",
+                "relative min-h-screen w-full overflow-hidden bg-background",
                 className
             )}
-            style={{ background: "oklch(0.13 0.02 285)" }}
         >
             <canvas
                 ref={canvasRef}
@@ -227,9 +224,8 @@ export function BeamsBackground({
             />
 
             <motion.div
-                className="absolute inset-0"
+                className="absolute inset-0 bg-background/5"
                 style={{
-                    background: "oklch(0.13 0.02 285 / 5%)",
                     backdropFilter: "blur(50px)",
                 }}
                 animate={{

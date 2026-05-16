@@ -68,14 +68,14 @@ export function AuthImageCarousel({
                     />
                     {/* Gradient overlays */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.72_0.12_290_/_0.15)] to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-glow)] to-transparent opacity-50" />
                 </motion.div>
             </AnimatePresence>
 
             {/* Logo watermark top-left */}
             <div className="absolute top-6 left-6 z-10">
                 <span className="text-xl font-bold text-white/90 tracking-tight">
-                    Bus<span style={{ color: "oklch(0.78 0.12 290)" }}>Lens</span>
+                    Bus<span className="text-primary">Lens</span>
                 </span>
             </div>
 

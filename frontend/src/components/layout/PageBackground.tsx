@@ -16,7 +16,7 @@ export function PageBackground({ children, className = "" }: PageBackgroundProps
             className={`min-h-screen pt-24 pb-12 relative overflow-hidden ${className}`}
             style={{
                 background:
-                    "linear-gradient(180deg, oklch(0.14 0.03 285) 0%, oklch(0.11 0.02 280) 40%, oklch(0.13 0.025 290) 100%)",
+                    "linear-gradient(180deg, var(--page-bg-start) 0%, var(--page-bg-mid) 40%, var(--page-bg-end) 100%)",
             }}
         >
             {/* Desktop: expensive blur orbs | Mobile: cheap radial gradients */}
@@ -26,14 +26,14 @@ export function PageBackground({ children, className = "" }: PageBackgroundProps
                         className="absolute inset-0"
                         style={{
                             background:
-                                "radial-gradient(ellipse 50% 40% at 80% 10%, oklch(0.55 0.15 290 / 6%) 0%, transparent 60%)",
+                                "radial-gradient(ellipse 50% 40% at 80% 10%, var(--page-orb-1) 0%, transparent 60%)",
                         }}
                     />
                     <div
                         className="absolute inset-0"
                         style={{
                             background:
-                                "radial-gradient(ellipse 45% 35% at 20% 70%, oklch(0.50 0.12 260 / 5%) 0%, transparent 55%)",
+                                "radial-gradient(ellipse 45% 35% at 20% 70%, var(--page-orb-2) 0%, transparent 55%)",
                         }}
                     />
                 </div>
@@ -41,15 +41,15 @@ export function PageBackground({ children, className = "" }: PageBackgroundProps
                 <div className="pointer-events-none absolute inset-0">
                     <div
                         className="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full blur-[120px]"
-                        style={{ background: "oklch(0.55 0.15 290 / 12%)" }}
+                        style={{ background: "var(--page-orb-1)" }}
                     />
                     <div
                         className="absolute top-[30%] -left-[15%] w-[35%] h-[35%] rounded-full blur-[100px]"
-                        style={{ background: "oklch(0.50 0.12 260 / 8%)" }}
+                        style={{ background: "var(--page-orb-2)" }}
                     />
                     <div
                         className="absolute -bottom-[10%] right-[10%] w-[30%] h-[30%] rounded-full blur-[100px]"
-                        style={{ background: "oklch(0.50 0.10 310 / 8%)" }}
+                        style={{ background: "var(--page-orb-3)" }}
                     />
                 </div>
             )}

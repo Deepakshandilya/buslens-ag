@@ -105,8 +105,8 @@ function SearchResultsContent() {
                     <Card
                         className="mt-4 overflow-hidden"
                         style={{
-                            background: "linear-gradient(135deg, oklch(0.22 0.03 285 / 90%), oklch(0.18 0.02 285 / 80%))",
-                            border: "1px solid oklch(0.72 0.12 290 / 12%)",
+                            background: "var(--surface-elevated)",
+                            border: "1px solid var(--surface-border)",
                         }}
                     >
                         <CardContent className="p-4 sm:p-5">
@@ -114,8 +114,8 @@ function SearchResultsContent() {
                             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                                 {/* From */}
                                 <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                                    <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 150 / 15%)" }}>
-                                        <MapPin className="h-4 w-4" style={{ color: "oklch(0.75 0.22 150)" }} />
+                                    <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "var(--route-start-bg)" }}>
+                                        <MapPin className="h-4 w-4" style={{ color: "var(--route-start)" }} />
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">From</p>
@@ -125,15 +125,15 @@ function SearchResultsContent() {
 
                                 {/* Arrow connector — horizontal on desktop, small text on mobile */}
                                 <div className="flex items-center gap-2 shrink-0 sm:px-2">
-                                    <div className="hidden sm:block w-5 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
+                                    <div className="hidden sm:block w-5 h-[2px]" style={{ background: "var(--result-connector)" }} />
                                     <Route className="h-4 w-4 text-primary" />
-                                    <div className="hidden sm:block w-5 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 30%)" }} />
+                                    <div className="hidden sm:block w-5 h-[2px]" style={{ background: "var(--result-connector)" }} />
                                 </div>
 
                                 {/* To */}
                                 <div className="flex items-center gap-2.5 flex-1 min-w-0 sm:justify-end sm:text-right">
-                                    <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.72 0.2 265 / 15%)" }}>
-                                        <MapPin className="h-4 w-4" style={{ color: "oklch(0.72 0.2 265)" }} />
+                                    <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "var(--route-end-bg)" }}>
+                                        <MapPin className="h-4 w-4" style={{ color: "var(--route-end)" }} />
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">To</p>
@@ -223,8 +223,8 @@ function SearchResultsContent() {
                                     <Card
                                         className="group overflow-hidden transition-all duration-300 cursor-pointer hover:scale-[1.01]"
                                         style={{
-                                            background: "oklch(0.195 0.02 285 / 90%)",
-                                            border: "1px solid oklch(1 0.02 285 / 8%)",
+                                            background: "var(--result-card-bg)",
+                                            border: "1px solid var(--result-card-border)",
                                         }}
                                         onClick={() =>
                                             router.push(
@@ -241,12 +241,12 @@ function SearchResultsContent() {
                                                         <div
                                                             className="flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg"
                                                             style={{
-                                                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                                                                boxShadow: "0 4px 16px oklch(0.72 0.12 290 / 25%)",
+                                                                background: "var(--brand-gradient)",
+                                                                boxShadow: "0 4px 16px var(--brand-glow)",
                                                             }}
                                                         >
                                                             <span
-                                                                className="text-lg font-extrabold tracking-tight text-white"
+                                                                className="text-lg font-extrabold tracking-tight text-primary-foreground"
                                                                 style={{ fontFamily: "var(--font-heading), sans-serif" }}
                                                             >
                                                                 {route.route_number}
@@ -302,8 +302,8 @@ function SearchResultsContent() {
                                             <div
                                                 className="mx-4 sm:mx-6 mb-4 p-3 sm:p-4 rounded-xl"
                                                 style={{
-                                                    background: "oklch(0.15 0.015 285 / 80%)",
-                                                    border: "1px solid oklch(1 0.02 285 / 5%)",
+                                                    background: "var(--result-inner-bg)",
+                                                    border: "1px solid var(--result-inner-border)",
                                                 }}
                                             >
                                                 {/* Mobile: column layout to prevent text truncation */}
@@ -314,8 +314,8 @@ function SearchResultsContent() {
                                                             <div
                                                                 className="h-3.5 w-3.5 rounded-full shrink-0"
                                                                 style={{
-                                                                    background: "oklch(0.75 0.22 150)",
-                                                                    boxShadow: "0 0 0 3px oklch(0.75 0.22 150 / 20%)",
+                                                                    background: "var(--route-start)",
+                                                                    boxShadow: "0 0 0 3px var(--route-start-bg)",
                                                                 }}
                                                             />
                                                             <div className="min-w-0">
@@ -327,18 +327,18 @@ function SearchResultsContent() {
 
                                                     {/* Connecting line with stop count — centered on both layouts */}
                                                     <div className="flex items-center gap-1 sm:mx-3 shrink-0 pl-5 sm:pl-0">
-                                                        <div className="hidden sm:block w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
+                                                        <div className="hidden sm:block w-4 h-[2px]" style={{ background: "var(--result-connector)" }} />
                                                         <div
                                                             className="px-2.5 py-0.5 rounded-full text-xs font-bold whitespace-nowrap"
                                                             style={{
-                                                                background: "oklch(0.72 0.12 290 / 12%)",
-                                                                color: "oklch(0.82 0.12 290)",
-                                                                border: "1px solid oklch(0.72 0.12 290 / 15%)",
+                                                                background: "var(--result-stops-badge-bg)",
+                                                                color: "var(--result-stops-badge-text)",
+                                                                border: "1px solid var(--result-stops-badge-border)",
                                                             }}
                                                         >
                                                             {stopCount} {stopCount === 1 ? "stop" : "stops"}
                                                         </div>
-                                                        <div className="hidden sm:block w-4 h-[2px]" style={{ background: "oklch(0.72 0.12 290 / 25%)" }} />
+                                                        <div className="hidden sm:block w-4 h-[2px]" style={{ background: "var(--result-connector)" }} />
                                                     </div>
 
                                                     {/* To */}
@@ -347,8 +347,8 @@ function SearchResultsContent() {
                                                             <div
                                                                 className="h-3.5 w-3.5 rounded-full shrink-0"
                                                                 style={{
-                                                                    background: "oklch(0.72 0.2 265)",
-                                                                    boxShadow: "0 0 0 3px oklch(0.72 0.2 265 / 20%)",
+                                                                    background: "var(--route-end)",
+                                                                    boxShadow: "0 0 0 3px var(--route-end-bg)",
                                                                 }}
                                                             />
                                                             <div className="min-w-0">
@@ -370,8 +370,8 @@ function SearchResultsContent() {
                                                                 <span
                                                                     className="text-xs font-medium px-2 py-0.5 rounded-lg inline-block"
                                                                     style={{
-                                                                        background: "oklch(1 0 0 / 5%)",
-                                                                        color: "oklch(0.72 0.03 285)",
+                                                                        background: "var(--result-stop-tag-bg)",
+                                                                        color: "var(--result-stop-tag-text)",
                                                                     }}
                                                                 >
                                                                     {stop}
@@ -385,7 +385,7 @@ function SearchResultsContent() {
                                                             <span
                                                                 className="text-xs font-bold px-2 py-0.5 rounded-lg"
                                                                 style={{
-                                                                    color: "oklch(0.72 0.12 290)",
+                                                                    color: "var(--brand-accent)",
                                                                 }}
                                                             >
                                                                 +{route.stops_between.length - 4} more
@@ -398,7 +398,7 @@ function SearchResultsContent() {
                                             {/* Footer — View full route */}
                                             <div
                                                 className="px-5 sm:px-6 py-3.5 flex items-center justify-between transition-colors group-hover:bg-white/[0.02]"
-                                                style={{ borderTop: "1px solid oklch(1 0.02 285 / 5%)" }}
+                                                style={{ borderTop: "1px solid var(--result-footer-border)" }}
                                             >
                                                 <span className="text-sm font-semibold text-primary flex items-center gap-1.5">
                                                     <Eye className="h-4 w-4" />

@@ -69,7 +69,7 @@ export default function StopRoutesPage({
                             <div
                                 className="flex h-14 w-14 items-center justify-center rounded-2xl"
                                 style={{
-                                    background: "oklch(0.72 0.12 290 / 15%)",
+                                    background: "var(--route-start-bg)",
                                 }}
                             >
                                 <MapPin className="h-7 w-7 text-primary" />
@@ -107,8 +107,8 @@ export default function StopRoutesPage({
                                         key={`${route_number}-${i}`}
                                         className="group overflow-hidden transition-all duration-200 cursor-pointer hover:scale-[1.01]"
                                         style={{
-                                            background: "oklch(0.195 0.02 285 / 90%)",
-                                            border: "1px solid oklch(1 0.02 285 / 8%)",
+                                            background: "var(--result-card-bg)",
+                                            border: "1px solid var(--result-card-border)",
                                         }}
                                         onClick={() => router.push(`/bus/${encodeURIComponent(route_number)}?highlightStopName=${encodeURIComponent(data.stop_name)}`)}
                                     >
@@ -117,11 +117,11 @@ export default function StopRoutesPage({
                                                 <div
                                                     className="flex h-12 w-12 items-center justify-center rounded-xl shadow-md"
                                                     style={{
-                                                        background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                                                        boxShadow: "0 2px 8px oklch(0.72 0.12 290 / 20%)",
+                                                        background: "var(--brand-gradient)",
+                                                        boxShadow: "0 2px 8px var(--brand-glow)",
                                                     }}
                                                 >
-                                                    <Bus className="h-5 w-5 text-white" />
+                                                    <Bus className="h-5 w-5 text-primary-foreground" />
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center gap-2">

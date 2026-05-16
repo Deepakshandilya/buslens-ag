@@ -82,15 +82,11 @@ export function StopAutocomplete({
         <div ref={containerRef} className="relative w-full">
             <label
                 className="text-base font-semibold mb-2.5 block"
-                style={{ color: "oklch(0.75 0.03 285)" }}
+                style={{ color: "var(--search-label)" }}
             >
                 {label}
             </label>
             <div className="relative">
-                <MapPin
-                    className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5"
-                    style={{ color: "oklch(0.50 0.05 285)" }}
-                />
                 <Input
                     value={value}
                     onChange={(e) => {
@@ -105,7 +101,11 @@ export function StopAutocomplete({
                     }}
                     onBlur={() => setIsFocused(false)}
                     placeholder={placeholder}
-                    className="pl-11 h-13 text-lg bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 rounded-xl"
+                    className="pl-11 h-13 text-lg bg-input/50 backdrop-blur-sm border-border/50 focus:border-primary/50 rounded-xl"
+                />
+                <MapPin
+                    className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 pointer-events-none"
+                    style={{ color: "var(--search-icon)" }}
                 />
             </div>
 
@@ -113,8 +113,8 @@ export function StopAutocomplete({
                 <div
                     className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-xl overflow-hidden shadow-xl"
                     style={{
-                        background: "oklch(0.195 0.02 285 / 98%)",
-                        border: "1px solid oklch(1 0.02 285 / 10%)",
+                        background: "var(--dropdown-bg)",
+                        border: "1px solid var(--dropdown-border)",
                         backdropFilter: "blur(20px)",
                     }}
                 >
@@ -132,7 +132,7 @@ export function StopAutocomplete({
                                     onClick={() => handleSelect(stop)}
                                     className={cn(
                                         "w-full px-4 py-3.5 text-left flex items-center gap-2.5",
-                                        "hover:bg-white/5 transition-colors cursor-pointer"
+                                    "hover:bg-[var(--dropdown-hover)] transition-colors cursor-pointer"
                                     )}
                                 >
                                     <MapPin className="h-4 w-4 text-primary/60 flex-shrink-0" />

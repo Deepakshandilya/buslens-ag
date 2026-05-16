@@ -40,28 +40,23 @@ export class ErrorBoundary extends Component<Props, State> {
                 <div
                     className="min-h-screen flex items-center justify-center p-6"
                     style={{
-                        background:
-                            "linear-gradient(180deg, oklch(0.14 0.03 285) 0%, oklch(0.11 0.02 280) 40%, oklch(0.13 0.025 290) 100%)",
+                        background: "var(--background)",
                     }}
                 >
                     <div
                         className="max-w-md w-full text-center p-10 rounded-3xl"
                         style={{
-                            background: "oklch(0.18 0.025 285 / 90%)",
-                            border: "1px solid oklch(1 0.02 285 / 8%)",
-                            boxShadow: "0 8px 40px oklch(0 0 0 / 40%)",
+                            background: "var(--card)",
+                            border: "1px solid var(--border)",
+                            boxShadow: "0 8px 40px var(--shadow)",
                         }}
                     >
                         {/* Error icon */}
                         <div
-                            className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl"
-                            style={{
-                                background: "oklch(0.65 0.2 25 / 12%)",
-                            }}
+                            className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10"
                         >
                             <svg
-                                className="h-8 w-8"
-                                style={{ color: "oklch(0.75 0.18 25)" }}
+                                className="h-8 w-8 text-destructive"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -76,26 +71,20 @@ export class ErrorBoundary extends Component<Props, State> {
                         </div>
 
                         <h2
-                            className="text-2xl font-bold text-white mb-2"
+                            className="text-2xl font-bold text-foreground mb-2"
                             style={{ fontFamily: "var(--font-heading), sans-serif" }}
                         >
                             Something went wrong
                         </h2>
                         <p
-                            className="text-sm mb-6"
-                            style={{ color: "oklch(0.55 0.02 285)" }}
+                            className="text-sm mb-6 text-muted-foreground"
                         >
                             An unexpected error occurred. Please try again.
                         </p>
 
                         {this.state.error && (
                             <div
-                                className="text-left text-xs p-3 rounded-xl mb-6 overflow-auto max-h-32 font-mono"
-                                style={{
-                                    background: "oklch(0.12 0.02 285 / 80%)",
-                                    border: "1px solid oklch(1 0.02 285 / 5%)",
-                                    color: "oklch(0.65 0.18 25)",
-                                }}
+                                className="text-left text-xs p-3 rounded-xl mb-6 overflow-auto max-h-32 font-mono bg-muted border border-border text-destructive"
                             >
                                 {this.state.error.message}
                             </div>
@@ -103,11 +92,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
                         <button
                             onClick={this.handleReset}
-                            className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-sm font-semibold text-white transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98]"
+                            className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-sm font-semibold text-primary-foreground transition-all duration-200 cursor-pointer hover:brightness-110 active:scale-[0.98]"
                             style={{
-                                background:
-                                    "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                                boxShadow: "0 4px 16px oklch(0.72 0.12 290 / 25%)",
+                                background: "var(--brand-gradient)",
+                                boxShadow: "0 4px 16px var(--brand-glow)",
                             }}
                         >
                             <svg

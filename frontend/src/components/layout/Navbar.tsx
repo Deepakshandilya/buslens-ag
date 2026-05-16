@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LogOut, Search, Heart, Clock, Info, Trash2, Lock, AlertTriangle } from "lucide-react";
+import { LogOut, Search, Heart, Clock, Info, Trash2, Lock, AlertTriangle, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -22,12 +22,14 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAuthStore } from "@/stores/authStore";
+import { useThemeStore } from "@/stores/themeStore";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/lib/api";
 
 export function Navbar() {
     const { isAuthenticated, user, logout, isHydrated } = useAuthStore();
+    const { theme, toggleTheme } = useThemeStore();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -73,10 +75,11 @@ export function Navbar() {
         <>
             <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl">
                 <div
-                    className="flex h-16 items-center justify-between px-3 sm:px-5 rounded-2xl shadow-xl shadow-black/20 backdrop-blur-xl"
+                    className="flex h-16 items-center justify-between px-3 sm:px-5 rounded-2xl shadow-xl backdrop-blur-xl"
                     style={{
-                        background: "oklch(0.17 0.02 285 / 85%)",
-                        border: "1px solid oklch(1 0.02 285 / 10%)",
+                        background: "var(--navbar-bg)",
+                        border: `1px solid var(--navbar-border)`,
+                        boxShadow: `0 10px 30px -5px var(--navbar-shadow)`,
                     }}
                 >
                     {/* Logo */}
@@ -88,10 +91,13 @@ export function Navbar() {
                             className="h-9 w-9 rounded-lg object-cover transition-transform group-hover:scale-105"
                         />
                         <span
-                            className="text-xl font-bold tracking-tight text-white hidden md:inline"
-                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                            className="text-xl font-bold tracking-tight hidden md:inline"
+                            style={{
+                                fontFamily: "var(--font-heading), sans-serif",
+                                color: "var(--navbar-text)",
+                            }}
                         >
-                            Bus<span style={{ color: "oklch(0.78 0.12 290)" }}>Lens</span>
+                            Bus<span style={{ color: "var(--brand-accent-light)" }}>Lens</span>
                         </span>
                     </Link>
 
@@ -99,11 +105,11 @@ export function Navbar() {
                     <div className="flex items-center gap-0.5 sm:gap-1">
                         <Link
                             href="/"
-                            className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
-                                isActive("/")
-                                    ? "text-white bg-white/10"
-                                    : "text-white/60 hover:text-white hover:bg-white/5"
-                            }`}
+                            className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200"
+                            style={{
+                                color: isActive("/") ? "var(--navbar-text)" : "var(--navbar-text-muted)",
+                                background: isActive("/") ? "var(--navbar-active-bg)" : "transparent",
+                            }}
                         >
                             <Search className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">Search</span>
@@ -112,22 +118,22 @@ export function Navbar() {
                             <>
                                 <Link
                                     href="/dashboard?tab=history"
-                                    className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
-                                        isHistoryActive
-                                            ? "text-white bg-white/10"
-                                            : "text-white/60 hover:text-white hover:bg-white/5"
-                                    }`}
+                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200"
+                                    style={{
+                                        color: isHistoryActive ? "var(--navbar-text)" : "var(--navbar-text-muted)",
+                                        background: isHistoryActive ? "var(--navbar-active-bg)" : "transparent",
+                                    }}
                                 >
                                     <Clock className="h-4.5 w-4.5" />
                                     <span className="hidden sm:inline">History</span>
                                 </Link>
                                 <Link
                                     href="/dashboard?tab=favorites"
-                                    className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
-                                        isFavoritesActive
-                                            ? "text-white bg-white/10"
-                                            : "text-white/60 hover:text-white hover:bg-white/5"
-                                    }`}
+                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200"
+                                    style={{
+                                        color: isFavoritesActive ? "var(--navbar-text)" : "var(--navbar-text-muted)",
+                                        background: isFavoritesActive ? "var(--navbar-active-bg)" : "transparent",
+                                    }}
                                 >
                                     <Heart className="h-4.5 w-4.5" />
                                     <span className="hidden sm:inline">Favourites</span>
@@ -145,7 +151,8 @@ export function Navbar() {
                                         });
                                         router.push("/login");
                                     }}
-                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 text-white/60 hover:text-white hover:bg-white/5 cursor-pointer"
+                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 cursor-pointer"
+                                    style={{ color: "var(--navbar-text-muted)" }}
                                 >
                                     <Clock className="h-4.5 w-4.5" />
                                     <span className="hidden sm:inline">History</span>
@@ -160,7 +167,8 @@ export function Navbar() {
                                         });
                                         router.push("/login");
                                     }}
-                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 text-white/60 hover:text-white hover:bg-white/5 cursor-pointer"
+                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 cursor-pointer"
+                                    style={{ color: "var(--navbar-text-muted)" }}
                                 >
                                     <Heart className="h-4.5 w-4.5" />
                                     <span className="hidden sm:inline">Favourites</span>
@@ -169,11 +177,11 @@ export function Navbar() {
                         ) : null}
                         <Link
                             href="/about"
-                            className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
-                                isActive("/about")
-                                    ? "text-white bg-white/10"
-                                    : "text-white/60 hover:text-white hover:bg-white/5"
-                            }`}
+                            className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200"
+                            style={{
+                                color: isActive("/about") ? "var(--navbar-text)" : "var(--navbar-text-muted)",
+                                background: isActive("/about") ? "var(--navbar-active-bg)" : "transparent",
+                            }}
                         >
                             <Info className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">About</span>
@@ -182,20 +190,42 @@ export function Navbar() {
 
                     {/* Right side */}
                     <div className="flex items-center gap-1 sm:gap-1.5 pr-1 shrink-0 justify-end">
+                        {/* Theme toggle button */}
+                        <button
+                            onClick={toggleTheme}
+                            className="flex items-center justify-center h-10 w-10 rounded-full transition-all duration-200 cursor-pointer"
+                            style={{ color: "var(--navbar-text-muted)" }}
+                            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                        >
+                            {theme === "dark" ? (
+                                <Sun className="h-5 w-5 transition-transform duration-300 hover:rotate-45" />
+                            ) : (
+                                <Moon className="h-5 w-5 transition-transform duration-300 hover:-rotate-12" />
+                            )}
+                        </button>
+
                         {!isHydrated ? (
                             <div className="flex items-center justify-center h-10 w-10">
-                                <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+                                <div
+                                    className="w-5 h-5 rounded-full border-2 animate-spin"
+                                    style={{
+                                        borderColor: "var(--navbar-text-muted)",
+                                        borderTopColor: "var(--navbar-text)",
+                                    }}
+                                />
                             </div>
                         ) : isAuthenticated ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/10">
+                                    <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-[var(--navbar-hover-bg)]">
                                         <Avatar className="h-10 w-10">
                                             <AvatarFallback
                                                 className="font-bold text-base"
                                                 style={{
-                                                    background: "oklch(0.72 0.12 290 / 20%)",
-                                                    color: "oklch(0.82 0.12 290)",
+                                                    background: "var(--brand-accent)",
+                                                    color: "var(--primary-foreground)",
+                                                    opacity: 0.85,
                                                 }}
                                             >
                                                 {user?.email?.charAt(0).toUpperCase() || "U"}
@@ -230,7 +260,8 @@ export function Navbar() {
                                     variant="ghost"
                                     size="sm"
                                     asChild
-                                    className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl h-10 px-2.5 sm:px-4"
+                                    className="rounded-xl h-10 px-2.5 sm:px-4"
+                                    style={{ color: "var(--navbar-text-muted)" }}
                                 >
                                     <Link href="/login">
                                         <span className="hidden sm:inline text-[15px]">Log in</span>
@@ -242,7 +273,7 @@ export function Navbar() {
                                     asChild
                                     className="rounded-xl font-semibold h-10 px-3 sm:px-5 text-[13px] sm:text-[15px]"
                                     style={{
-                                        background: "oklch(0.72 0.12 290)",
+                                        background: "var(--brand-accent)",
                                         color: "white",
                                     }}
                                 >

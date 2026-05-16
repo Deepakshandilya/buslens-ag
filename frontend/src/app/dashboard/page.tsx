@@ -191,15 +191,15 @@ function DashboardContent() {
                     <Card
                         className="mb-6 overflow-hidden"
                         style={{
-                            background: "linear-gradient(135deg, oklch(0.22 0.04 280 / 90%), oklch(0.18 0.03 290 / 90%))",
-                            border: "1px solid oklch(0.72 0.12 290 / 20%)",
+                            background: "var(--brand-gradient)",
+                            border: "1px solid var(--surface-border)",
                         }}
                     >
                         <CardContent className="p-5 sm:p-6">
                             <div className="flex items-start gap-4">
                                 <div
                                     className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0"
-                                    style={{ background: "oklch(0.72 0.12 290 / 15%)" }}
+                                    style={{ background: "color-mix(in oklch, var(--brand-accent) 15%, transparent)" }}
                                 >
                                     <ShieldCheck className="h-5 w-5 text-primary" />
                                 </div>
@@ -229,7 +229,7 @@ function DashboardContent() {
                                             size="sm"
                                             className="h-10 px-5 rounded-lg font-semibold"
                                             style={{
-                                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
+                                                background: "var(--brand-gradient)",
                                             }}
                                         >
                                             {verifying ? "Verifying..." : "Verify"}
@@ -302,8 +302,8 @@ function DashboardContent() {
                         {history && history.length === 0 && (
                             <Card
                                 style={{
-                                    background: "oklch(0.17 0.02 285 / 80%)",
-                                    border: "1px solid oklch(1 0.02 285 / 6%)",
+                                    background: "var(--surface-bg)",
+                                    border: "1px solid var(--surface-border)",
                                 }}
                             >
                                 <CardContent className="p-10 text-center">
@@ -323,8 +323,8 @@ function DashboardContent() {
                                 key={item.id}
                                 className="group cursor-pointer transition-all duration-200 hover:scale-[1.01]"
                                 style={{
-                                    background: "oklch(0.195 0.02 285 / 90%)",
-                                    border: "1px solid oklch(1 0.02 285 / 8%)",
+                                    background: "var(--surface-bg)",
+                                    border: "1px solid var(--surface-border)",
                                 }}
                                 onClick={() => handleSearchAgain(item)}
                             >
@@ -332,7 +332,7 @@ function DashboardContent() {
                                     <div className="flex items-center gap-4">
                                         <div
                                             className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0"
-                                            style={{ background: "oklch(0.72 0.12 290 / 12%)" }}
+                                            style={{ background: "color-mix(in oklch, var(--brand-accent) 12%, transparent)" }}
                                         >
                                             <Search className="h-5 w-5 text-primary" />
                                         </div>
@@ -417,8 +417,8 @@ function DashboardContent() {
                         {favorites && favorites.length === 0 && (
                             <Card
                                 style={{
-                                    background: "oklch(0.17 0.02 285 / 80%)",
-                                    border: "1px solid oklch(1 0.02 285 / 6%)",
+                                    background: "var(--surface-bg)",
+                                    border: "1px solid var(--surface-border)",
                                 }}
                             >
                                 <CardContent className="p-10 text-center">
@@ -438,8 +438,8 @@ function DashboardContent() {
                                 key={fav.id}
                                 className="group cursor-pointer transition-all duration-200 hover:scale-[1.01]"
                                 style={{
-                                    background: "oklch(0.195 0.02 285 / 90%)",
-                                    border: "1px solid oklch(1 0.02 285 / 8%)",
+                                    background: "var(--surface-bg)",
+                                    border: "1px solid var(--surface-border)",
                                 }}
                                 onClick={() => {
                                     if (fav.route_number) {
@@ -454,9 +454,9 @@ function DashboardContent() {
                                         <div
                                             className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0 shadow-md"
                                             style={{
-                                                background: fav.route_id
-                                                    ? "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))"
-                                                    : "oklch(0.72 0.12 290 / 15%)",
+                                                    background: fav.route_id
+                                                        ? "var(--brand-gradient)"
+                                                        : "color-mix(in oklch, var(--brand-accent) 15%, transparent)",
                                             }}
                                         >
                                             {fav.route_id ? (

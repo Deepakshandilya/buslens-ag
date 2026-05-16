@@ -45,8 +45,8 @@ export default function AboutPage() {
                             alt="BusLens"
                             className="h-28 w-28 rounded-3xl object-cover relative z-10"
                             style={{
-                                boxShadow: "0 12px 40px oklch(0.72 0.12 290 / 30%)",
-                                border: "2px solid oklch(0.72 0.12 290 / 20%)",
+                                boxShadow: "0 12px 40px var(--brand-glow)",
+                                border: "2px solid var(--border)",
                             }}
                         />
                     </div>
@@ -118,7 +118,7 @@ export default function AboutPage() {
                         <motion.div variants={fadeUpVariant} className="relative flex w-full mb-12 group z-10">
                             
                             {/* Node */}
-                            <div className="absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-primary shadow-[0_0_20px_oklch(0.72_0.12_290/0.4)] flex flex-col items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
+                            <div className="absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-primary shadow-lg shadow-primary/40 flex flex-col items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
                                 <div className="w-2 h-2 rounded-full bg-primary" />
                             </div>
 
@@ -177,7 +177,7 @@ export default function AboutPage() {
                                 <h4 className="text-xl text-primary/80 uppercase tracking-widest font-bold">Active Routes</h4>
                             </div>
                             <div className="relative z-10">
-                                <p className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-primary/80 tracking-tighter" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                <p className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary/80 tracking-tighter" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
                                     72
                                 </p>
                                 <p className="text-muted-foreground mt-4 text-lg">Distinct bus routes traversing interconnected city corridors.</p>
@@ -185,27 +185,27 @@ export default function AboutPage() {
                         </motion.div>
 
                         {/* Box 2: Stops Metric */}
-                        <motion.div variants={fadeUpVariant} className="bg-white/5 border border-white/10 hover:border-teal-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
+                        <motion.div variants={fadeUpVariant} className="bg-card border border-border hover:border-teal-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
                             <div className="absolute bottom-0 right-0 w-32 h-32 bg-teal-500/20 blur-[80px] rounded-full translate-x-1/3 translate-y-1/3 group-hover:bg-teal-500/40 transition-colors duration-500" />
                             <MapPin className="h-8 w-8 text-teal-400 mb-6 group-hover:scale-125 group-hover:-translate-y-2 transition-all duration-500 relative z-10" />
-                            <p className="text-5xl font-black mb-2 text-white relative z-10">700<span className="text-teal-400">+</span></p>
+                            <p className="text-5xl font-black mb-2 text-foreground relative z-10">700<span className="text-teal-400">+</span></p>
                             <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold group-hover:text-teal-200 transition-colors relative z-10">Stops Indexed</p>
                         </motion.div>
 
                         {/* Box 3: Buses Metric */}
-                        <motion.div variants={fadeUpVariant} className="bg-white/5 border border-white/10 hover:border-pink-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
+                        <motion.div variants={fadeUpVariant} className="bg-card border border-border hover:border-pink-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
                             <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-500/20 blur-[80px] rounded-full -translate-x-1/3 translate-y-1/3 group-hover:bg-pink-500/40 transition-colors duration-500" />
                             <Bus className="h-8 w-8 text-pink-400 mb-6 group-hover:scale-125 group-hover:translate-x-2 transition-all duration-500 relative z-10" />
-                            <p className="text-5xl font-black mb-2 text-white relative z-10">~500</p>
+                            <p className="text-5xl font-black mb-2 text-foreground relative z-10">~500</p>
                             <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold group-hover:text-pink-200 transition-colors relative z-10">CTU Buses</p>
                         </motion.div>
 
                         {/* Box 4: Wide Commutes Metric */}
-                        <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-black/40 border border-white/10 hover:border-orange-500/50 rounded-[2rem] p-8 md:p-10 flex items-center justify-between shadow-xl transition-all duration-500 group hover:-translate-y-1 relative overflow-hidden">
+                        <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-card border border-border hover:border-orange-500/50 rounded-[2rem] p-8 md:p-10 flex items-center justify-between shadow-xl transition-all duration-500 group hover:-translate-y-1 relative overflow-hidden">
                            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                            <div className="relative z-10">
                                 <h4 className="text-lg text-gray-400 uppercase tracking-widest font-bold mb-2 group-hover:text-orange-200 transition-colors">Daily Commutes</h4>
-                                <p className="text-4xl md:text-5xl font-black text-white">50,000<span className="text-orange-500">+</span></p>
+                                <p className="text-4xl md:text-5xl font-black text-foreground">50,000<span className="text-orange-500">+</span></p>
                            </div>
                            <div className="w-20 h-20 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center relative z-10 group-hover:bg-orange-500/30 group-hover:scale-110 transition-all duration-500">
                                <Users className="h-10 w-10 text-orange-500" />
@@ -245,7 +245,7 @@ export default function AboutPage() {
                     variants={fadeUpVariant}
                     className="mt-16 pt-16 border-t border-white/5 relative"
                 >
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-black/20 p-8 md:p-10 rounded-[2.5rem] backdrop-blur-sm border border-white/10 shadow-2xl">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-card/50 p-8 md:p-10 rounded-[2.5rem] backdrop-blur-sm border border-border shadow-2xl">
                         {/* Developer Info */}
                         <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
                             <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-purple-800 flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
@@ -253,14 +253,14 @@ export default function AboutPage() {
                             </div>
                             <div>
                                 <p className="text-sm text-primary font-bold tracking-widest uppercase mb-2">Architected & Engineered By</p>
-                                <h4 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                <h4 className="text-3xl font-bold text-foreground mb-4" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
                                     Deepak Shandilya
                                 </h4>
                                 <div className="flex items-center justify-center md:justify-start gap-6">
-                                    <a href="https://github.com/deepakshandilya" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-white flex items-center gap-2 transition-colors text-sm font-semibold p-2 -ml-2 rounded-lg hover:bg-white/5">
+                                    <a href="https://github.com/deepakshandilya" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors text-sm font-semibold p-2 -ml-2 rounded-lg hover:bg-foreground/5">
                                         <Github className="h-5 w-5" /> GitHub
                                     </a>
-                                    <a href="https://www.linkedin.com/in/deepakshandilyaa/" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-white flex items-center gap-2 transition-colors text-sm font-semibold p-2 -ml-2 rounded-lg hover:bg-white/5">
+                                    <a href="https://www.linkedin.com/in/deepakshandilyaa/" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors text-sm font-semibold p-2 -ml-2 rounded-lg hover:bg-foreground/5">
                                         <Linkedin className="h-5 w-5" /> LinkedIn
                                     </a>
                                 </div>
@@ -269,9 +269,9 @@ export default function AboutPage() {
 
                         {/* CTA Flow */}
                         <div className="flex flex-col items-center md:items-end w-full md:w-auto">
-                            <a href="/search" className="group flex items-center gap-4 bg-white text-black px-8 py-5 rounded-2xl font-bold text-lg hover:shadow-[0_0_40px_oklch(0.72_0.12_290/50%)] transition-all duration-300 hover:-translate-y-1">
+                            <a href="/search" className="group flex items-center gap-4 bg-foreground text-background px-8 py-5 rounded-2xl font-bold text-lg hover:shadow-[0_0_40px_var(--brand-glow)] transition-all duration-300 hover:-translate-y-1">
                                 Start Exploring Routes
-                                <div className="bg-black/10 rounded-full p-2 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                <div className="bg-background/10 rounded-full p-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
                                     <ArrowRight className="h-5 w-5" />
                                 </div>
                             </a>
