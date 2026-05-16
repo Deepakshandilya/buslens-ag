@@ -108,7 +108,7 @@ export function Navbar() {
                             <Search className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">Search</span>
                         </Link>
-                        {isHydrated && isAuthenticated && (
+                        {isAuthenticated ? (
                             <>
                                 <Link
                                     href="/dashboard?tab=history"
@@ -133,7 +133,40 @@ export function Navbar() {
                                     <span className="hidden sm:inline">Favourites</span>
                                 </Link>
                             </>
-                        )}
+                        ) : isHydrated ? (
+                            <>
+                                <button
+                                    onClick={() => {
+                                        toast.info("Sign in to access your search history", {
+                                            action: {
+                                                label: "Log in",
+                                                onClick: () => router.push("/login"),
+                                            },
+                                        });
+                                        router.push("/login");
+                                    }}
+                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 text-white/60 hover:text-white hover:bg-white/5 cursor-pointer"
+                                >
+                                    <Clock className="h-4.5 w-4.5" />
+                                    <span className="hidden sm:inline">History</span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        toast.info("Sign in to access your favourites", {
+                                            action: {
+                                                label: "Log in",
+                                                onClick: () => router.push("/login"),
+                                            },
+                                        });
+                                        router.push("/login");
+                                    }}
+                                    className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 text-white/60 hover:text-white hover:bg-white/5 cursor-pointer"
+                                >
+                                    <Heart className="h-4.5 w-4.5" />
+                                    <span className="hidden sm:inline">Favourites</span>
+                                </button>
+                            </>
+                        ) : null}
                         <Link
                             href="/about"
                             className={`flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 ${
