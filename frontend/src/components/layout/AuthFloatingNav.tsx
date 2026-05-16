@@ -10,8 +10,8 @@ export function AuthFloatingNav() {
             onClick={() => router.push("/")}
             className="flex items-center justify-center h-14 w-14 rounded-full shadow-xl shadow-black/40 cursor-pointer transition-transform duration-200 hover:scale-110 active:scale-95 overflow-hidden"
             style={{
-                background: "oklch(0.20 0.025 285)",
-                border: "2px solid oklch(0.72 0.12 290 / 30%)",
+                background: "var(--background)",
+                border: "2px solid var(--border)",
             }}
             aria-label="Go to homepage"
         >

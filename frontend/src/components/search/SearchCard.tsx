@@ -58,9 +58,9 @@ export function SearchCard() {
         <Card
             className="w-full max-w-2xl mx-auto backdrop-blur-xl shadow-2xl ring-1 ring-white/[0.03]"
             style={{
-                background: "linear-gradient(135deg, oklch(0.195 0.02 285 / 85%), oklch(0.17 0.015 285 / 80%), oklch(0.195 0.025 290 / 75%))",
-                border: "1px solid oklch(0.72 0.12 290 / 12%)",
-                boxShadow: "0 20px 60px oklch(0.72 0.12 290 / 10%), 0 4px 20px oklch(0 0 0 / 30%)",
+                background: "var(--search-card-bg)",
+                border: "1px solid var(--search-card-border)",
+                boxShadow: `0 20px 60px var(--brand-glow), 0 4px 20px var(--search-card-shadow)`,
             }}
         >
             <CardContent className="p-6 sm:p-8">
@@ -78,7 +78,7 @@ export function SearchCard() {
                 </div>
 
                 <Tabs defaultValue="stops" className="w-full" onValueChange={setActiveTab}>
-                    <TabsList className="grid w-full grid-cols-3 mb-6 h-14">
+                    <TabsList className="grid w-full grid-cols-3 mb-6 h-14 rounded-xl p-1.5">
                         <TabsTrigger value="stops" className="text-[15px] gap-2 font-semibold">
                             <Search className="h-4.5 w-4.5" />
                             <span className="hidden sm:inline">Stop to Stop</span>
@@ -134,8 +134,8 @@ export function SearchCard() {
                             size="lg"
                             disabled={!fromStop.trim() || !toStop.trim()}
                             style={{
-                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                                boxShadow: "0 4px 20px oklch(0.72 0.12 290 / 25%)",
+                                background: "var(--brand-gradient)",
+                                boxShadow: "0 4px 20px var(--brand-glow)",
                             }}
                         >
                             <Search className="h-5 w-5 mr-2" />
@@ -160,8 +160,8 @@ export function SearchCard() {
                             size="lg"
                             disabled={!busNumber.trim()}
                             style={{
-                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                                boxShadow: "0 4px 20px oklch(0.72 0.12 290 / 25%)",
+                                background: "var(--brand-gradient)",
+                                boxShadow: "0 4px 20px var(--brand-glow)",
                             }}
                         >
                             <Search className="h-5 w-5 mr-2" />
@@ -186,8 +186,8 @@ export function SearchCard() {
                             size="lg"
                             disabled={!selectedSearchStop}
                             style={{
-                                background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                                boxShadow: "0 4px 20px oklch(0.72 0.12 290 / 25%)",
+                                background: "var(--brand-gradient)",
+                                boxShadow: "0 4px 20px var(--brand-glow)",
                             }}
                         >
                             <MapPin className="h-5 w-5 mr-2" />

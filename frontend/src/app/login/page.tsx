@@ -81,8 +81,8 @@ export default function LoginPage() {
                 <div
                     className="relative w-full max-w-[960px] min-h-[580px] rounded-3xl overflow-visible shadow-2xl shadow-black/50 flex flex-col lg:flex-row"
                     style={{
-                        background: "oklch(0.16 0.025 285 / 80%)",
-                        border: "1px solid oklch(1 0.02 285 / 8%)",
+                        background: "var(--auth-card-bg)",
+                        border: "1px solid var(--auth-card-border)",
                         backdropFilter: "blur(20px)",
                     }}
                 >
@@ -104,10 +104,10 @@ export default function LoginPage() {
                         <div className="w-full max-w-sm mx-auto">
                             {/* Header */}
                             <div className="mb-8">
-                                <h1 className="text-white" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                <h1 className="text-foreground text-2xl font-bold" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
                                     Welcome back
                                 </h1>
-                                <p className="text-base mt-2" style={{ color: "oklch(0.60 0.03 285)" }}>
+                                <p className="text-base mt-2" style={{ color: "var(--auth-text-muted)" }}>
                                     Sign in to your account to continue
                                 </p>
                             </div>
@@ -116,11 +116,10 @@ export default function LoginPage() {
                             <button
                                 type="button"
                                 onClick={handleGoogleLogin}
-                                className="w-full flex items-center justify-center gap-2.5 h-12 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-white/10 cursor-pointer"
+                                className="w-full flex items-center justify-center gap-2.5 h-12 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--dropdown-hover)] cursor-pointer text-foreground"
                                 style={{
-                                    background: "oklch(0.15 0.02 285 / 60%)",
-                                    border: "1px solid oklch(1 0.02 285 / 10%)",
-                                    color: "oklch(0.85 0 0)",
+                                    background: "var(--auth-google-bg)",
+                                    border: "1px solid var(--auth-google-border)",
                                 }}
                             >
                                 <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -135,14 +134,14 @@ export default function LoginPage() {
                             {/* Divider */}
                             <div className="relative my-6">
                                 <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full" style={{ borderTop: "1px solid oklch(1 0.02 285 / 15%)" }} />
+                                    <div className="w-full" style={{ borderTop: "1px solid var(--auth-divider)" }} />
                                 </div>
                                 <div className="relative flex justify-center text-xs">
                                     <span
                                         className="px-3 rounded"
                                         style={{
-                                            background: "oklch(0.16 0.025 285)",
-                                            color: "oklch(0.65 0.03 285)",
+                                            background: "var(--auth-divider-bg)",
+                                            color: "var(--auth-text-muted)",
                                         }}
                                     >
                                         or continue with email
@@ -153,17 +152,17 @@ export default function LoginPage() {
                             {/* Form */}
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                                 <div>
-                                    <label htmlFor="login-email" className="block text-sm font-medium mb-2" style={{ color: "oklch(0.70 0.03 285)" }}>
+                                    <label htmlFor="login-email" className="block text-sm font-medium mb-2" style={{ color: "var(--auth-label)" }}>
                                         Email address
                                     </label>
                                     <div className="relative">
-                                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "oklch(0.45 0.03 285)" }} />
+                                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "var(--auth-icon)" }} />
                                         <input
                                             id="login-email"
                                             type="email"
                                             {...register("email")}
                                             placeholder="you@example.com"
-                                            className={`w-full h-12 pl-10 pr-4 rounded-xl text-sm text-white placeholder:text-[oklch(0.40_0.02_285)] auth-input outline-none transition-all duration-200 ${errors.email ? 'border border-red-500' : ''}`}
+                                            className={`w-full h-12 pl-10 pr-4 rounded-xl text-sm text-[var(--auth-input-text)] placeholder-[var(--auth-input-placeholder)] auth-input outline-none transition-all duration-200 ${errors.email ? 'border border-destructive' : ''}`}
                                         />
                                     </div>
                                     {errors.email && (
@@ -172,23 +171,23 @@ export default function LoginPage() {
                                 </div>
 
                                 <div>
-                                    <label htmlFor="login-password" className="block text-sm font-medium mb-2" style={{ color: "oklch(0.70 0.03 285)" }}>
+                                    <label htmlFor="login-password" className="block text-sm font-medium mb-2" style={{ color: "var(--auth-label)" }}>
                                         Password
                                     </label>
                                     <div className="relative">
-                                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "oklch(0.45 0.03 285)" }} />
+                                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "var(--auth-icon)" }} />
                                         <input
                                             id="login-password"
                                             type={showPassword ? "text" : "password"}
                                             {...register("password")}
                                             placeholder="••••••••"
-                                            className={`w-full h-12 pl-10 pr-12 rounded-xl text-sm text-white placeholder:text-[oklch(0.40_0.02_285)] auth-input outline-none transition-all duration-200 ${errors.password ? 'border border-red-500' : ''}`}
+                                            className={`w-full h-12 pl-10 pr-12 rounded-xl text-sm text-[var(--auth-input-text)] placeholder-[var(--auth-input-placeholder)] auth-input outline-none transition-all duration-200 ${errors.password ? 'border border-destructive' : ''}`}
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
                                             className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors hover:opacity-80"
-                                            style={{ color: "oklch(0.45 0.03 285)" }}
+                                            style={{ color: "var(--auth-icon)" }}
                                         >
                                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                         </button>
@@ -202,7 +201,7 @@ export default function LoginPage() {
                                     <Link
                                         href="/forgot-password"
                                         className="text-sm font-medium transition-colors hover:underline"
-                                        style={{ color: "oklch(0.70 0.08 290)" }}
+                                        style={{ color: "var(--auth-link-alt)" }}
                                     >
                                         Forgot password?
                                     </Link>
@@ -210,22 +209,22 @@ export default function LoginPage() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full h-12 rounded-xl text-[15px] font-semibold text-white transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98] shadow-lg"
+                                    className="w-full h-12 rounded-xl text-[15px] font-semibold text-primary-foreground transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98] shadow-lg"
                                     style={{
-                                        background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                                        boxShadow: "0 4px 20px oklch(0.72 0.12 290 / 25%)",
+                                        background: "var(--brand-gradient)",
+                                        boxShadow: "0 4px 20px var(--brand-glow)",
                                     }}
                                 >
                                     {loading ? "Signing in..." : "Sign in"}
                                 </button>
                             </form>
 
-                            <p className="mt-8 text-center text-sm" style={{ color: "oklch(0.50 0.02 285)" }}>
+                            <p className="mt-8 text-center text-sm" style={{ color: "var(--auth-footer)" }}>
                                 Don&apos;t have an account?{" "}
                                 <Link
                                     href="/register"
                                     className="font-semibold hover:underline transition-colors"
-                                    style={{ color: "oklch(0.78 0.12 290)" }}
+                                    style={{ color: "var(--auth-link)" }}
                                 >
                                     Sign up
                                 </Link>

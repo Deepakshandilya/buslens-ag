@@ -29,24 +29,23 @@ function MobileHero({
                 className
             )}
             style={{
-                background:
-                    "linear-gradient(180deg, oklch(0.145 0.01 285) 0%, oklch(0.12 0.015 280) 50%, oklch(0.14 0.02 290) 100%)",
+                background: "var(--background)",
             }}
         >
             {/* Static ambient glow — uses radial-gradient, no blur filter */}
             <div className="absolute inset-0 pointer-events-none">
                 <div
-                    className="absolute inset-0"
+                    className="absolute inset-0 opacity-50"
                     style={{
                         background:
-                            "radial-gradient(ellipse 50% 40% at 85% 10%, oklch(0.45 0.15 250 / 10%) 0%, transparent 60%)",
+                            "radial-gradient(ellipse 50% 40% at 85% 10%, var(--brand-glow) 0%, transparent 60%)",
                     }}
                 />
                 <div
-                    className="absolute inset-0"
+                    className="absolute inset-0 opacity-40"
                     style={{
                         background:
-                            "radial-gradient(ellipse 50% 40% at 15% 85%, oklch(0.45 0.12 160 / 8%) 0%, transparent 60%)",
+                            "radial-gradient(ellipse 50% 40% at 15% 85%, var(--brand-glow) 0%, transparent 60%)",
                     }}
                 />
             </div>

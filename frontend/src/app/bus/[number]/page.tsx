@@ -82,8 +82,8 @@ export default function BusNumberPage({
             <Card
                 className="backdrop-blur-sm"
                 style={{
-                    background: "oklch(0.195 0.02 285 / 90%)",
-                    border: "1px solid oklch(1 0.02 285 / 8%)",
+                    background: "var(--card)",
+                    border: "1px solid var(--border)",
                 }}
             >
                 <CardContent className="p-6">
@@ -148,8 +148,8 @@ export default function BusNumberPage({
                     <div
                         className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg"
                         style={{
-                            background: "linear-gradient(135deg, oklch(0.68 0.15 280), oklch(0.72 0.12 295))",
-                            boxShadow: "0 4px 16px oklch(0.72 0.12 290 / 25%)",
+                            background: "var(--brand-gradient)",
+                            boxShadow: "0 4px 16px var(--brand-glow)",
                         }}
                     >
                         <span
