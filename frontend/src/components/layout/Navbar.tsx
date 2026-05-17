@@ -255,32 +255,40 @@ export function Navbar() {
                             </DropdownMenu>
                         ) : (
                             <>
-                                {/* Mobile: icon-only log in button; desktop: text label */}
+                                {/* Desktop: separate Log in + Sign up */}
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     asChild
-                                    className="rounded-xl h-10 px-2.5 sm:px-4"
+                                    className="hidden sm:inline-flex rounded-xl h-10 px-4"
                                     style={{ color: "var(--navbar-text-muted)" }}
                                 >
                                     <Link href="/login">
-                                        <span className="hidden sm:inline text-[15px]">Log in</span>
-                                        <span className="sm:hidden text-[13px] font-medium">Login</span>
+                                        <span className="text-[15px]">Log in</span>
                                     </Link>
                                 </Button>
                                 <Button
                                     size="sm"
                                     asChild
-                                    className="rounded-xl font-semibold h-10 px-3 sm:px-5 text-[13px] sm:text-[15px]"
+                                    className="hidden sm:inline-flex rounded-xl font-semibold h-10 px-5 text-[15px]"
                                     style={{
                                         background: "var(--brand-accent)",
                                         color: "white",
                                     }}
                                 >
-                                    <Link href="/register">
-                                        <span className="hidden sm:inline">Sign up</span>
-                                        <span className="sm:hidden">Sign up</span>
-                                    </Link>
+                                    <Link href="/register">Sign up</Link>
+                                </Button>
+                                {/* Mobile: single compact Sign in button */}
+                                <Button
+                                    size="sm"
+                                    asChild
+                                    className="sm:hidden rounded-xl font-semibold h-9 px-3.5 text-[13px]"
+                                    style={{
+                                        background: "var(--brand-accent)",
+                                        color: "white",
+                                    }}
+                                >
+                                    <Link href="/login">Sign in</Link>
                                 </Button>
                             </>
                         )}

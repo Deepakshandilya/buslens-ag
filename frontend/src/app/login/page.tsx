@@ -140,8 +140,8 @@ export default function LoginPage() {
                                     <span
                                         className="px-3 rounded"
                                         style={{
-                                            background: "var(--auth-divider-bg)",
-                                            color: "var(--auth-text-muted)",
+                                            background: "var(--auth-divider-text-bg)",
+                                            color: "var(--auth-divider-text)",
                                         }}
                                     >
                                         or continue with email
