@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LogOut, Search, Heart, Clock, Info, Trash2, Lock, AlertTriangle, Sun, Moon } from "lucide-react";
+import { LogOut, Search, Heart, Clock, Trash2, Lock, AlertTriangle, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -149,7 +149,6 @@ export function Navbar() {
                                                 onClick: () => router.push("/login"),
                                             },
                                         });
-                                        router.push("/login");
                                     }}
                                     className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 cursor-pointer"
                                     style={{ color: "var(--navbar-text-muted)" }}
@@ -165,7 +164,6 @@ export function Navbar() {
                                                 onClick: () => router.push("/login"),
                                             },
                                         });
-                                        router.push("/login");
                                     }}
                                     className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 cursor-pointer"
                                     style={{ color: "var(--navbar-text-muted)" }}
@@ -175,17 +173,6 @@ export function Navbar() {
                                 </button>
                             </>
                         ) : null}
-                        <Link
-                            href="/about"
-                            className="flex items-center gap-1.5 text-[15px] font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200"
-                            style={{
-                                color: isActive("/about") ? "var(--navbar-text)" : "var(--navbar-text-muted)",
-                                background: isActive("/about") ? "var(--navbar-active-bg)" : "transparent",
-                            }}
-                        >
-                            <Info className="h-4.5 w-4.5" />
-                            <span className="hidden sm:inline">About</span>
-                        </Link>
                     </div>
 
                     {/* Right side */}
