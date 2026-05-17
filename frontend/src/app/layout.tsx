@@ -20,7 +20,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: {
     template: "%s | BusLens",
-    default: "BusLens — Find Your Bus Route",
+    default: "BusLens | Find Your Bus Route",
   },
   description:
     "Search bus routes from Stop A to Stop B, search by bus number, and track your favorite routes across Chandigarh.",
