@@ -5,13 +5,15 @@ import {
     MapPin,
     Bus,
     Users,
-    ArrowRight,
     Network,
-    CodeXml,
+    Search,
+    Heart,
+    Clock,
+    Zap,
+    ChevronDown,
+    ArrowRightLeft,
     Github,
     Linkedin,
-    CheckCircle2,
-    AlertCircle
 } from "lucide-react";
 import { InfiniteGridHero } from "@/components/ui/the-infinite-grid";
 import { SearchCard } from "@/components/search/SearchCard";
@@ -22,21 +24,83 @@ const fadeUpVariant: Variants = {
     show: {
         opacity: 1,
         y: 0,
-        transition: { type: "spring", stiffness: 50, damping: 15 }
-    }
+        transition: { type: "spring", stiffness: 50, damping: 15 },
+    },
+};
+
+const staggerContainer: Variants = {
+    hidden: {},
+    show: {
+        transition: { staggerChildren: 0.12 },
+    },
 };
 
 export default function HomePage() {
     return (
         <>
-            {/* ── Hero: Search Card ── */}
+            {/* ═══════════════════════════════════════════
+                HERO — Identity + Search Card + Scroll Hint
+               ═══════════════════════════════════════════ */}
             <InfiniteGridHero>
                 <div className="flex flex-col items-center w-full px-4 relative z-10 max-w-7xl mx-auto">
+                    {/* Brand identity */}
+                    <motion.div
+                        initial={{ opacity: 0, y: -15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="flex items-center gap-3 mb-6"
+                    >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/logo.png"
+                            alt="BusLens"
+                            className="h-10 w-10 rounded-xl object-cover"
+                            style={{
+                                boxShadow: "0 4px 16px var(--brand-glow)",
+                                border: "1px solid var(--border)",
+                            }}
+                        />
+                        <h2
+                            className="text-2xl font-bold tracking-tight"
+                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                        >
+                            Bus<span className="text-primary">Lens</span>
+                        </h2>
+                    </motion.div>
+
+                    {/* One-liner value prop */}
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="text-muted-foreground/70 text-sm sm:text-base mb-8 text-center max-w-md tracking-wide"
+                    >
+                        The fastest way to find your bus across Chandigarh, Mohali, Panchkula & Zirakpur.
+                    </motion.p>
+
                     <SearchCard />
+
+                    {/* Scroll hint */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1, duration: 0.8 }}
+                        className="mt-10 flex flex-col items-center gap-1 text-muted-foreground/40"
+                    >
+                        <span className="text-xs tracking-widest uppercase">Scroll to explore</span>
+                        <motion.div
+                            animate={{ y: [0, 6, 0] }}
+                            transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+                        >
+                            <ChevronDown className="h-5 w-5" />
+                        </motion.div>
+                    </motion.div>
                 </div>
             </InfiniteGridHero>
 
-            {/* ── Scrollable content below the hero ── */}
+            {/* ═══════════════════════════════════════════
+                BELOW-THE-FOLD CONTENT
+               ═══════════════════════════════════════════ */}
             <div
                 className="relative z-10 w-full"
                 style={{
@@ -46,24 +110,173 @@ export default function HomePage() {
             >
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
 
-                    {/* ── Network Scope (Bento Grid) ── */}
+                    {/* ── How It Works ── */}
                     <motion.section
                         initial="hidden"
                         whileInView="show"
-                        viewport={{ once: true, amount: 0.1 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        variants={staggerContainer}
                         className="py-24"
                     >
                         <motion.h2
                             variants={fadeUpVariant}
-                            className="text-4xl font-bold tracking-tight mb-12 text-center"
+                            className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-center"
                             style={{ fontFamily: "var(--font-heading), sans-serif" }}
                         >
-                            Network Scope
+                            How It Works
                         </motion.h2>
+                        <motion.p
+                            variants={fadeUpVariant}
+                            className="text-muted-foreground text-center mb-16 max-w-lg mx-auto"
+                        >
+                            Three simple steps to get where you need to go.
+                        </motion.p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                            {[
+                                {
+                                    step: "1",
+                                    icon: Search,
+                                    title: "Search",
+                                    desc: "Enter your starting stop, destination, or bus number. Our smart autocomplete helps you find it instantly.",
+                                    color: "text-blue-400",
+                                    borderColor: "hover:border-blue-500/40",
+                                    glowColor: "bg-blue-500/15",
+                                },
+                                {
+                                    step: "2",
+                                    icon: ArrowRightLeft,
+                                    title: "Pick a Route",
+                                    desc: "Browse matching buses with full route details — every stop from start to finish, direction, and alternatives.",
+                                    color: "text-emerald-400",
+                                    borderColor: "hover:border-emerald-500/40",
+                                    glowColor: "bg-emerald-500/15",
+                                },
+                                {
+                                    step: "3",
+                                    icon: Bus,
+                                    title: "Go!",
+                                    desc: "Save your favorites, check history later, and never miss your bus again. Works on any device.",
+                                    color: "text-amber-400",
+                                    borderColor: "hover:border-amber-500/40",
+                                    glowColor: "bg-amber-500/15",
+                                },
+                            ].map((item) => (
+                                <motion.div
+                                    key={item.step}
+                                    variants={fadeUpVariant}
+                                    className={`relative bg-card border border-border ${item.borderColor} rounded-2xl p-8 text-center transition-all duration-500 group hover:-translate-y-1 shadow-lg overflow-hidden`}
+                                >
+                                    <div className={`absolute -top-10 -right-10 w-32 h-32 ${item.glowColor} blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                    <div className="relative z-10">
+                                        <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl ${item.glowColor} mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                                            <item.icon className={`h-7 w-7 ${item.color}`} />
+                                        </div>
+                                        <div className="flex items-center justify-center gap-2 mb-3">
+                                            <span className={`text-xs font-bold uppercase tracking-widest ${item.color} opacity-70`}>Step {item.step}</span>
+                                        </div>
+                                        <h3
+                                            className="text-xl font-bold mb-3"
+                                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                                        >
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-muted-foreground text-sm leading-relaxed">
+                                            {item.desc}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.section>
+
+                    {/* ── Features Strip ── */}
+                    <motion.section
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true, amount: 0.2 }}
+                        variants={staggerContainer}
+                        className="mb-28"
+                    >
+                        <motion.h2
+                            variants={fadeUpVariant}
+                            className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-center"
+                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                        >
+                            Built for Daily Commuters
+                        </motion.h2>
+                        <motion.p
+                            variants={fadeUpVariant}
+                            className="text-muted-foreground text-center mb-14 max-w-lg mx-auto"
+                        >
+                            Everything you need, nothing you don&apos;t.
+                        </motion.p>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
+                            {[
+                                {
+                                    icon: Search,
+                                    title: "Multi-Mode Search",
+                                    desc: "Stop-to-stop, bus number, or stop lookup",
+                                    color: "text-primary",
+                                },
+                                {
+                                    icon: Heart,
+                                    title: "Save Favorites",
+                                    desc: "Bookmark routes you use every day",
+                                    color: "text-pink-400",
+                                },
+                                {
+                                    icon: Clock,
+                                    title: "Search History",
+                                    desc: "Quickly re-search your recent trips",
+                                    color: "text-teal-400",
+                                },
+                                {
+                                    icon: Zap,
+                                    title: "Lightning Fast",
+                                    desc: "Instant autocomplete & results",
+                                    color: "text-amber-400",
+                                },
+                            ].map((feat) => (
+                                <motion.div
+                                    key={feat.title}
+                                    variants={fadeUpVariant}
+                                    className="bg-card/60 border border-border/50 rounded-2xl p-5 sm:p-6 text-center hover:border-primary/30 transition-all duration-300 group"
+                                >
+                                    <feat.icon className={`h-6 w-6 ${feat.color} mx-auto mb-3 group-hover:scale-110 transition-transform duration-300`} />
+                                    <h4 className="font-semibold text-sm sm:text-base mb-1">{feat.title}</h4>
+                                    <p className="text-muted-foreground text-xs sm:text-sm leading-snug">{feat.desc}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.section>
+
+                    {/* ── Coverage Stats (Bento Grid) ── */}
+                    <motion.section
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true, amount: 0.1 }}
+                        variants={staggerContainer}
+                        className="mb-28"
+                    >
+                        <motion.h2
+                            variants={fadeUpVariant}
+                            className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-center"
+                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                        >
+                            Covering the Entire Tricity
+                        </motion.h2>
+                        <motion.p
+                            variants={fadeUpVariant}
+                            className="text-muted-foreground text-center mb-14 max-w-lg mx-auto"
+                        >
+                            Chandigarh · Mohali · Panchkula · Zirakpur
+                        </motion.p>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-min max-w-5xl mx-auto">
 
-                            {/* Box 1: Active Routes — large */}
+                            {/* Active Routes — large */}
                             <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-white/10 hover:border-primary/50 rounded-[2rem] p-10 flex flex-col justify-between group overflow-hidden relative shadow-2xl transition-all duration-500 hover:-translate-y-1">
                                 <div className="absolute right-0 top-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full translate-x-1/3 -translate-y-1/3 group-hover:bg-primary/40 transition-colors duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-[200%] transition-transform duration-[1500ms] ease-in-out" />
@@ -75,31 +288,31 @@ export default function HomePage() {
                                     <p className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary/80 tracking-tighter" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
                                         72
                                     </p>
-                                    <p className="text-muted-foreground mt-4 text-lg">Distinct bus routes traversing interconnected city corridors.</p>
+                                    <p className="text-muted-foreground mt-4 text-lg">Distinct bus routes across interconnected city corridors.</p>
                                 </div>
                             </motion.div>
 
-                            {/* Box 2: Stops */}
+                            {/* Stops */}
                             <motion.div variants={fadeUpVariant} className="bg-card border border-border hover:border-teal-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
                                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-teal-500/20 blur-[80px] rounded-full translate-x-1/3 translate-y-1/3 group-hover:bg-teal-500/40 transition-colors duration-500" />
                                 <MapPin className="h-8 w-8 text-teal-400 mb-6 group-hover:scale-125 group-hover:-translate-y-2 transition-all duration-500 relative z-10" />
                                 <p className="text-5xl font-black mb-2 text-foreground relative z-10">700<span className="text-teal-400">+</span></p>
-                                <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold group-hover:text-teal-200 transition-colors relative z-10">Stops Indexed</p>
+                                <p className="text-sm text-muted-foreground uppercase tracking-widest font-semibold group-hover:text-teal-200 transition-colors relative z-10">Stops Indexed</p>
                             </motion.div>
 
-                            {/* Box 3: Buses */}
+                            {/* Buses */}
                             <motion.div variants={fadeUpVariant} className="bg-card border border-border hover:border-pink-500/50 rounded-[2rem] p-8 flex flex-col justify-center transition-all duration-500 shadow-xl group hover:-translate-y-1 relative overflow-hidden">
                                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-500/20 blur-[80px] rounded-full -translate-x-1/3 translate-y-1/3 group-hover:bg-pink-500/40 transition-colors duration-500" />
                                 <Bus className="h-8 w-8 text-pink-400 mb-6 group-hover:scale-125 group-hover:translate-x-2 transition-all duration-500 relative z-10" />
                                 <p className="text-5xl font-black mb-2 text-foreground relative z-10">~500</p>
-                                <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold group-hover:text-pink-200 transition-colors relative z-10">CTU Buses</p>
+                                <p className="text-sm text-muted-foreground uppercase tracking-widest font-semibold group-hover:text-pink-200 transition-colors relative z-10">CTU Buses</p>
                             </motion.div>
 
-                            {/* Box 4: Commutes — wide */}
+                            {/* Daily Commutes — wide */}
                             <motion.div variants={fadeUpVariant} className="md:col-span-2 bg-card border border-border hover:border-orange-500/50 rounded-[2rem] p-8 md:p-10 flex items-center justify-between shadow-xl transition-all duration-500 group hover:-translate-y-1 relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <div className="relative z-10">
-                                    <h4 className="text-lg text-gray-400 uppercase tracking-widest font-bold mb-2 group-hover:text-orange-200 transition-colors">Daily Commutes</h4>
+                                    <h4 className="text-lg text-muted-foreground uppercase tracking-widest font-bold mb-2 group-hover:text-orange-200 transition-colors">Daily Commutes</h4>
                                     <p className="text-4xl md:text-5xl font-black text-foreground">50,000<span className="text-orange-500">+</span></p>
                                 </div>
                                 <div className="w-20 h-20 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center relative z-10 group-hover:bg-orange-500/30 group-hover:scale-110 transition-all duration-500">
@@ -109,158 +322,50 @@ export default function HomePage() {
                         </div>
                     </motion.section>
 
-                    {/* ── Story: The Path We Traveled ── */}
-                    <motion.section
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true, amount: 0.1 }}
-                        className="mb-32 w-full"
-                    >
-                        <motion.h2
-                            variants={fadeUpVariant}
-                            className="text-4xl font-bold tracking-tight mb-20 text-center"
-                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
-                        >
-                            The Path We Traveled
-                        </motion.h2>
-
-                        <div className="relative max-w-3xl mx-auto">
-                            {/* The Road (Vertical Line) */}
-                            <div className="absolute left-[39px] top-0 bottom-0 w-1.5 bg-gradient-to-b from-red-500/50 via-primary/50 to-primary/10 rounded-full z-0" />
-
-                            {/* Stop 1: The Problem */}
-                            <motion.div variants={fadeUpVariant} className="relative flex w-full mb-16 group z-10">
-                                <div className="absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)] flex flex-col items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
-                                    <div className="w-2 h-2 rounded-full bg-red-500" />
-                                </div>
-                                <div className="w-full pl-24 pt-0">
-                                    <div className="bg-red-500/5 border border-red-500/20 rounded-3xl p-8 hover:bg-red-500/10 transition-colors duration-300 shadow-xl shadow-red-500/5 w-full">
-                                        <h3
-                                            className="text-2xl font-bold flex items-center gap-3 text-red-400 mb-6"
-                                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
-                                        >
-                                            <AlertCircle className="h-6 w-6" /> Departure: The Problem
-                                        </h3>
-                                        <ul className="space-y-4">
-                                            <li className="flex items-start gap-3">
-                                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                                                <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Messy Routes:</strong> Too many confusing bus routes that overlap with each other.</p>
-                                            </li>
-                                            <li className="flex items-start gap-3">
-                                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                                                <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Outdated Info:</strong> Paper schedules and old PDFs make finding the right buses hard.</p>
-                                            </li>
-                                            <li className="flex items-start gap-3">
-                                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                                                <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Daily Stress:</strong> People struggle every day to figure out how to reach their destination.</p>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                            {/* Stop 2: The Solution */}
-                            <motion.div variants={fadeUpVariant} className="relative flex w-full mb-12 group z-10">
-                                <div className="absolute left-[27px] top-6 w-8 h-8 rounded-full bg-background border-4 border-primary shadow-lg shadow-primary/40 flex flex-col items-center justify-center z-20 group-hover:scale-125 transition-transform duration-300">
-                                    <div className="w-2 h-2 rounded-full bg-primary" />
-                                </div>
-                                <div className="w-full pl-24 pt-0">
-                                    <div className="bg-primary/5 border border-primary/20 rounded-3xl p-8 backdrop-blur-sm relative overflow-hidden hover:bg-primary/10 transition-colors duration-300 shadow-xl shadow-primary/5 w-full">
-                                        <h3
-                                            className="text-2xl font-bold flex items-center gap-3 text-primary mb-6 relative z-10"
-                                            style={{ fontFamily: "var(--font-heading), sans-serif" }}
-                                        >
-                                            <CheckCircle2 className="h-6 w-6" /> Destination: Solution
-                                        </h3>
-                                        <ul className="space-y-4 relative z-10">
-                                            <li className="flex items-start gap-3">
-                                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                                <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Organized Data:</strong> We collected all the messy data and built a clean, fast system.</p>
-                                            </li>
-                                            <li className="flex items-start gap-3">
-                                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                                <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Fast Search:</strong> Instantly find buses and stops with a smart search engine.</p>
-                                            </li>
-                                            <li className="flex items-start gap-3">
-                                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                                <p className="text-muted-foreground leading-relaxed text-sm lg:text-base"><strong>Easy Saving:</strong> Save your favorite routes and see your history anywhere.</p>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
-                    </motion.section>
-
-                    {/* ── Tricity Map ── */}
-                    <motion.section
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true, amount: 0.2 }}
-                        className="mb-24"
-                    >
-                        <motion.div variants={fadeUpVariant} className="flex flex-col gap-6">
-                            <div className="w-full rounded-[2rem] overflow-hidden relative group h-[500px] shadow-2xl border border-white/10">
-                                <iframe
-                                    src="https://maps.google.com/maps?q=Chandigarh&t=m&z=12&output=embed&iwloc=near"
-                                    title="Chandigarh Tricity Map"
-                                    className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-700"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                ></iframe>
-                            </div>
-                        </motion.div>
-                    </motion.section>
-
-                    {/* ── Developer & Footer ── */}
-                    <motion.div
+                    {/* ── Minimal Footer ── */}
+                    <motion.footer
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true }}
                         variants={fadeUpVariant}
-                        className="mt-16 pt-16 border-t border-white/5 relative"
+                        className="pt-12 border-t border-border/30"
                     >
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-card/50 p-8 md:p-10 rounded-[2.5rem] backdrop-blur-sm border border-border shadow-2xl">
-                            {/* Developer Info */}
-                            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
-                                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-purple-800 flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
-                                    <CodeXml className="h-10 w-10 text-white" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-primary font-bold tracking-widest uppercase mb-2">Architected & Engineered By</p>
-                                    <h4 className="text-3xl font-bold text-foreground mb-4" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
-                                        Deepak Shandilya
-                                    </h4>
-                                    <div className="flex items-center justify-center md:justify-start gap-6">
-                                        <a href="https://github.com/deepakshandilya" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors text-sm font-semibold p-2 -ml-2 rounded-lg hover:bg-foreground/5">
-                                            <Github className="h-5 w-5" /> GitHub
-                                        </a>
-                                        <a href="https://www.linkedin.com/in/deepakshandilyaa/" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors text-sm font-semibold p-2 -ml-2 rounded-lg hover:bg-foreground/5">
-                                            <Linkedin className="h-5 w-5" /> LinkedIn
-                                        </a>
-                                    </div>
-                                </div>
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6">
+                            <div className="flex items-center gap-2">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src="/logo.png" alt="BusLens" className="h-7 w-7 rounded-lg object-cover" />
+                                <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
+                                    Bus<span className="text-primary">Lens</span>
+                                </span>
                             </div>
 
-                            {/* CTA */}
-                            <div className="flex flex-col items-center md:items-end w-full md:w-auto">
-                                <button
-                                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                                    className="group flex items-center gap-4 bg-foreground text-background px-8 py-5 rounded-2xl font-bold text-lg hover:shadow-[0_0_40px_var(--brand-glow)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                            <p className="text-sm text-muted-foreground">
+                                Built by{" "}
+                                <a
+                                    href="https://www.linkedin.com/in/deepakshandilyaa/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="font-semibold text-foreground/80 hover:text-primary transition-colors"
                                 >
-                                    Start Exploring Routes
-                                    <div className="bg-background/10 rounded-full p-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
-                                        <ArrowRight className="h-5 w-5" />
-                                    </div>
-                                </button>
-                                <p className="text-sm text-muted-foreground mt-6 font-medium tracking-wide">
-                                    © {new Date().getFullYear()} BusLens. Bus at One Glance.
-                                </p>
+                                    Deepak Shandilya
+                                </a>
+                            </p>
+
+                            <div className="flex items-center gap-4">
+                                <a href="https://github.com/deepakshandilya" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
+                                    <Github className="h-5 w-5" />
+                                </a>
+                                <a href="https://www.linkedin.com/in/deepakshandilyaa/" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="LinkedIn">
+                                    <Linkedin className="h-5 w-5" />
+                                </a>
                             </div>
                         </div>
-                    </motion.div>
+                        <div className="text-center pb-6">
+                            <p className="text-xs text-muted-foreground/50">
+                                © {new Date().getFullYear()} BusLens. Bus at One Glance.
+                            </p>
+                        </div>
+                    </motion.footer>
 
                 </div>
             </div>
