@@ -207,9 +207,16 @@ Both services are co-located on a single EC2 instance behind Nginx, with a manag
     <ErrorBoundary>                     # Client — global error boundary
       <main>
         <Page>                          # File-based route pages
-          <PageBackground>              # Shared ambient gradient wrapper
-            <SearchCard>                # Home page search interface
+          <InfiniteGridHero>            # Home hero — brand identity + search
+            <SearchCard>                # Multi-mode search interface
             <StopAutocomplete>          # Debounced autocomplete input
+          </InfiniteGridHero>
+          <HowItWorks>                  # 3-step user guide section
+          <FeaturesStrip>               # Feature highlights (search, favorites, history, speed)
+          <CoverageStats>               # Bento grid — routes, stops, buses, commutes
+          <ServiceAreaMap>              # Embedded Google Maps of Tricity
+          <ProductFooter>               # Brand, quick links, search modes, credits
+          <PageBackground>              # Shared ambient gradient wrapper (other pages)
             <RouteResultCard>           # Search result cards
             <StopTimeline>              # Route detail timeline
           </PageBackground>

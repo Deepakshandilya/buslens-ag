@@ -2,7 +2,7 @@
 
 **Real-time bus route discovery for the Chandigarh Tricity region.**
 
-Search bus routes between any two stops, browse routes by bus number, view full stop timelines, and manage authenticated favorites and search history — across Chandigarh, Mohali and Panchkula.
+Search bus routes between any two stops, browse routes by bus number, view full stop timelines, and manage authenticated favorites and search history — across Chandigarh, Mohali, Panchkula and Zirakpur.
 
 [![Live](https://img.shields.io/badge/Live-buslens.live-72a5f2?style=flat&logo=googlechrome)](https://buslens.live)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
@@ -69,7 +69,7 @@ Search bus routes between any two stops, browse routes by bus number, view full 
 buslens-ag/
 ├── frontend/               # Next.js 16 (TypeScript, React 19)
 │   ├── src/
-│   │   ├── app/            # App Router pages (home, search, route, dashboard, auth, about)
+│   │   ├── app/            # App Router pages (home, search, route, dashboard, auth)
 │   │   ├── components/     # Layout, search, UI primitives, error boundary
 │   │   ├── hooks/          # React Query hooks (route search, favorites, history)
 │   │   ├── stores/         # Zustand auth store
@@ -222,7 +222,7 @@ pytest -v
 
 | Route | Description |
 |-------|-------------|
-| `/` | Home — infinite grid hero with stop-to-stop search |
+| `/` | Landing page — brand hero, search card, how-it-works guide, features, coverage stats, service area map |
 | `/search?from=X&to=Y` | Search results with journey visualization |
 | `/route/[number]/[direction]` | Full stop timeline with from/to highlighting |
 | `/bus/[number]` | All directions for a bus number |
@@ -230,7 +230,6 @@ pytest -v
 | `/dashboard` | 🔒 Search history and saved favorites |
 | `/login` | Login form |
 | `/register` | Registration form |
-| `/about` | Story, network analytics, embedded map |
 
 ---
 

@@ -41,7 +41,7 @@ frontend/
 ├── src/
 │   ├── app/                        # Next.js App Router pages
 │   │   ├── layout.tsx              # Root layout (fonts, providers, navbar)
-│   │   ├── page.tsx                # Home — infinite grid hero + search card
+│   │   ├── page.tsx                # Home — landing page (hero, search, how-it-works, features, stats, map, footer)
 │   │   ├── globals.css             # Design tokens, OKLCH color system
 │   │   ├── search/                 # Search results (/search?from=X&to=Y)
 │   │   ├── route/[routeNumber]/    # Route detail with stop timeline
@@ -50,7 +50,7 @@ frontend/
 │   │   ├── dashboard/              # Auth-gated favorites & history tabs
 │   │   ├── login/                  # Login form
 │   │   ├── register/               # Registration form
-│   │   └── about/                  # About page with bento analytics grid
+
 │   │
 │   ├── components/
 │   │   ├── layout/
@@ -139,7 +139,7 @@ The frontend uses an **OKLCH-based color system** defined in `globals.css` with 
 
 | Route | Page | Auth | Description |
 |-------|------|:----:|-------------|
-| `/` | Home | — | Infinite grid hero with search card (from/to autocomplete) |
+| `/` | Landing | — | Brand hero, search card, how-it-works 3-step guide, features strip, coverage stats bento grid, service area map, product footer |
 | `/search?from=X&to=Y` | Search Results | — | Lists matching routes with journey visualization |
 | `/route/[number]/[direction]` | Route Detail | — | Full stop timeline with from/to highlighting |
 | `/bus/[number]` | Bus Lookup | — | All directions for a given bus number |
@@ -147,7 +147,6 @@ The frontend uses an **OKLCH-based color system** defined in `globals.css` with 
 | `/dashboard` | Dashboard | 🔒 | Tabbed view of search history and saved favorites |
 | `/login` | Login | — | Email + password form with Zod validation |
 | `/register` | Register | — | Registration with password confirmation |
-| `/about` | About | — | Story, network analytics bento grid, embedded map |
 
 ---
 
