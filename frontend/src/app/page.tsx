@@ -14,7 +14,9 @@ import {
     ArrowRightLeft,
     Github,
     Linkedin,
+    Map,
 } from "lucide-react";
+import Link from "next/link";
 import { InfiniteGridHero } from "@/components/ui/the-infinite-grid";
 import { SearchCard } from "@/components/search/SearchCard";
 
@@ -48,7 +50,7 @@ export default function HomePage() {
                         initial={{ opacity: 0, y: -15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="flex items-center gap-3 mb-6"
+                        className="flex items-center gap-3 mb-5"
                     >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -68,14 +70,18 @@ export default function HomePage() {
                         </h2>
                     </motion.div>
 
-                    {/* One-liner value prop */}
+                    {/* Value prop — prominent, styled */}
                     <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
-                        className="text-muted-foreground/70 text-sm sm:text-base mb-8 text-center max-w-md tracking-wide"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15, duration: 0.6 }}
+                        className="text-lg sm:text-xl md:text-2xl mb-9 text-center max-w-2xl leading-relaxed font-medium"
+                        style={{ fontFamily: "var(--font-heading), sans-serif" }}
                     >
-                        The fastest way to find your bus across Chandigarh, Mohali, Panchkula & Zirakpur.
+                        <span className="text-foreground/80">The fastest way to find your bus across </span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-emerald-400 font-bold">
+                            Chandigarh, Mohali, Panchkula &amp; Zirakpur
+                        </span>
                     </motion.p>
 
                     <SearchCard />
@@ -100,15 +106,27 @@ export default function HomePage() {
 
             {/* ═══════════════════════════════════════════
                 BELOW-THE-FOLD CONTENT
+                — Uses the same background gradient + ambient orbs
+                  to blend seamlessly with the hero above.
                ═══════════════════════════════════════════ */}
-            <div
-                className="relative z-10 w-full"
-                style={{
-                    background:
-                        "linear-gradient(180deg, var(--page-bg-start) 0%, var(--page-bg-mid) 40%, var(--page-bg-end) 100%)",
-                }}
-            >
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+            <div className="relative z-10 w-full overflow-hidden" style={{ background: "var(--background)" }}>
+                {/* Ambient glow orbs — mirrors the hero style */}
+                <div className="pointer-events-none absolute inset-0">
+                    <div
+                        className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full blur-[160px] opacity-40"
+                        style={{ background: "var(--brand-glow)" }}
+                    />
+                    <div
+                        className="absolute top-[30%] -left-[15%] w-[40%] h-[40%] rounded-full blur-[140px] opacity-25"
+                        style={{ background: "var(--brand-glow)" }}
+                    />
+                    <div
+                        className="absolute bottom-[10%] right-[5%] w-[30%] h-[30%] rounded-full blur-[120px] opacity-20"
+                        style={{ background: "var(--brand-glow)" }}
+                    />
+                </div>
+
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-0 relative z-10">
 
                     {/* ── How It Works ── */}
                     <motion.section
@@ -322,52 +340,164 @@ export default function HomePage() {
                         </div>
                     </motion.section>
 
-                    {/* ── Minimal Footer ── */}
-                    <motion.footer
+                    {/* ── Service Area Map ── */}
+                    <motion.section
                         initial="hidden"
                         whileInView="show"
-                        viewport={{ once: true }}
-                        variants={fadeUpVariant}
-                        className="pt-12 border-t border-border/30"
+                        viewport={{ once: true, amount: 0.15 }}
+                        variants={staggerContainer}
+                        className="mb-28"
                     >
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6">
-                            <div className="flex items-center gap-2">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="/logo.png" alt="BusLens" className="h-7 w-7 rounded-lg object-cover" />
-                                <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-heading), sans-serif" }}>
-                                    Bus<span className="text-primary">Lens</span>
-                                </span>
+                        <motion.div variants={fadeUpVariant} className="flex items-center justify-center gap-3 mb-4">
+                            <Map className="h-7 w-7 text-primary" />
+                            <h2
+                                className="text-3xl sm:text-4xl font-bold tracking-tight text-center"
+                                style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                            >
+                                Our Service Area
+                            </h2>
+                        </motion.div>
+                        <motion.p
+                            variants={fadeUpVariant}
+                            className="text-muted-foreground text-center mb-10 max-w-md mx-auto"
+                        >
+                            Routes span across all four cities of the Chandigarh Tricity region.
+                        </motion.p>
+                        <motion.div variants={fadeUpVariant}>
+                            <div className="w-full rounded-[2rem] overflow-hidden relative group h-[450px] sm:h-[500px] shadow-2xl border border-border/50">
+                                <iframe
+                                    src="https://maps.google.com/maps?q=Chandigarh&t=m&z=12&output=embed&iwloc=near"
+                                    title="Chandigarh Tricity Map"
+                                    className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                                    style={{ border: 0 }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                ></iframe>
+                            </div>
+                        </motion.div>
+                    </motion.section>
+
+                </div>
+
+                {/* ═══════════════════════════════════════════
+                    PRODUCT FOOTER
+                   ═══════════════════════════════════════════ */}
+                <motion.footer
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    variants={fadeUpVariant}
+                    className="border-t border-border/40 relative"
+                    style={{ background: "var(--card)" }}
+                >
+                    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
+
+                            {/* Brand column */}
+                            <div className="md:col-span-2">
+                                <div className="flex items-center gap-3 mb-4">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src="/logo.png" alt="BusLens" className="h-10 w-10 rounded-xl object-cover" />
+                                    <span
+                                        className="text-xl font-bold"
+                                        style={{ fontFamily: "var(--font-heading), sans-serif" }}
+                                    >
+                                        Bus<span className="text-primary">Lens</span>
+                                    </span>
+                                </div>
+                                <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mb-6">
+                                    Bringing analytical clarity to the public transit chaos of the Chandigarh Tricity.
+                                    Search any bus route across Chandigarh, Mohali, Panchkula &amp; Zirakpur.
+                                </p>
+                                <div className="flex items-center gap-3">
+                                    <a
+                                        href="https://github.com/deepakshandilya"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center justify-center w-10 h-10 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-muted-foreground hover:text-foreground transition-all duration-200"
+                                        aria-label="GitHub"
+                                    >
+                                        <Github className="h-5 w-5" />
+                                    </a>
+                                    <a
+                                        href="https://www.linkedin.com/in/deepakshandilyaa/"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center justify-center w-10 h-10 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-muted-foreground hover:text-foreground transition-all duration-200"
+                                        aria-label="LinkedIn"
+                                    >
+                                        <Linkedin className="h-5 w-5" />
+                                    </a>
+                                </div>
                             </div>
 
-                            <p className="text-sm text-muted-foreground">
-                                Built by{" "}
+                            {/* Quick links */}
+                            <div>
+                                <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/70 mb-5">Quick Links</h4>
+                                <ul className="space-y-3">
+                                    <li>
+                                        <Link href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                            Home
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/login" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                            Log In
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/register" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                            Sign Up
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                            Dashboard
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {/* Search modes */}
+                            <div>
+                                <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/70 mb-5">Search</h4>
+                                <ul className="space-y-3">
+                                    <li className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <Search className="h-3.5 w-3.5 text-primary/60" /> Stop to Stop
+                                    </li>
+                                    <li className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <Bus className="h-3.5 w-3.5 text-primary/60" /> By Bus Number
+                                    </li>
+                                    <li className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <MapPin className="h-3.5 w-3.5 text-primary/60" /> Search a Stop
+                                    </li>
+                                    <li className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <Heart className="h-3.5 w-3.5 text-primary/60" /> Save Favorites
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Bottom bar */}
+                        <div className="mt-14 pt-8 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <p className="text-xs text-muted-foreground/60">
+                                © {new Date().getFullYear()} BusLens. Bus at One Glance.
+                            </p>
+                            <p className="text-xs text-muted-foreground/60">
+                                Engineered by{" "}
                                 <a
                                     href="https://www.linkedin.com/in/deepakshandilyaa/"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="font-semibold text-foreground/80 hover:text-primary transition-colors"
+                                    className="font-semibold text-foreground/60 hover:text-primary transition-colors"
                                 >
                                     Deepak Shandilya
                                 </a>
                             </p>
-
-                            <div className="flex items-center gap-4">
-                                <a href="https://github.com/deepakshandilya" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
-                                    <Github className="h-5 w-5" />
-                                </a>
-                                <a href="https://www.linkedin.com/in/deepakshandilyaa/" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="LinkedIn">
-                                    <Linkedin className="h-5 w-5" />
-                                </a>
-                            </div>
                         </div>
-                        <div className="text-center pb-6">
-                            <p className="text-xs text-muted-foreground/50">
-                                © {new Date().getFullYear()} BusLens. Bus at One Glance.
-                            </p>
-                        </div>
-                    </motion.footer>
-
-                </div>
+                    </div>
+                </motion.footer>
             </div>
         </>
     );
