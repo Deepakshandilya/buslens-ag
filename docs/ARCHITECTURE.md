@@ -116,7 +116,55 @@ Both services are co-located on a single EC2 instance behind Nginx, with a manag
  └──────────────────────────────────────────────────────────────────┘
 ```
 
-### Authenticated Request Flow
+### Authentication Architecture
+
+BusLens uses a hybrid authentication system supporting both standard Email/Password (with OTP verification) and Google OAuth.
+
+#### 1. Standard Login & Registration Flow
+
+```
+ Browser                                      FastAPI
+    │                                            │
+    │  1. Submit Email/Password                  │
+    ├───────────────────────────────────────────►│
+    │                                            │  Creates User (is_verified=False)
+    │                                            │  Generates & Emails 6-digit OTP
+    │  2. Return temp token (or session state)   │
+    ◄────────────────────────────────────────────┤
+    │                                            │
+    │  3. Submit OTP                             │
+    ├───────────────────────────────────────────►│
+    │                                            │  Validates OTP
+    │                                            │  Updates is_verified=True
+    │  4. Return JWT Access Token                │
+    ◄────────────────────────────────────────────┤
+```
+
+#### 2. Google OAuth Flow
+
+```
+ Browser                    FastAPI                       Google
+    │                          │                             │
+    │ 1. Click "Google Login"  │                             │
+    ├─────────────────────────►│                             │
+    │                          │ 2. Redirect to Google       │
+    │                          ├────────────────────────────►│
+    │                          │                             │ 3. User authenticates
+    │ 4. Redirect /auth/callback?code=...                    │
+    ◄────────────────────────────────────────────────────────┤
+    │                          │                             │
+    │ 5. Send code to backend  │                             │
+    ├─────────────────────────►│                             │
+    │                          │ 6. Exchange code for token  │
+    │                          ├────────────────────────────►│
+    │                          │ 7. Return profile data      │
+    │                          ◄─────────────────────────────┤
+    │                          │ Finds/Creates User          │
+    │ 8. Return JWT            │                             │
+    ◄──────────────────────────┤                             │
+```
+
+#### 3. Authenticated Request Flow
 
 ```
  Browser                   Axios Interceptor              FastAPI
@@ -138,7 +186,7 @@ Both services are co-located on a single EC2 instance behind Nginx, with a manag
     │       --- On 401 ---       │                           │
     │                            │ ◄─────────────────────────┤ 401 Unauthorized
     │                            │ Clears localStorage       │
-    │                            │ Resets Zustand store       │
+    │                            │ Resets Zustand store      │
     │  ◄─────────────────────────┤ Redirects to /login       │
 ```
 

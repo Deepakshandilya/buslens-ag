@@ -48,8 +48,11 @@ frontend/
 │   │   ├── bus/[number]/           # Bus number lookup
 │   │   ├── stop/[id]/              # Stop detail — all routes through a stop
 │   │   ├── dashboard/              # Auth-gated favorites & history tabs
-│   │   ├── login/                  # Login form
+│   │   ├── auth/callback/          # Google OAuth callback handler
+│   │   ├── login/                  # Login form and OAuth entry
 │   │   ├── register/               # Registration form
+│   │   ├── forgot-password/        # Request password reset OTP
+│   │   ├── reset-password/         # Reset password with OTP
 
 │   │
 │   ├── components/
@@ -145,8 +148,11 @@ The frontend uses an **OKLCH-based color system** defined in `globals.css` with 
 | `/bus/[number]` | Bus Lookup | — | All directions for a given bus number |
 | `/stop/[id]` | Stop Detail | — | All routes passing through a specific stop |
 | `/dashboard` | Dashboard | 🔒 | Tabbed view of search history and saved favorites |
-| `/login` | Login | — | Email + password form with Zod validation |
+| `/login` | Login | — | Email + password form, Google OAuth entry |
 | `/register` | Register | — | Registration with password confirmation |
+| `/forgot-password` | Forgot Pass | — | Request password reset OTP via email |
+| `/reset-password` | Reset Pass | — | Submit OTP and new password |
+| `/auth/callback` | OAuth Callback | — | Handles Google OAuth redirection and token saving |
 
 ---
 

@@ -17,7 +17,9 @@ Search bus routes between any two stops, browse routes by bus number, view full 
 | | Feature | Detail |
 |---|---------|--------|
 | 🔍 | **Directional Route Search** | Returns a route **only if** the departure stop comes before the destination in that direction — no false positives |
-| 🔐 | **JWT Authentication** | bcrypt password hashing, Axios 401 interceptor auto-logout, Zustand auth hydration |
+| 🔐 | **JWT & OAuth Authentication** | Secure login with email OTP verification, Google OAuth integration, and JWT state management |
+| 🛡️ | **Account Security** | Built-in forgot/reset password flows, strict rate limiting, and bcrypt password hashing |
+| 🎛️ | **Account Management** | Fully manageable user dashboard with one-click clear history, clear favorites, and account deletion |
 | 🏗️ | **Layered Backend** | Repository pattern isolating SQL from business logic, Pydantic v2 contracts |
 | ⚡ | **Cached Data Layer** | TanStack React Query with `staleTime`, `enabled` guards, and mutation-based invalidation |
 | 🎨 | **OKLCH Design System** | Dark-first glassmorphic UI with ambient gradient backgrounds and responsive typography |
@@ -228,8 +230,11 @@ pytest -v
 | `/bus/[number]` | All directions for a bus number |
 | `/stop/[id]` | All routes through a specific stop |
 | `/dashboard` | 🔒 Search history and saved favorites |
-| `/login` | Login form |
-| `/register` | Registration form |
+| `/login` | Login form with email/password and Google OAuth |
+| `/register` | Registration form with lazy email verification |
+| `/forgot-password` | Request OTP for password reset |
+| `/reset-password` | Set new password using verified OTP |
+| `/auth/callback` | Google OAuth callback handler |
 
 ---
 
@@ -244,10 +249,22 @@ pytest -v
 | `GET` | `/v1/stops/{id}/routes` | All routes through a stop |
 | `POST` | `/v1/auth/register` | User registration |
 | `POST` | `/v1/auth/login` | Login (returns JWT) |
+| `POST` | `/v1/auth/verify-email` | Verify email via OTP |
+| `POST` | `/v1/auth/resend-otp` | Resend verification OTP |
+| `GET`  | `/v1/auth/google/login` | Initiate Google OAuth flow |
+| `GET`  | `/v1/auth/google/callback` | Google OAuth callback |
+| `POST` | `/v1/auth/forgot-password`| Request password reset OTP |
+| `POST` | `/v1/auth/reset-password` | Reset password with OTP |
+| `GET` | `/v1/users/me` | 🔒 Get user profile |
+| `DELETE` | `/v1/users/me` | 🔒 Delete account |
 | `GET` | `/v1/users/me/favorites` | 🔒 List favorites |
 | `POST` | `/v1/users/me/favorites` | 🔒 Add favorite |
 | `DELETE` | `/v1/users/me/favorites/{id}` | 🔒 Remove favorite |
+| `DELETE` | `/v1/users/me/favorites` | 🔒 Clear all favorites |
 | `GET` | `/v1/users/me/history` | 🔒 Search history |
+| `POST` | `/v1/users/me/history` | 🔒 Add to search history |
+| `DELETE` | `/v1/users/me/history/{id}` | 🔒 Remove specific history item |
+| `DELETE` | `/v1/users/me/history` | 🔒 Clear all search history |
 | `POST` | `/v1/users/me/history` | 🔒 Record search |
 
 Full interactive docs at `/docs` (Swagger) when running locally.
