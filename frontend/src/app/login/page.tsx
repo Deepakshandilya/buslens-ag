@@ -7,6 +7,7 @@ import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { analytics } from "@/lib/analytics";
 import type { Token, UserResponse } from "@/types/api";
 import { AuthImageCarousel } from "@/components/layout/AuthImageCarousel";
 import { AuthFloatingNav } from "@/components/layout/AuthFloatingNav";
@@ -57,6 +58,7 @@ export default function LoginPage() {
             });
 
             login(tokenData.access_token, userData);
+            analytics.login("email");
             toast.success("Welcome back!");
             router.push("/");
         } catch {
@@ -67,6 +69,7 @@ export default function LoginPage() {
     };
 
     const handleGoogleLogin = () => {
+        analytics.login("google");
         const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/v1";
         window.location.href = `${apiBase}/auth/google/login`;
     };

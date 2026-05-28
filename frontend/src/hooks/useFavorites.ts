@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
+import { analytics } from "@/lib/analytics";
 import type { FavoriteResponse } from "@/types/api";
 import { useAuthStore } from "@/stores/authStore";
 
@@ -27,8 +28,9 @@ export function useAddFavorite() {
             const { data } = await api.post("/users/me/favorites", payload);
             return data;
         },
-        onSuccess: () => {
+        onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({ queryKey: ["favorites"] });
+            analytics.addFavorite(variables.route_id ? "route" : "stop");
         },
     });
 }

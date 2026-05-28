@@ -39,6 +39,12 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem('buslens_theme');document.documentElement.classList.add(t==='light'?'light':'dark')}catch(e){document.documentElement.classList.add('dark')}})()`,
           }}
         />
+        {/* Umami Analytics — privacy-first, cookie-free tracking */}
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="6db40cda-403d-46b0-817e-8faf305be141"
+        />
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         <Providers>

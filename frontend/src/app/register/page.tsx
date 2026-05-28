@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { analytics } from "@/lib/analytics";
 import { useAuthStore } from "@/stores/authStore";
 import type { Token, UserResponse } from "@/types/api";
 import { AuthImageCarousel } from "@/components/layout/AuthImageCarousel";
@@ -45,6 +46,7 @@ export default function RegisterPage() {
             });
 
             login(tokenData.access_token, userData);
+            analytics.signup();
             toast.success("Account created! Check your email for a verification code.");
             router.push("/");
         } catch (err: unknown) {

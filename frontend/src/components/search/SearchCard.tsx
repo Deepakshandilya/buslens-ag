@@ -10,6 +10,7 @@ import { StopAutocomplete } from "@/components/search/StopAutocomplete";
 import { BusAutocomplete } from "@/components/search/BusAutocomplete";
 import { useAuthStore } from "@/stores/authStore";
 import { useAddHistory } from "@/hooks/useHistory";
+import { analytics } from "@/lib/analytics";
 import type { StopOut } from "@/types/api";
 
 export function SearchCard() {
@@ -35,6 +36,7 @@ export function SearchCard() {
 
     const handleStopSearch = () => {
         if (!fromStop.trim() || !toStop.trim()) return;
+        analytics.searchRoute(fromStop.trim(), toStop.trim());
         if (isAuthenticated && selectedFrom && selectedTo) {
             addHistory.mutate({
                 from_stop_id: selectedFrom.id,
@@ -46,11 +48,13 @@ export function SearchCard() {
 
     const handleBusSearch = () => {
         if (!busNumber.trim()) return;
+        analytics.searchBus(busNumber.trim());
         router.push(`/bus/${encodeURIComponent(busNumber.trim())}`);
     };
 
     const handleStopLookup = () => {
         if (!selectedSearchStop) return;
+        analytics.searchStop(selectedSearchStop.name);
         router.push(`/stop/${selectedSearchStop.id}`);
     };
 
