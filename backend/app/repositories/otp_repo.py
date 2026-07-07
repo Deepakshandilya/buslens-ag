@@ -5,21 +5,24 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import settings
 
 
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
 def create_otp(db: Session, user_id: int, code: str, purpose: str = "email_verify") -> None:
     """Insert a new OTP, invalidating any previous unused ones for this user and purpose."""
     try:
-        # Determine expiry based on purpose
         exp_minutes = settings.password_reset_expire_minutes if purpose == "password_reset" else settings.otp_expire_minutes
-        
-        # Invalidate old OTPs for this user and purpose
+        expires_at = _utcnow() + timedelta(minutes=exp_minutes)
+
         db.execute(
-            text("UPDATE otp_codes SET used = TRUE WHERE user_id = :uid AND used = FALSE AND purpose = :purpose"),
+            text("UPDATE otp_codes SET used = 1 WHERE user_id = :uid AND used = 0 AND purpose = :purpose"),
             {"uid": user_id, "purpose": purpose}
         )
         db.execute(
             text("""INSERT INTO otp_codes (user_id, code, purpose, expires_at)
-                    VALUES (:uid, :code, :purpose, NOW() + INTERVAL :exp MINUTE)"""),
-            {"uid": user_id, "code": code, "purpose": purpose, "exp": exp_minutes}
+                    VALUES (:uid, :code, :purpose, :expires_at)"""),
+            {"uid": user_id, "code": code, "purpose": purpose, "expires_at": expires_at}
         )
         db.commit()
     except SQLAlchemyError as e:
@@ -34,24 +37,23 @@ def verify_otp(db: Session, user_id: int, code: str, purpose: str = "email_verif
     If valid and purpose is password_reset: just marks OTP as used.
     """
     try:
+        now = _utcnow()
         row = db.execute(
             text("""SELECT id FROM otp_codes
                     WHERE user_id = :uid AND code = :code AND purpose = :purpose
-                      AND used = FALSE AND expires_at > NOW()
+                      AND used = 0 AND expires_at > :now
                     ORDER BY created_at DESC LIMIT 1"""),
-            {"uid": user_id, "code": code, "purpose": purpose}
+            {"uid": user_id, "code": code, "purpose": purpose, "now": now}
         ).mappings().first()
 
         if not row:
             return False
 
-        # Mark OTP as used
-        db.execute(text("UPDATE otp_codes SET used = TRUE WHERE id = :id"), {"id": row["id"]})
-        
-        # Only verify user email if the purpose is email verification
+        db.execute(text("UPDATE otp_codes SET used = 1 WHERE id = :id"), {"id": row["id"]})
+
         if purpose == "email_verify":
-            db.execute(text("UPDATE users SET is_verified = TRUE WHERE id = :uid"), {"uid": user_id})
-        
+            db.execute(text("UPDATE users SET is_verified = 1 WHERE id = :uid"), {"uid": user_id})
+
         db.commit()
         return True
     except SQLAlchemyError as e:
@@ -63,11 +65,16 @@ def get_seconds_since_last_otp(db: Session, user_id: int) -> int | None:
     """Return seconds elapsed since the most recent OTP was created."""
     try:
         row = db.execute(
-            text("SELECT TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed "
-                 "FROM otp_codes WHERE user_id = :uid ORDER BY created_at DESC LIMIT 1"),
+            text("SELECT created_at FROM otp_codes WHERE user_id = :uid ORDER BY created_at DESC LIMIT 1"),
             {"uid": user_id}
         ).mappings().first()
-        return row["elapsed"] if row else None
+        if not row or row["created_at"] is None:
+            return None
+        created_at = row["created_at"]
+        if isinstance(created_at, str):
+            created_at = datetime.fromisoformat(created_at)
+        elapsed = (_utcnow() - created_at).total_seconds()
+        return int(elapsed)
     except SQLAlchemyError as e:
         raise ValueError("Database error while checking OTP rate limit") from e
 
@@ -78,8 +85,10 @@ def cleanup_expired_otps(db: Session) -> int:
     Returns the number of rows deleted. Called monthly by background task.
     """
     try:
+        cutoff = _utcnow() - timedelta(days=1)
         result = db.execute(
-            text("DELETE FROM otp_codes WHERE used = TRUE OR expires_at < NOW() - INTERVAL 1 DAY")
+            text("DELETE FROM otp_codes WHERE used = 1 OR expires_at < :cutoff"),
+            {"cutoff": cutoff}
         )
         db.commit()
         return result.rowcount

@@ -24,11 +24,7 @@ class Settings:
     def __init__(self):
         self.app_env = os.getenv("APP_ENV", "local")
 
-        self.db_host = os.getenv("DB_HOST", "localhost")
-        self.db_port = int(os.getenv("DB_PORT", "3306"))
-        self.db_name = os.getenv("DB_NAME", "buslens")
-        self.db_user = os.getenv("DB_USER", "buslens_user")
-        self.db_password = os.getenv("DB_PASSWORD", "buslens_password")
+        self.db_path = os.getenv("DB_PATH", "buslens.db")
 
         raw_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173")
         self.cors_origins: List[str] = [

@@ -15,6 +15,8 @@ def stops(
     db: Session = Depends(get_db),
 ):
     q = normalize_stop_name(query)
+    if len(q) < 2:
+        return {"query": q, "results": []}
     try:
         rows = search_stops(db, q, limit)
         return{
