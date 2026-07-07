@@ -1,6 +1,6 @@
 # BusLens — Production Deployment on AWS
 
-A full-stack deployment of BusLens using EC2, RDS, Nginx, and GitHub Actions CI/CD.
+A full-stack deployment of BusLens using EC2, SQLite, Nginx, and GitHub Actions CI/CD.
 
 ---
 
@@ -15,7 +15,7 @@ Nginx (Port 80 → redirect, Port 443 → SSL termination)
     ├── /      → Next.js   (localhost:3000, managed by PM2)
     └── /api/  → FastAPI   (localhost:8000, managed by systemd + Gunicorn)
     ↓
-AWS RDS MySQL  (private subnet, not publicly accessible)
+SQLite  (/var/lib/buslens/buslens.db on EC2 disk)
 ```
 
 ### Infrastructure
@@ -23,7 +23,7 @@ AWS RDS MySQL  (private subnet, not publicly accessible)
 | Component | Service | Role |
 |-----------|---------|------|
 | Compute | AWS EC2 (Ubuntu 22.04) | Hosts both frontend and backend |
-| Database | AWS RDS (MySQL) | Persistent route and stop data |
+| Database | SQLite (on EC2 disk) | Persistent route, stop, and user data |
 | Reverse Proxy | Nginx | SSL termination, routing |
 | Backend process | systemd + Gunicorn | Keeps FastAPI running, restarts on crash |
 | Frontend process | PM2 | Keeps Next.js running, survives reboots |
@@ -46,7 +46,7 @@ Ports 3000 and 8000 are intentionally not exposed publicly — all external traf
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y nginx python3-pip python3-venv git
+sudo apt install -y nginx python3-pip python3-venv git sqlite3
 ```
 
 ### Node.js
@@ -73,6 +73,68 @@ To persist across reboots, add to `/etc/fstab`:
 ```
 /swapfile swap swap defaults 0 0
 ```
+
+---
+
+## Database (SQLite)
+
+The database is a single SQLite file on the EC2 instance. No separate RDS instance is required.
+
+### Initial setup
+
+```bash
+sudo mkdir -p /var/lib/buslens
+sudo chown ubuntu:ubuntu /var/lib/buslens
+
+cd ~/buslens-ag/backend
+sqlite3 /var/lib/buslens/buslens.db < migrations/schema.sqlite.sql
+```
+
+### Import from a MySQL dump
+
+If you have an existing MySQL `mysqldump`, export data only from RDS/MySQL first:
+
+```bash
+mysqldump --no-create-info --complete-insert --skip-extended-insert buslens > data_only.sql
+```
+
+Copy `data_only.sql` to EC2, then import:
+
+```bash
+cd ~/buslens-ag/backend
+source venv/bin/activate
+DB_PATH=/var/lib/buslens/buslens.db python scripts/mysql_dump_to_sqlite.py data_only.sql
+```
+
+Verify row counts:
+
+```bash
+sqlite3 /var/lib/buslens/buslens.db "SELECT 'routes', COUNT(*) FROM routes UNION ALL SELECT 'stops', COUNT(*) FROM stops;"
+```
+
+### Backend environment
+
+Set in `backend/.env` on EC2:
+
+```env
+DB_PATH=/var/lib/buslens/buslens.db
+```
+
+### Backups
+
+Schedule a nightly backup (cron or manual):
+
+```bash
+sqlite3 /var/lib/buslens/buslens.db ".backup /home/ubuntu/backups/buslens-$(date +%F).db"
+```
+
+### Decommissioning RDS
+
+After verifying the app works with SQLite (`curl https://buslens.live/api/v1/health/db`):
+
+1. Take a final RDS snapshot
+2. Delete the RDS instance
+3. Remove RDS security group inbound rules from EC2
 
 ---
 

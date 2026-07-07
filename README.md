@@ -36,7 +36,7 @@ Search bus routes between any two stops, browse routes by bus number, view full 
 |-----------|------|
 | Python 3.10+ / FastAPI | API framework with async support |
 | SQLAlchemy + raw SQL | Database access layer with connection pooling |
-| MySQL 8.0 (AWS RDS) | Persistent route, stop, and user data |
+| SQLite | Persistent route, stop, and user data |
 | JWT (PyJWT) + bcrypt | Authentication and password hashing |
 | Pytest | Integration and unit test suite |
 
@@ -57,7 +57,7 @@ Search bus routes between any two stops, browse routes by bus number, view full 
 | Service | Role |
 |---------|------|
 | AWS EC2 (Ubuntu 22.04) | Hosts both frontend and backend |
-| AWS RDS (MySQL) | Managed database (private subnet) |
+| SQLite (on EC2 disk) | Persistent route, stop, and user data |
 | Nginx | Reverse proxy, SSL termination, path-based routing |
 | PM2 / systemd | Process management for Next.js / FastAPI |
 | Let's Encrypt | HTTPS certificates with auto-renewal |
@@ -109,7 +109,7 @@ Nginx (Port 443 → SSL termination)
     ├── /      → Next.js   (localhost:3000, PM2)
     └── /api/  → FastAPI   (localhost:8000, systemd + Gunicorn)
     ↓
-AWS RDS MySQL  (private subnet)
+SQLite  (/var/lib/buslens/buslens.db on EC2)
 ```
 
 ### Request Lifecycle
@@ -125,7 +125,7 @@ Axios client (attaches JWT Bearer token)
   ↓
 FastAPI router → Pydantic validation → Service layer → Repository (raw SQL)
   ↓
-MySQL 8.0
+SQLite
 ```
 
 For the full system design including database ERD, auth flow diagrams, state management, and design decisions, see **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
@@ -138,7 +138,7 @@ For the full system design including database ERD, auth flow diagrams, state man
 
 - **Python** 3.10+
 - **Node.js** ≥ 20
-- **MySQL** 8.0 (local or remote)
+- **SQLite** 3 (built into Python; no separate server needed)
 
 ### 1. Clone
 
@@ -167,11 +167,7 @@ Create `backend/.env`:
 
 ```env
 APP_ENV=local
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=buslens
-DB_USER=buslens_user
-DB_PASSWORD=buslens_password
+DB_PATH=buslens.db
 CORS_ORIGINS=http://localhost:3000
 SECRET_KEY=generate_a_secure_long_random_string_here
 ALGORITHM=HS256
@@ -180,12 +176,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 Set up the database:
 
-```sql
-CREATE DATABASE buslens;
-```
-
 ```bash
-python create_user_tables.py
+sqlite3 buslens.db < migrations/schema.sqlite.sql
 ```
 
 Start the backend:

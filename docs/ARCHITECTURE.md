@@ -29,7 +29,7 @@ buslens-ag/
 └── docs/         →  Deployment & architecture documentation
 ```
 
-Both services are co-located on a single EC2 instance behind Nginx, with a managed MySQL database on RDS.
+Both services are co-located on a single EC2 instance behind Nginx, with a SQLite database file on disk.
 
 ---
 
@@ -62,9 +62,8 @@ Both services are co-located on a single EC2 instance behind Nginx, with a manag
                     └───────────────────────┼─────────┘
                                             │
                     ┌───────────────────────▼──────────┐
-                    │     AWS RDS (MySQL 8.0)          │
-                    │     Private subnet — not         │
-                    │     publicly accessible           │
+                    │     SQLite (buslens.db)          │
+                    │     /var/lib/buslens/ on EC2     │
                     └──────────────────────────────────┘
 ```
 
@@ -108,7 +107,7 @@ Both services are co-located on a single EC2 instance behind Nginx, with a manag
                             │ SQL query
                             ▼
  ┌──────────────────────────────────────────────────────────────────┐
- │                      DATABASE (MySQL 8.0)                        │
+ │                      DATABASE (SQLite)                           │
  │                                                                  │
  │  10. JOIN routes ↔ route_stops ↔ stops                          │
  │      WHERE from_sequence < to_sequence                           │

@@ -21,14 +21,9 @@ def load_env():
     load_dotenv()
 
 def get_engine():
-    db_host = os.getenv("DB_HOST", "localhost")
-    db_port = int(os.getenv("DB_PORT", "3306"))
-    db_name = os.getenv("DB_NAME", "buslens")
-    db_user = os.getenv("DB_USER", "root")
-    db_password = os.getenv("DB_PASSWORD", "root")
-
-    url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-    return create_engine(url, pool_pre_ping=True, pool_recycle=3600)
+    db_path = os.getenv("DB_PATH", "buslens.db")
+    url = f"sqlite:///{db_path}"
+    return create_engine(url, connect_args={"check_same_thread": False}, pool_pre_ping=True)
 
 def read_json_files(input_path: str) -> List[Dict[str, Any]]:
     """
@@ -77,12 +72,11 @@ def upsert_route(db, route_number: str, direction: str) -> int:
     """
     Idempotent: insert if not exists, else fetch.
     """
-    # Insert ignore pattern (MySQL)
     db.execute(
         text("""
             INSERT INTO routes (route_number, direction)
             VALUES (:route_number, :direction)
-            ON DUPLICATE KEY UPDATE route_number = VALUES(route_number)
+            ON CONFLICT(route_number, direction) DO NOTHING
         """),
         {"route_number": route_number, "direction": direction},
     )
@@ -101,7 +95,7 @@ def upsert_stop(db, name: str) -> int:
         text("""
             INSERT INTO stops (name)
             VALUES (:name)
-            ON DUPLICATE KEY UPDATE name = VALUES(name)
+            ON CONFLICT(name) DO NOTHING
         """),
         {"name": name},
     )

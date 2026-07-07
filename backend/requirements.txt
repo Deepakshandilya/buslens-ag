@@ -3,7 +3,6 @@ uvicorn[standard]
 pydantic
 python-dotenv
 sqlalchemy
-pymysql
 pytest
 httpx
 passlib

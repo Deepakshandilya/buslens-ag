@@ -4,7 +4,7 @@ A FastAPI service powering real-time bus route discovery for the Chandigarh Tric
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python)](https://python.org)
-[![AWS](https://img.shields.io/badge/AWS-EC2%20%2B%20RDS-FF9900?style=flat&logo=amazonaws)](https://aws.amazon.com)
+[![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?style=flat&logo=amazonaws)](https://aws.amazon.com)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
@@ -189,9 +189,12 @@ pip install -r requirements.txt
 
 # 2. Configure environment
 cp .env.example .env
-# Edit .env with your local DB credentials
+# Set DB_PATH=buslens.db in .env
 
-# 3. Run
+# 3. Create database
+sqlite3 buslens.db < migrations/schema.sqlite.sql
+
+# 4. Run
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -214,7 +217,7 @@ Routes are ingested from structured JSON files:
 The import script handles upserts idempotently — safe to re-run without creating duplicates. Stop names are normalised (whitespace trimmed, consistent casing) before insert.
 
 ```bash
-python seed.py --file data/chandigarh_routes.json
+python scripts/import_routes.py path/to/routes.json
 ```
 
 ---
@@ -238,7 +241,7 @@ Deployed on **AWS EC2** (Ubuntu 22.04) with Gunicorn managed by **systemd**, beh
 | Component | Service | Role |
 |-----------|---------|------|
 | Compute | AWS EC2 (t3.micro) | Hosts backend process |
-| Database | AWS RDS (MySQL) | Persistent route and stop data (private subnet) |
+| Database | SQLite (on EC2 disk) | Persistent route, stop, and user data |
 | Process Manager | systemd + Gunicorn | Auto-start, crash recovery |
 | Reverse Proxy | Nginx | Routes `/api/` → `localhost:8000`, SSL termination |
 | SSL | Let's Encrypt (Certbot) | HTTPS certificates, auto-renewal |
@@ -281,7 +284,7 @@ location /api/ {
 }
 ```
 
-CORS is locked to the production frontend domain. The database is not publicly accessible.
+CORS is locked to the production frontend domain. The SQLite database file lives on the EC2 instance disk.
 
 ### CI/CD
 
