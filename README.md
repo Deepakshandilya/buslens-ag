@@ -285,4 +285,4 @@ Full interactive docs at `/docs` (Swagger) when running locally.
 
 ## License
 
-This project is for educational and personal use.
+This project is for educational and personal use. 
